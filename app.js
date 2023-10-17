@@ -4,8 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// var indexRouter = require('./routes/index');
+// var usersRouter = require('./routes/users');
 
 var app = express();
 
@@ -19,8 +19,28 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.get('/', (req, res) => {
+  res.render('index', {
+    pageTitle: 'My Resume',
+  });
+});
+
+app.get('/personal-details', (req, res) => {
+  res.render('personal-details', {
+    pageTitle: 'Personal Details',
+  });
+});
+
+app.get('/contact-me', (req, res) => {
+  res.render('contact-me', {
+    pageTitle: 'Contact Me',
+  });
+});
+
+const port = process.env.PORT || 3001;
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,8 +1,44 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.profile-photo {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  margin-bottom: 3%;
 }
 
-a {
-  color: #00B7FF;
+.section-links {
+  list-style: none;
+  padding: 0;
+}
+
+.section-links li {
+  display: inline;
+  margin: 10px;
+}
+
+.personal-details {
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.contact-box {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact-info {
+  font-size: 20px;
+}
+
+.contact-links {
+  list-style: none;
+  padding: 0;
+}
+
+.contact-links li {
+  display: inline;
+  margin: 10px;
 }
