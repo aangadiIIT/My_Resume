@@ -37,11 +37,6 @@ app.get('/contact-me', (req, res) => {
   });
 });
 
-const port = process.env.PORT || 3001;
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
