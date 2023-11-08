@@ -6,6 +6,11 @@
   margin-bottom: 3%;
 }
 
+.section-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
 .section-links {
   list-style: none;
   padding: 0;
@@ -41,4 +46,55 @@
 .contact-links li {
   display: inline;
   margin: 10px;
+}
+
+.skills-container {
+  background-color: white;
+  padding: 20px;
+  margin: 10px 0;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.skill {
+  font-size: 18px;
+  margin: 5px;
+}
+
+.work-item {
+  background-color: white;
+  padding: 20px;
+  margin: 10px 0;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.work-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.work-description {
+  font-size: 16px;
+}
+
+.experience {
+  background-color: white;
+  padding: 20px;
+  margin: 10px 0;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.entry {
+  font-size: 16px;
+  background-color: rgb(224, 223, 223);
+  padding: 20px;
+  margin: 10px 0;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
 }

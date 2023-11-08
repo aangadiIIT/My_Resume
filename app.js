@@ -37,6 +37,24 @@ app.get('/contact-me', (req, res) => {
   });
 });
 
+app.get('/my-works', (req, res) => {
+  res.render('my-works', {
+    pageTitle: 'My Works',
+  });
+});
+
+app.get('/my-skills', (req, res) => {
+  res.render('my-skills', {
+    pageTitle: 'My Skills',
+  });
+});
+
+app.get('/education-work', (req, res) => {
+  res.render('education-work', {
+    pageTitle: 'My Education and Work Experience',
+  });
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
