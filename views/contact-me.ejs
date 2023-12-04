@@ -29,6 +29,10 @@
       <div class="col-md-12">
         <h1><%= pageTitle %></h1>
 
+        <div class="alert alert-success alert-message" role="alert">
+          Thank you for your message!
+        </div>
+
         <div class="contact-box">
           <div class="contact-info">
             <p><strong>Email:</strong> aangadi@hawk.iit.edu</p>
@@ -42,8 +46,52 @@
             <li><a href="https://github.com/aangadiIIT" target="_blank">GitHub</a></li>
           </ul>
         </div>
+
+        <!-- Contact Form -->
+        <div class="contact-box">
+          <h2>Feedback/Post a message</h2>
+          <div class="contact-form">
+            <form id="messageForm" action="/contact-me/submit-message" method="post">
+              <div class="mb-3">
+                <label for="name" class="form-label">Your Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Your Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+              </div>
+              <div class="mb-3">
+                <label for="message" class="form-label">Your Message:</label>
+                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit Message</button>
+            </form>
+          </div>
+        </div>
+
+        <p><a href="/view-messages">View Posted Messages</a></p>
       </div>
     </div>
   </div>
+
+  <script>
+
+    const alertMessage = document.querySelector('.alert-message');
+    const messageForm = document.getElementById('messageForm');
+
+    if (window.location.search.includes('thanks=true')) {
+      alertMessage.style.display = 'block';
+      setTimeout(() => {
+        alertMessage.style.display = 'none';
+      }, 5000);
+      window.history.replaceState(null, null, '/contact-me');
+    }
+
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlSearchParams.entries());
+    if (params.error) {
+      messageForm.scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
 </body>
 </html>

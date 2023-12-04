@@ -9,6 +9,8 @@ var logger = require('morgan');
 
 var app = express();
 
+let messages = [];
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -34,6 +36,20 @@ app.get('/personal-details', (req, res) => {
 app.get('/contact-me', (req, res) => {
   res.render('contact-me', {
     pageTitle: 'Contact Me',
+  });
+});
+
+app.post('/contact-me/submit-message', (req, res) => {
+  const { name, email, message } = req.body;
+  const newMessage = { name, email, message };
+  messages.push(newMessage);
+  res.redirect('/contact-me?thanks=true');
+});
+
+app.get('/view-messages', (req, res) => {
+  res.render('view-messages', {
+    pageTitle: 'View Messages',
+    messages: messages,
   });
 });
 

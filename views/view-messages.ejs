@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>View Messages</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #e3f2fd;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #1976D2;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>View Messages</h1>
+        <% messages.forEach(message => { %>
+          <div class="message-box">
+            <p><strong>Name:</strong> <%= message.name %></p>
+            <p><strong>Email:</strong> <%= message.email %></p>
+            <p><strong>Message:</strong> <%= message.message %></p>
+          </div>
+        <% }) %>
+        <p><a href="/contact-me">Back to Contact Me</a></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
