@@ -1,0 +1,69 @@
+{
+  "publications": [
+    {
+      "title": "Smart Water Monitoring System for Agriculture",
+      "authors": [
+        "Akhilesh Angadi"
+      ],
+      "publication_type": "Research Paper",
+      "journal": "International Journal of New Technology and Research",
+      "publisher": "Nextgen Research Publication",
+      "publication_date": "2020-05-16",
+      "associated_with": "SDM College of Engineering and Technology",
+      "description_raw": "Agriculture is considered as the main source of food and raw materials. In India many farmers are still using the traditional methods for agricultural field. These traditional methods can be replaced using the current technology. This project describes us how irrigation system can be handled by IOT. It helps in saving and conserving the water by automatically providing the water to the plant according to their respective water requirement. The growing demand for food in terms of high quality has increased for the industrialization in the agriculture field. Internet of things(IOT) is high performance technology it is offering solutions and innovation to the agriculture field. The main objective of this project is to Help the farmers using IOT technology.",
+      "problem_statement": [
+        "Traditional agricultural irrigation methods are inefficient",
+        "Lack of automation in water distribution",
+        "Water wastage due to manual irrigation",
+        "Increasing demand for high-quality agricultural output"
+      ],
+      "solution": [
+        "Implemented IoT-based irrigation system",
+        "Automated water distribution based on plant requirements",
+        "Used sensor-driven decision making for irrigation",
+        "Enabled efficient and optimized water usage"
+      ],
+      "core_contributions": [
+        "Demonstrated application of IoT in agriculture",
+        "Proposed automated irrigation system using sensor data",
+        "Improved water conservation techniques",
+        "Bridged gap between traditional farming and modern technology"
+      ],
+      "research_domain": [
+        "Internet of Things (IoT)",
+        "Smart Agriculture",
+        "Automation Systems",
+        "Embedded Systems"
+      ],
+      "technologies_used": [
+        "IoT Sensors",
+        "Embedded Systems",
+        "Wireless Communication",
+        "Web Interface (PHP, HTML)"
+      ],
+      "real_world_impact": [
+        "Supports sustainable agriculture practices",
+        "Reduces water wastage",
+        "Improves crop productivity",
+        "Empowers farmers with data-driven insights"
+      ],
+      "keywords": [
+        "IoT",
+        "Smart Irrigation",
+        "Agriculture Automation",
+        "Water Conservation",
+        "Sensor-Based Systems"
+      ]
+    }
+  ],
+  "publications_summary": {
+    "total_publications": 1,
+    "type": "Academic Research",
+    "primary_domain": "IoT in Agriculture",
+    "impact_area": [
+      "Sustainability",
+      "Smart Farming",
+      "Automation"
+    ]
+  }
+}

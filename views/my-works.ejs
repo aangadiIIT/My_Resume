@@ -1,73 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title><%= pageTitle %></title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <style>
-    body {
-      background-color: #e3f2fd;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      color: #1976D2;
-    }
-  </style>
+  <%- include('partials/head') %>
 </head>
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <h1><%= pageTitle %></h1>
+  <%- include('partials/header') %>
 
-        <div class="work-item">
-          <h2 class="work-title">Pre-Commit Tool [Continuous Integration - CI & Continuous Delivery - CD] || Full Stack Developing & Jenkins</h2>
-          <p class="work-description">
-            Juniper has its own git repositories, and before committing the code, we run job in pipeline, and it performs the checkout, 
-            applies patch, does build and run test scripts for the job. This automated process to reduce the time of the developers to 
-            perform build and test on their code we use this tool. Once the successful build and test is done the tool triggers the code 
-            for commit in the repos.
-            <br>
-            Continuous Delivery (CD) is a software engineering approach aligning with Software Studio 3.0 in which teams keep producing 
-            valuable software in short cycles and ensure that the software can be reliably released at any time. It is used in software 
-            development to automate and improve the process of software delivery. Techniques such as automated testing and continuous 
-            integration (CI) allow software to be developed to a high standard and easily packaged and deployed to test environments, 
-            resulting in the ability to rapidly, reliably and repeatedly push out enhancements and bugfixes to customers at low risk and 
-            with minimal manual overhead.Juniper has its own git repositories, and before committing the code, we run job in pipeline, 
-            and it performs the checkout, applies patch, does build and run test scripts for the job. This automated process to reduce 
-            the time of the developers to perform build and test on their code we use this tool. Once the successful build and test is 
-            done the tool triggers the code for commit in the repos. Continuous Delivery (CD) is a software engineering approach aligning 
-            with Software Studio 3.0 in which teams keep producing valuable software in short cycles and ensure that the software can be 
-            reliably released at any time. It is used in software development to automate and improve the process of software delivery. 
-            Techniques such as automated testing and continuous integration (CI) allow software to be developed to a high standard and 
-            easily packaged and deployed to test environments, resulting in the ability to rapidly, reliably and repeatedly push out 
-            enhancements and bugfixes to customers at low risk and with minimal manual overhead.
-
-          </p>
-        </div>
-
-        <div class="work-item">
-          <h2 class="work-title">Smart Water Monitoring System for agriculture</h2>
-          <p class="work-description">
-            This project focuses on development of a system which can monitor temperature, humidity, moisture level of different crops in 
-            agricultural field. It helps in saving and conserving the water by automatically providing the water to the plant according to 
-            their respective water requirement. The system has a distributed network for soil- moisture and temperature sensors placed in 
-            the fields to pump the water according to its requirement. This project requires IoT sensors, WiFi modem, PHP and HTML.
-          </p>
-        </div>
-
-        <div class="work-item">
-            <h2 class="work-title">BLE Object Finder Using Android App</h2>
-            <p class="work-description">
-                Real-life Problem faced by the people is that due to their busy schedule, they often forget and lose their important materials. 
-                So, by using Object Finder Android App with BLE connectivity we find the objects or person or even an animal.
-            </p>
-        </div>
-        <p><a href="/">Back to Home</a></p>
-      </div>
+  <div class="container py-5 my-4">
+    <div class="text-center mb-5" data-aos="fade-down">
+      <h1 class="section-title">Projects & Works</h1>
+      <p class="lead text-muted max-w-2xl mx-auto">
+        <% if(data.projects && data.projects.projects_summary) { %>
+          Showcasing <%= data.projects.projects_summary.total_projects %> major projects spanning <%= data.projects.projects_summary.core_domains.join(', ') %>.
+        <% } else { %>
+          Showcasing my technical and academic projects.
+        <% } %>
+      </p>
     </div>
+
+    <% if(data.projects && data.projects.projects) { %>
+      <div class="projects-grid">
+        <% data.projects.projects.forEach((proj, index) => { %>
+          <div class="project-card" data-aos="fade-up" data-aos-delay="<%= Math.min(index * 100, 400) %>">
+            <div class="glass-card d-flex flex-column h-100 p-4">
+              
+              <!-- Card Header -->
+              <div class="mb-3 border-bottom pb-3" style="border-color: var(--glass-border) !important;">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <span class="badge bg-primary-soft text-primary rounded-pill px-3 py-1 fw-bold border border-primary border-opacity-25">
+                    <%= proj.type %>
+                  </span>
+                  <span class="text-muted small fw-bold">
+                    <i class="far fa-calendar-alt me-1"></i> <%= proj.duration.start %> - <%= proj.duration.end %>
+                  </span>
+                </div>
+                <h3 class="h4 fw-bold text-gradient mt-2 mb-1"><%= proj.title %></h3>
+                <h4 class="h6 fw-bold text-muted"><i class="fas fa-sitemap me-1"></i> <%= proj.organization %></h4>
+              </div>
+
+              <!-- Card Body (Description) -->
+              <div class="project-content mb-3">
+                <p class="text-muted small mb-3">
+                  <%= proj.summary %>
+                </p>
+
+                <!-- Accordion for detailed info -->
+                <div class="accordion custom-accordion" id="accordionProject<%= index %>">
+                  <% if(proj.problem_statement && proj.problem_statement.length > 0) { %>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProb<%= index %>">
+                        <i class="fas fa-exclamation-circle text-warning me-2"></i> Problem Statement
+                      </button>
+                    </h2>
+                    <div id="collapseProb<%= index %>" class="accordion-collapse collapse" data-bs-parent="#accordionProject<%= index %>">
+                      <div class="accordion-body small pl-4">
+                        <ul class="mb-0 ps-3">
+                          <% proj.problem_statement.forEach(item => { %>
+                            <li><%= item %></li>
+                          <% }) %>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <% } %>
+
+                  <% if(proj.solution && proj.solution.length > 0) { %>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSol<%= index %>">
+                        <i class="fas fa-lightbulb text-success me-2"></i> Solution & Workflow
+                      </button>
+                    </h2>
+                    <div id="collapseSol<%= index %>" class="accordion-collapse collapse" data-bs-parent="#accordionProject<%= index %>">
+                      <div class="accordion-body small">
+                        <ul class="mb-2 ps-3">
+                          <% proj.solution.forEach(item => { %>
+                            <li><%= item %></li>
+                          <% }) %>
+                        </ul>
+                        <% if(proj.workflow && proj.workflow.length > 0) { %>
+                          <strong class="text-accent mt-2 d-block">Workflow:</strong>
+                          <ol class="mb-0 ps-3">
+                            <% proj.workflow.forEach(item => { %>
+                              <li><%= item %></li>
+                            <% }) %>
+                          </ol>
+                        <% } %>
+                      </div>
+                    </div>
+                  </div>
+                  <% } %>
+
+                  <% if(proj.impact && proj.impact.length > 0) { %>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseImpact<%= index %>">
+                        <i class="fas fa-chart-line text-primary me-2"></i> Impact
+                      </button>
+                    </h2>
+                    <div id="collapseImpact<%= index %>" class="accordion-collapse collapse" data-bs-parent="#accordionProject<%= index %>">
+                      <div class="accordion-body small">
+                        <ul class="mb-0 ps-3">
+                          <% proj.impact.forEach(item => { %>
+                            <li><%= item %></li>
+                          <% }) %>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <% } %>
+                </div>
+              </div>
+
+              <!-- Tech Stack Container (Flex wrap at bottom) -->
+              <div class="mt-auto pt-3 border-top" style="border-color: var(--glass-border) !important;">
+                <% if(proj.technologies && proj.technologies.length > 0) { %>
+                  <div class="d-flex flex-wrap gap-1">
+                    <% proj.technologies.forEach(tech => { %>
+                      <span class="skill-pill" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;"><%= tech %></span>
+                    <% }) %>
+                  </div>
+                <% } %>
+              </div>
+
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <!-- Funnel Navigation CTA -->
+    <div class="mt-5 pt-5 border-top text-center" style="border-color: var(--glass-border) !important;" data-aos="fade-up">
+      <p class="text-muted fw-bold text-uppercase tracking-widest mb-2">Next Chapter</p>
+      <h3 class="h2 fw-bolder mb-4">Discover My Technical Arsenal</h3>
+      <a href="/my-skills" class="btn-primary-custom px-5 py-3 fs-5 shadow-sm">
+        View My Skills <i class="fas fa-arrow-right ms-2"></i>
+      </a>
+    </div>
+
   </div>
+
+  <%- include('partials/footer') %>
 </body>
 </html>

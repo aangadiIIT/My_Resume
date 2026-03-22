@@ -1,0 +1,63 @@
+<!-- PDF Viewer Modal -->
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 1060;">
+  <div class="modal-dialog modal-dialog-centered modal-xl" style="height: 90vh;">
+    <div class="modal-content bg-dark border-0 shadow-lg h-100">
+      <div class="modal-header border-0 bg-transparent text-white p-3">
+        <h5 class="modal-title fw-bold" id="pdfModalLabel">Certificate Viewer</h5>
+        <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0 h-100 overflow-hidden bg-secondary">
+        <iframe id="pdfFrame" src="" width="100%" height="100%" style="border: none;"></iframe>
+      </div>
+      <div class="modal-footer border-0 bg-dark py-2">
+          <a id="pdfDownloadLink" href="#" target="_blank" class="btn btn-sm btn-outline-light rounded-pill px-3">
+              <i class="fas fa-download me-1"></i> Open in New Tab
+          </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const pdfModalElement = document.getElementById('pdfModal');
+    if (!pdfModalElement) return;
+
+    const pdfModal = new bootstrap.Modal(pdfModalElement);
+    const pdfFrame = document.getElementById('pdfFrame');
+    const pdfModalLabel = document.getElementById('pdfModalLabel');
+    const pdfDownloadLink = document.getElementById('pdfDownloadLink');
+
+    // Use event delegation to handle dynamically loaded elements if any, 
+    // or just catch all clicks on .pdf-trigger
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('.pdf-trigger');
+      if (trigger) {
+        e.preventDefault();
+        const pdfUrl = trigger.getAttribute('data-pdf');
+        const title = trigger.getAttribute('data-title');
+        
+        pdfModalLabel.innerText = title;
+        pdfFrame.src = pdfUrl;
+        pdfDownloadLink.href = pdfUrl;
+        pdfModal.show();
+      }
+    });
+
+    // Clear iframe src on close to stop loading
+    pdfModalElement.addEventListener('hidden.bs.modal', () => {
+      pdfFrame.src = '';
+    });
+  });
+</script>
+
+<style>
+  .modal-xl {
+      max-width: 95% !important;
+  }
+  @media (min-width: 1200px) {
+      .modal-xl {
+          max-width: 1140px !important;
+      }
+  }
+</style>

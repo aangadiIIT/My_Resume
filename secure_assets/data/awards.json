@@ -1,0 +1,343 @@
+{
+  "awards": [
+    {
+      "title": "Build Trust - Own It",
+      "image_path": "/view-asset/awards/Award 13.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Vishal Gupta",
+        "role": "Team Architect"
+      },
+      "date": "2025-09",
+      "category": [
+        "Ownership",
+        "Reliability",
+        "Infrastructure"
+      ],
+      "description_raw": "Thanks for relentless effort and hard work to build and deliver the HA across Jenkins and DB. We are really thankful for your contribution. Please keep up the good work.",
+      "recognized_for": [
+        "High Availability (HA) implementation",
+        "Jenkins reliability improvements",
+        "Database HA delivery",
+        "Ownership of critical infrastructure"
+      ],
+      "impact_area": [
+        "CI/CD Systems",
+        "Database Reliability",
+        "Infrastructure Stability"
+      ]
+    },
+    {
+      "title": "Deliver Excellence - Act With Urgency",
+      "image_path": "/view-asset/awards/Award 12.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Vishal Gupta",
+        "role": "Team Architect"
+      },
+      "date": "2025-05",
+      "category": [
+        "Execution",
+        "Delivery",
+        "Product Development"
+      ],
+      "description_raw": "Thanks for relentless effort and hard work to build and deliver the IPL feature in PCT. We are really thankful for your contribution. Please keep up the good work.",
+      "recognized_for": [
+        "Feature delivery (IPL feature in PCT)",
+        "Execution speed",
+        "High-quality development"
+      ],
+      "impact_area": [
+        "Product Development",
+        "Feature Engineering"
+      ]
+    },
+    {
+      "title": "Build Trust - Own It",
+      "image_path": "/view-asset/awards/Award 11.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Vinut Hiremath",
+        "role": "Manager"
+      },
+      "date": "2024-10",
+      "category": [
+        "Leadership",
+        "Migration",
+        "Cloud"
+      ],
+      "description_raw": "Great work in owning up the transition of entire pipeline VM's into Cloud transformation and Proxmox. You did a good job of owning the entire migration work, working with various stakeholders within and outside the team. Moving Mysql into master- master cross geo was another excellent work which had made the Business Continuity for pipeline a reality.",
+      "recognized_for": [
+        "Cloud migration (VM to Proxmox)",
+        "Cross-geo MySQL High Availability",
+        "Stakeholder coordination",
+        "End-to-end ownership"
+      ],
+      "impact_area": [
+        "Cloud Migration",
+        "High Availability Systems",
+        "Business Continuity"
+      ]
+    },
+    {
+      "title": "Deliver Excellence - Act With Urgency",
+      "image_path": "/view-asset/awards/Award 10.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Vinut Hiremath",
+        "role": "Manager"
+      },
+      "date": "2022-08",
+      "category": [
+        "Ownership",
+        "Mentorship"
+      ],
+      "description_raw": "Great work taking up the pipeline responsibilities. Great work in taking up several of the pipeline responsibilities and also mentoring the intern in the team. Best wishes for your continued success !!!",
+      "recognized_for": [
+        "Pipeline ownership",
+        "Mentoring interns",
+        "Responsibility handling"
+      ],
+      "impact_area": [
+        "Team Development",
+        "Pipeline Systems"
+      ]
+    },
+    {
+      "title": "Deliver Excellence - Act with urgency",
+      "image_path": "/view-asset/awards/Award 9.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Praveena Ramappa",
+        "role": "Colleague"
+      },
+      "date": "2022-07",
+      "category": [
+        "Collaboration",
+        "Support"
+      ],
+      "description_raw": "Good Development and Support in Project.",
+      "recognized_for": [
+        "Development contributions",
+        "Project support",
+        "Team collaboration"
+      ],
+      "impact_area": [
+        "Team Collaboration",
+        "Development Support"
+      ]
+    },
+    {
+      "title": "Deliver Excellence - Improve Relentlessly",
+      "image_path": "/view-asset/awards/Award 8.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Vinut Hiremath",
+        "role": "Manager"
+      },
+      "date": "2022-07",
+      "category": [
+        "Innovation",
+        "Reliability"
+      ],
+      "description_raw": "High Availability for Pipeline. Great work in owning up and implementing the HA for pipeline !!! This will help us to achieve hit-less maintenance for pipeline going forward. Kudos to the team work.",
+      "recognized_for": [
+        "Pipeline High Availability implementation",
+        "Hitless maintenance capability",
+        "System reliability improvements"
+      ],
+      "impact_area": [
+        "High Availability",
+        "CI/CD Systems",
+        "Reliability Engineering"
+      ]
+    },
+    {
+      "title": "Department Spotlight Award",
+      "image_path": "/view-asset/awards/Award 7.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Vinut Hiremath",
+        "role": "Manager"
+      },
+      "date": "2022-05",
+      "category": [
+        "Feature Ownership",
+        "Product Enhancement"
+      ],
+      "description_raw": "Thank you for owning up user feedback module",
+      "recognized_for": [
+        "User feedback module ownership",
+        "Feature development"
+      ],
+      "impact_area": [
+        "Product Features",
+        "User Experience"
+      ]
+    },
+    {
+      "title": "Colleague to Colleague",
+      "image_path": "/view-asset/awards/Award 6.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Prajakta Padawalekar",
+        "role": "Colleague"
+      },
+      "date": "2022-04",
+      "category": [
+        "Team Support",
+        "Collaboration"
+      ],
+      "description_raw": "Thank you Akhilesh for the help, support and guidance for the past months. Looking forward to work with you.",
+      "recognized_for": [
+        "Helping team members",
+        "Support and collaboration"
+      ],
+      "impact_area": [
+        "Team Collaboration"
+      ]
+    },
+    {
+      "title": "Colleague to Colleague",
+      "image_path": "/view-asset/awards/Award 5.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Sahana Hegde",
+        "role": "Colleague"
+      },
+      "date": "2022-04",
+      "category": [
+        "Mentorship",
+        "Guidance"
+      ],
+      "description_raw": "Thank you so much for all that you've done -- I only hope I can return the favour sometime in the future. Thanks for being a good mentor and for guiding me on the right path. I will always be thankful to you. Not only have you been a fantastic mentor to me.",
+      "recognized_for": [
+        "Mentorship",
+        "Guidance",
+        "Team development"
+      ],
+      "impact_area": [
+        "Mentorship",
+        "Team Growth"
+      ]
+    },
+    {
+      "title": "Department Spotlight Award",
+      "image_path": "/view-asset/awards/Award 4.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Jai Prashanth",
+        "role": "HR Manager"
+      },
+      "date": "2022-01",
+      "category": [
+        "Hiring",
+        "Organizational Contribution"
+      ],
+      "description_raw": "Akhilesh, we really appreciate the commitment and dedication you have shown during Juniper intern hiring events through out last 4 months. You partnered with TA team with 'One Juniper' mindset. Thank you for your time, support and for being the sport all the time. Thank you !!",
+      "recognized_for": [
+        "Intern hiring contributions",
+        "Collaboration with TA team",
+        "Organizational involvement"
+      ],
+      "impact_area": [
+        "Hiring",
+        "Organizational Growth"
+      ]
+    },
+    {
+      "title": "Colleague to Colleague Award",
+      "image_path": "/view-asset/awards/Award 3.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Amith Tallanki",
+        "role": "Colleague"
+      },
+      "date": "2021-12",
+      "category": [
+        "Work Ethic",
+        "Technical Excellence"
+      ],
+      "description_raw": "Always follows through on his commitments, one of the hardest working people I've ever seen, amazing programming ability",
+      "recognized_for": [
+        "Strong work ethic",
+        "Programming ability",
+        "Commitment"
+      ],
+      "impact_area": [
+        "Engineering Excellence"
+      ]
+    },
+    {
+      "title": "Department Spotlight Award",
+      "image_path": "/view-asset/awards/Award 2.png",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Vinut Hiremath",
+        "role": "Manager"
+      },
+      "date": "2021-03",
+      "category": [
+        "Innovation",
+        "Workflow Improvement"
+      ],
+      "description_raw": "Rolling out the Batch Commit Workflow for the pilot phase",
+      "recognized_for": [
+        "Batch commit workflow implementation",
+        "Process innovation"
+      ],
+      "impact_area": [
+        "CI/CD",
+        "Workflow Optimization"
+      ]
+    },
+    {
+      "title": "Department Spotlight Award",
+      "image_path": "/view-asset/awards/Award 1.jpg",
+      "issuer": "Juniper Networks",
+      "issued_by": {
+        "name": "Vinut Hiremath",
+        "role": "Manager"
+      },
+      "date": "2020-11",
+      "category": [
+        "Feature Development"
+      ],
+      "description_raw": "Working quickly on the various PCT Dashboard Enhancements",
+      "recognized_for": [
+        "Dashboard enhancements",
+        "Quick delivery"
+      ],
+      "impact_area": [
+        "UI Development",
+        "Product Improvement"
+      ]
+    }
+  ],
+  "awards_summary": {
+    "total_awards": 13,
+    "awards_by_year": {
+      "2025": 2,
+      "2024": 1,
+      "2022": 7,
+      "2021": 2,
+      "2020": 1
+    },
+    "award_types": [
+      "Manager Awards",
+      "Architect Recognition",
+      "Peer Recognition",
+      "HR Recognition"
+    ],
+    "core_strengths_recognized": [
+      "High Availability Systems",
+      "Cloud Migration",
+      "CI/CD & Automation",
+      "Mentorship",
+      "Ownership",
+      "Feature Delivery",
+      "Team Collaboration"
+    ],
+    "consistency_indicator": "Recognized consistently across 5 years (2020–2025)"
+  }
+}

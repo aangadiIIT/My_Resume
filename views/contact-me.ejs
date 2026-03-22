@@ -1,97 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <title><%= pageTitle %></title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <style>
-    body {
-      background-color: #e3f2fd;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      color: #1976D2;
-    }
-    a {
-      text-decoration: none;
-      color: #1976D2;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <%- include('partials/head') %>
 </head>
+
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <h1><%= pageTitle %></h1>
+  <%- include('partials/header') %>
 
-        <div class="alert alert-success alert-message" role="alert">
-          Thank you for your message!
-        </div>
+    <div class="container py-5 my-4 min-vh-75 d-flex flex-column justify-content-center">
+      <div class="text-center mb-5" data-aos="fade-down">
+        <h1 class="section-title">Get In Touch</h1>
+        <p class="lead text-muted max-w-2xl mx-auto">Have an exciting opportunity, a technical question, or just want to
+          say hi? My inbox is always open.</p>
+      </div>
 
-        <div class="contact-box">
-          <div class="contact-info">
-            <p><strong>Email:</strong> aangadi@hawk.iit.edu</p>
-            <p><strong>Phone:</strong> +91 9738045396</p>
-            <p><strong>Location:</strong> Dharwad, Karnataka, India.</p>
+      <div class="row g-5">
+        <!-- Left Column: Contact Info -->
+        <div class="col-lg-5" data-aos="fade-right">
+          <div class="d-flex flex-column gap-4">
+
+            <div class="glass-card p-4 border-start border-4 border-primary">
+              <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center justify-content-center rounded-circle me-3"
+                  style="width: 50px; height: 50px; background: var(--shape-1); color: var(--accent-primary); font-size: 1.2rem;">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                  <h3 class="h6 fw-bold mb-1 text-muted text-uppercase">Email</h3>
+                  <a href="mailto:<%= data.profile.profile.contact.email %>"
+                    class="fw-bold fs-6 text-primary text-decoration-none">
+                    <%= data.profile.profile.contact.email %>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card p-4 border-start border-4" style="border-color: #10b981 !important;">
+              <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center justify-content-center rounded-circle me-3"
+                  style="width: 50px; height: 50px; background: var(--shape-3); color: #10b981; font-size: 1.2rem;">
+                  <i class="fas fa-phone-alt"></i>
+                </div>
+                <div>
+                  <h3 class="h6 fw-bold mb-1 text-muted text-uppercase">Phone</h3>
+                  <a href="tel:<%= data.profile.profile.contact.phone %>"
+                    class="fw-bold fs-6 text-success text-decoration-none">
+                    <%= data.profile.profile.contact.phone %>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card p-4 border-start border-4" style="border-color: #8b5cf6 !important;">
+              <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center justify-content-center rounded-circle me-3"
+                  style="width: 50px; height: 50px; background: var(--shape-2); color: #8b5cf6; font-size: 1.2rem;">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                  <h3 class="h6 fw-bold mb-1 text-muted text-uppercase">Location</h3>
+                  <span class="fw-bold fs-6" style="color: #8b5cf6;">
+                    <%= data.profile.profile.contact.location_current %>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card p-4">
+              <h3 class="h6 fw-bold mb-3 text-muted text-uppercase border-bottom pb-2">Connect</h3>
+              <div class="d-flex gap-3">
+                <% if(data.profile.profile.social_links && data.profile.profile.social_links.linkedin) { %>
+                  <a href="<%= data.profile.profile.social_links.linkedin %>" target="_blank"
+                    class="btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 45px; height: 45px;"><i class="fab fa-linkedin-in fs-5"></i></a>
+                  <% } %>
+                    <% if(data.profile.profile.social_links && data.profile.profile.social_links.github) { %>
+                      <a href="<%= data.profile.profile.social_links.github %>" target="_blank"
+                        class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 45px; height: 45px; color: var(--text-primary); border-color: var(--border-color);"><i
+                          class="fab fa-github fs-5"></i></a>
+                      <% } %>
+              </div>
+            </div>
+
+            <div class="glass-card p-4 text-center">
+              <p class="small text-muted mb-3 italic">"Good design is a conversation."</p>
+              <a href="/view-asset/documents/Resume.pdf" class="btn-outline-custom w-100 text-decoration-none"
+                download="Resume.pdf" style="font-size: 0.9rem;">
+                <i class="fas fa-file-pdf me-2"></i> Download Formal CV
+              </a>
+            </div>
+
           </div>
-
-          <ul class="contact-links">
-            <li><a href="https://www.linkedin.com/in/akhilesh-angadi" target="_blank">LinkedIn</a></li>
-            <li><a href="https://twitter.com/AngadiAkhilesh" target="_blank">Twitter</a></li>
-            <li><a href="https://github.com/aangadiIIT" target="_blank">GitHub</a></li>
-          </ul>
         </div>
 
-        <!-- Contact Form -->
-        <div class="contact-box">
-          <h2>Feedback/Post a message</h2>
-          <div class="contact-form">
-            <form id="messageForm" action="/contact-me/submit-message" method="post">
-              <div class="mb-3">
-                <label for="name" class="form-label">Your Name:</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+        <!-- Right Column: Contact Form -->
+        <div class="col-lg-7" data-aos="fade-left">
+          <div class="glass-card p-5 h-100">
+            <h3 class="h4 fw-bold mb-1 text-gradient">Send a Message</h3>
+            <p class="text-muted small mb-4">I'll respond as soon as I see your notification.</p>
+
+            <form action="/contact-me" method="POST" class="custom-form">
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label small fw-bold text-muted">Full Name</label>
+                    <input type="text" name="name" class="form-control glass-input" placeholder="Your Name" required>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label small fw-bold text-muted">Email Address</label>
+                    <input type="email" name="email" class="form-control glass-input" placeholder="email@example.com"
+                      required>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="form-label small fw-bold text-muted">Subject</label>
+                    <input type="text" name="subject" class="form-control glass-input" placeholder="What is this about?"
+                      required>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="form-label small fw-bold text-muted">Message</label>
+                    <textarea name="message" rows="5" class="form-control glass-input"
+                      placeholder="Your message here..." required></textarea>
+                  </div>
+                </div>
+                <div class="col-12 mt-4">
+                  <button type="submit" class="btn-primary-custom w-100 py-3 fs-5 shadow-sm">
+                    Send Message <i class="fas fa-paper-plane ms-2"></i>
+                  </button>
+                </div>
               </div>
-              <div class="mb-3">
-                <label for="email" class="form-label">Your Email:</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-              </div>
-              <div class="mb-3">
-                <label for="message" class="form-label">Your Message:</label>
-                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary">Submit Message</button>
             </form>
           </div>
         </div>
-        <p><a href="/view-messages">View Posted Messages</a></p>
-        <p><a href="/">Back to Home</a></p>
       </div>
     </div>
-  </div>
 
-  <script>
-
-    const alertMessage = document.querySelector('.alert-message');
-    const messageForm = document.getElementById('messageForm');
-
-    if (window.location.search.includes('thanks=true')) {
-      alertMessage.style.display = 'block';
-      setTimeout(() => {
-        alertMessage.style.display = 'none';
-      }, 5000);
-      window.history.replaceState(null, null, '/contact-me');
-    }
-
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const params = Object.fromEntries(urlSearchParams.entries());
-    if (params.error) {
-      messageForm.scrollIntoView({ behavior: 'smooth' });
-    }
-  </script>
+    <%- include('partials/footer') %>
 </body>
+
 </html>

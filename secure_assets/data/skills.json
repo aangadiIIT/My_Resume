@@ -1,0 +1,212 @@
+{
+  "skills": {
+    "raw_skills_extracted": [
+      "Generative AI",
+      "Prompt Engineering",
+      "Linux",
+      "Docker",
+      "Kubernetes",
+      "Computer Networking",
+      "Advanced Data Communication Network",
+      "System Architecture",
+      "CI/CD",
+      "Jenkins",
+      "MySQL Galera",
+      "High Availability (HA)",
+      "JavaScript",
+      "Web Applications",
+      "HTML",
+      "SQL",
+      "Databases",
+      "Computer Science",
+      "Communication",
+      "Software Design",
+      "Programming",
+      "Problem Solving",
+      "Strategic Planning",
+      "Project Management",
+      "Project Planning"
+    ],
+    "categorized": {
+      "cloud_devops": [
+        "Kubernetes",
+        "Docker",
+        "Helm",
+        "Terraform",
+        "Jenkins",
+        "ArgoCD",
+        "Argo Workflows",
+        "CI/CD",
+        "GitOps",
+        "AWS",
+        "Azure",
+        "GCP",
+        "SAP Gardener",
+        "Velero"
+      ],
+      "monitoring_observability": [
+        "Prometheus",
+        "Grafana",
+        "Graphite",
+        "Logging Systems"
+      ],
+      "backend_development": [
+        "Java",
+        "REST APIs",
+        "SQL",
+        "MySQL",
+        "MySQL Galera",
+        "Databases",
+        "Server-side Development"
+      ],
+      "frontend_development": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Web Applications",
+        "UI/UX Design"
+      ],
+      "system_design_architecture": [
+        "System Architecture",
+        "High Availability (HA)",
+        "Distributed Systems",
+        "Scalability Design",
+        "Infrastructure Design"
+      ],
+      "automation_tools": [
+        "Jenkins",
+        "Cron Jobs",
+        "Pipeline Automation",
+        "Scripting",
+        "CI/CD Pipelines"
+      ],
+      "networking": [
+        "Computer Networking",
+        "Network Protocols",
+        "Routing",
+        "HAProxy",
+        "UCARP"
+      ],
+      "programming_languages": [
+        "Java",
+        "JavaScript",
+        "SQL"
+      ],
+      "ai_and_emerging": [
+        "Generative AI",
+        "Prompt Engineering",
+        "AI Fundamentals"
+      ],
+      "soft_skills": [
+        "Problem Solving",
+        "Communication",
+        "Team Collaboration",
+        "Mentorship",
+        "Leadership",
+        "Strategic Planning",
+        "Project Management",
+        "Project Planning"
+      ]
+    },
+    "proficiency_levels": {
+      "expert": [
+        "Kubernetes",
+        "Docker",
+        "Jenkins",
+        "CI/CD",
+        "High Availability",
+        "MySQL",
+        "System Architecture"
+      ],
+      "advanced": [
+        "Java",
+        "SQL",
+        "Linux",
+        "Helm",
+        "Prometheus",
+        "Grafana",
+        "GitOps",
+        "Cloud Platforms (AWS/Azure/GCP)"
+      ],
+      "intermediate": [
+        "Terraform",
+        "ArgoCD",
+        "Argo Workflows",
+        "Graphite",
+        "Networking"
+      ],
+      "beginner": [
+        "Generative AI",
+        "Prompt Engineering"
+      ]
+    },
+    "experience_mapping": {
+      "Kubernetes": [
+        "SAP - Cloud Service Specialist",
+        "Juniper - Software Engineer 3"
+      ],
+      "Docker": [
+        "SAP",
+        "Juniper"
+      ],
+      "Jenkins": [
+        "CI/CD Pipeline Project",
+        "Juniper Experience"
+      ],
+      "MySQL Galera": [
+        "Juniper - Database HA Migration"
+      ],
+      "HAProxy": [
+        "Juniper - Software Engineer 2"
+      ],
+      "Prometheus": [
+        "SAP - Observability Stack"
+      ],
+      "Grafana": [
+        "SAP - Monitoring"
+      ]
+    },
+    "certification_mapping": {
+      "Kubernetes": [
+        "Learning Kubernetes",
+        "Kubernetes Essential Training"
+      ],
+      "Docker": [
+        "Docker for Developers"
+      ],
+      "Terraform": [
+        "Learning Terraform"
+      ],
+      "Jenkins": [
+        "Learning Jenkins"
+      ],
+      "Grafana": [
+        "Graphite and Grafana Certification"
+      ],
+      "AI": [
+        "Prompt Engineering Certification",
+        "YUVA AI"
+      ]
+    },
+    "skill_summary": {
+      "primary_strengths": [
+        "Cloud Engineering",
+        "DevOps",
+        "Kubernetes",
+        "System Architecture",
+        "CI/CD Automation"
+      ],
+      "secondary_strengths": [
+        "Full Stack Development",
+        "Database Design",
+        "Monitoring & Observability",
+        "Networking"
+      ],
+      "emerging_skills": [
+        "Generative AI",
+        "Prompt Engineering"
+      ],
+      "total_skills_count": 40
+    }
+  }
+}

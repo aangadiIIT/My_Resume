@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="container py-5 my-4">
+    <div class="text-center mb-5" data-aos="fade-down">
+      <h1 class="section-title">Honors & Awards</h1>
+      <p class="lead text-muted max-w-2xl mx-auto">
+        <% if(data.awards && data.awards.awards_summary) { %>
+          Recognized <%= data.awards.awards_summary.total_awards %> times across my career for excellence in <%= data.awards.awards_summary.core_strengths_recognized.slice(0, 3).join(', ') %> and more.
+        <% } else { %>
+          Professional recognition and awards received throughout my career.
+        <% } %>
+      </p>
+    </div>
+
+    <% if(data.awards && data.awards.awards) { %>
+      <div class="row g-4">
+        <% data.awards.awards.forEach((award, index) => { %>
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="<%= Math.min(index * 50, 400) %>">
+            <div class="glass-card h-100 p-4 position-relative overflow-hidden">
+              
+              <!-- Subtle background icon -->
+              <i class="fas fa-trophy position-absolute award-bg-icon"></i>
+              
+              <div class="d-flex justify-content-between align-items-start mb-3 position-relative z-1">
+                <div>
+                  <h3 class="h4 fw-bold text-gradient mb-1"><%= award.title %></h3>
+                  <div class="text-muted small fw-bold">
+                    <i class="fas fa-building me-1"></i> <%= award.issuer %> 
+                    <span class="mx-2">•</span> 
+                    <i class="far fa-calendar-alt me-1"></i> <%= award.date %>
+                  </div>
+                </div>
+                <div class="text-end" style="min-width: 120px;">
+                  <span class="badge bg-primary-soft text-primary rounded-pill border border-primary border-opacity-25 shadow-sm">
+                    <%= award.issued_by.role %>
+                  </span>
+                  <div class="small fw-bold mt-1 text-muted"><%= award.issued_by.name %></div>
+                </div>
+              </div>
+
+              <div class="position-relative z-1 mb-3">
+                <p class="text-muted fst-italic border-start border-3 border-primary ps-3 mb-3" style="font-size: 0.95rem;">
+                  "<%= award.description_raw %>"
+                </p>
+                
+                <% if(award.image_path) { %>
+                  <div class="award-image-container mt-3" data-aos="zoom-in">
+                    <img src="<%= award.image_path %>" alt="<%= award.title %>" class="img-fluid rounded shadow-sm border award-thumb lightbox-trigger" 
+                         style="max-height: 200px; cursor: pointer;"
+                         data-img="<%= award.image_path %>" data-title="<%= award.title %>">
+                    <div class="mt-2 text-center">
+                      <small class="text-primary fst-italic lightbox-trigger" style="cursor: pointer;" data-img="<%= award.image_path %>" data-title="<%= award.title %>">
+                        <i class="fas fa-search-plus me-1"></i> Click to enlarge
+                      </small>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+
+              <div class="position-relative z-1 mt-auto pt-3 border-top" style="border-color: var(--glass-border) !important;">
+                <% if(award.recognized_for && award.recognized_for.length > 0) { %>
+                  <div class="d-flex flex-wrap gap-1 mb-2">
+                    <span class="small fw-bold text-muted me-2 mt-1">Recognized for:</span>
+                    <% award.recognized_for.forEach(reason => { %>
+                      <span class="skill-pill" style="font-size: 0.75rem; padding: 0.2rem 0.6rem; margin: 0.1rem; background: var(--shape-1); color: var(--accent-primary);"><%= reason %></span>
+                    <% }) %>
+                  </div>
+                <% } %>
+                
+                <% if(award.impact_area && award.impact_area.length > 0) { %>
+                  <div class="d-flex flex-wrap gap-1 mt-2">
+                    <span class="small fw-bold text-muted me-2 mt-1">Impact Areas:</span>
+                    <% award.impact_area.forEach(area => { %>
+                      <span class="skill-pill" style="font-size: 0.75rem; padding: 0.2rem 0.6rem; margin: 0.1rem;"><%= area %></span>
+                    <% }) %>
+                  </div>
+                <% } %>
+              </div>
+              
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <!-- Funnel Navigation CTA -->
+    <div class="mt-5 pt-5 border-top text-center" style="border-color: var(--glass-border) !important;" data-aos="fade-up">
+      <p class="text-muted fw-bold text-uppercase tracking-widest mb-2">Next Chapter</p>
+      <h3 class="h2 fw-bolder mb-4">Professional Credibility</h3>
+      <a href="/recommendations" class="btn-primary-custom px-5 py-3 fs-5 shadow-sm">
+        View Recommendations <i class="fas fa-quote-right ms-2"></i>
+      </a>
+    </div>
+
+  </div>
+
+  <%- include('partials/footer') %>
+
+  <!-- Award Lightbox Modal -->
+  <div class="modal fade" id="awardLightbox" tabindex="-1" aria-hidden="true" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content bg-transparent border-0 shadow-none">
+        <div class="modal-header border-0 p-0 position-absolute top-0 end-0" style="z-index: 1051;">
+          <button type="button" class="btn-close btn-close-white fs-4 p-4 shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center p-0">
+          <img src="" id="lightboxImg" class="img-fluid rounded shadow-lg max-vh-80" alt="Award Full View">
+          <h3 id="lightboxTitle" class="text-white fw-bold mt-4 shadow-text"></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const triggers = document.querySelectorAll('.lightbox-trigger');
+      const lightboxModal = new bootstrap.Modal(document.getElementById('awardLightbox'));
+      const lightboxImg = document.getElementById('lightboxImg');
+      const lightboxTitle = document.getElementById('lightboxTitle');
+
+      triggers.forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+          const imgPath = trigger.getAttribute('data-img');
+          const title = trigger.getAttribute('data-title');
+          
+          lightboxImg.src = imgPath;
+          lightboxTitle.innerText = title;
+          lightboxModal.show();
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

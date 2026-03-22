@@ -1,0 +1,97 @@
+{
+  "profile": {
+    "name": "Akhilesh Angadi",
+    "first_name": "Akhilesh",
+    "last_name": "Angadi",
+    "pronouns": "He/Him",
+    "headline": "Cloud & DevOps Engineer | SAP ECS | Kubernetes, Docker, CI/CD | Ex-Juniper Networks",
+    "photoPath": "/view-asset/profile/profile.jpg",
+    "headline_raw": "Innovative Cloud Engineer at SAP Enterprise Cloud Service | Ex–Juniper Networks | Master’s in Information Technology and Management",
+    "headline_structured": {
+      "primary_role": "Cloud Engineer",
+      "current_company": "SAP Enterprise Cloud Services (ECS)",
+      "previous_company": "Juniper Networks",
+      "education_highlight": "Master’s in Information Technology and Management"
+    },
+    "about_raw": "🚀 Passionate and results-driven Software Engineer with a knack for coding and exploring cutting-edge technologies. As a dedicated team player, I thrive on translating business requirements into innovative products through smart design and efficient feature implementation. My expertise spans UI, backend development, and DevOps.\n\nKey Skills & Superpowers:\n\n💡 Solution Architect: Crafting scalable solutions aligned with organisational goals, ensuring a foundation for future growth.\n\n💻 Full Stack Maestro: Building UI and backend components using modern frameworks for intuitive user experiences.\n\n🛠️ DevOps Dynamo: Automating build and deployment pipelines, optimising CI, and ensuring smooth workflows for faster delivery.\n\n🌐 API Aficionado: Designing Web API wrappers to enhance system interoperability, ensuring seamless communication between services.\n\n🛠️ Code Refactoring Guru: Elevating code quality with optimizations, refactoring, and rigorous test cases for performance and maintainability.\n\n🔒 Security Sentinel: Leading efforts in server security, timely updates, and patches to safeguard data integrity and compliance.\n\n🤝 Team Maestro: Skilled Release and Sprint Manager, fostering collaboration through communication and engagement. Active in cross-functional teams and customer interactions.\n\n⚙️ Kubernetes, Helm & Docker Expert: Managing containerised apps on Kubernetes using Helm, ensuring scalability, security, and fault tolerance. Key in moving apps to in-house cloud infrastructure.\n\n🖥️ Migration Specialist: Seamless migration of vCenter VMs to Proxmox, optimising virtualisation and infrastructure performance.\n\n🌱 Talent Cultivator: Contributing to organisational growth by mentoring teams, hiring, and campus recruitment.\n\nReady to bring this expertise to a forward-thinking environment. Let’s connect! 🚀🤝\n\n#TechInnovation #CloudChampion #DevOpsMaestro #FullStackInnovator #KubernetesExpert",
+    "about_structured": {
+      "summary": "Passionate and results-driven Software Engineer specializing in Cloud, DevOps, and Full Stack Development with strong experience in building scalable systems and automating infrastructure.",
+      "core_domains": [
+        "Cloud Engineering & Architecture",
+        "DevOps",
+        "Full Stack Development",
+        "System Design",
+        "Infrastructure Automation"
+      ],
+      "superpowers": [
+        {
+          "title": "Solution Architect",
+          "description": "Designing scalable, future-ready systems aligned with organizational goals"
+        },
+        {
+          "title": "Full Stack Development",
+          "description": "Building intuitive UI and robust backend systems"
+        },
+        {
+          "title": "DevOps & CI/CD",
+          "description": "Automating pipelines and improving deployment efficiency"
+        },
+        {
+          "title": "API Design",
+          "description": "Building interoperable and scalable API systems"
+        },
+        {
+          "title": "Code Optimization",
+          "description": "Refactoring and improving performance and maintainability"
+        },
+        {
+          "title": "Security & Compliance",
+          "description": "Ensuring system security through updates and patches"
+        },
+        {
+          "title": "Team Collaboration",
+          "description": "Leading sprints, releases, and cross-functional work"
+        },
+        {
+          "title": "Cloud & Kubernetes",
+          "description": "Managing containerized applications using Kubernetes, Helm, and Docker"
+        },
+        {
+          "title": "Migration Expertise",
+          "description": "Handling VM and infrastructure migrations (vCenter to Proxmox)"
+        },
+        {
+          "title": "Mentorship & Hiring",
+          "description": "Training interns and contributing to hiring initiatives"
+        }
+      ]
+    },
+    "contact": {
+      "email": "akhilesh.a.angadi@gmail.com",
+      "phone": "+91 9738045396",
+      "location_current": "Bengaluru, Karnataka, India",
+      "location_hometown": "Dharwad, Karnataka, India"
+    },
+    "personal_details": {
+      "date_of_birth": "1998-02-09",
+      "age": 28,
+      "nationality": "Indian"
+    },
+    "social_links": {
+      "linkedin": "https://linkedin.com/in/akhilesh-angadi",
+      "github": "https://github.com/akhileshangadi"
+    },
+    "tags": [
+      "Cloud Engineering",
+      "DevOps",
+      "Kubernetes",
+      "Docker",
+      "CI/CD",
+      "Full Stack Development",
+      "System Design",
+      "Automation",
+      "High Availability",
+      "Infrastructure"
+    ]
+  }
+}

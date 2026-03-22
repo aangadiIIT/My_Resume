@@ -1,0 +1,124 @@
+{
+  "recommendations": [
+    {
+      "author": {
+        "name": "Vinut Hiremath",
+        "role": "Software Engineering Director",
+        "company": "Juniper Networks",
+        "relationship": "Manager",
+        "connection_level": "1st"
+      },
+      "date": "2025-12-15",
+      "context": "Vinut managed Akhilesh directly",
+      "visibility": "All LinkedIn members",
+      "recommendation_raw": "I have had the pleasure of working with Akhilesh, and I can confidently say that he is an exceptional professional. His technical skills are outstanding, and he consistently demonstrates a deep understanding of complex systems. Akhilesh is always eager to learn and experiment with new technologies, which makes him a valuable asset in any innovative environment.\n\nHe is the go-to person for debugging sessions, bringing clarity and solutions to challenging problems with remarkable efficiency. Beyond his technical expertise, Akhilesh is a true team player who collaborates effectively and supports his colleagues whenever needed. His proactive attitude and willingness to share knowledge foster a positive and productive team culture.\n\nI highly recommend Akhilesh for any role that demands strong technical acumen, adaptability, and collaborative spirit. He will undoubtedly make a significant impact wherever he contributes.",
+      "strengths_highlighted": [
+        "Strong technical skills",
+        "Deep understanding of complex systems",
+        "Debugging expertise",
+        "Problem-solving ability",
+        "Team collaboration",
+        "Knowledge sharing",
+        "Adaptability",
+        "Proactive mindset"
+      ],
+      "impact_keywords": [
+        "Technical Excellence",
+        "Problem Solving",
+        "Team Collaboration",
+        "Leadership Potential"
+      ]
+    },
+    {
+      "author": {
+        "name": "Vishal Gupta",
+        "role": "Senior Staff Engineer",
+        "company": "Juniper Networks",
+        "additional_info": "IIM Graduate, Ex-Bosch",
+        "relationship": "Worked on same team",
+        "connection_level": "1st"
+      },
+      "date": "2024-10-19",
+      "context": "Worked together on same team",
+      "visibility": "All LinkedIn members",
+      "recommendation_raw": "I am delighted to recommend Akhilesh, a remarkably talented and driven professional who has consistently demonstrated his exceptional value to our team. His deep passion for technology and commitment to staying at the forefront of industry trends are truly inspiring, and he approaches every challenge with an unwavering enthusiasm and an eagerness to learn.\n\nAkhilesh is particularly renowned for his innovative thinking and creative contributions during brainstorming sessions. His ability to think outside the box often leads to breakthrough ideas, which are not only inventive but also highly practical and effective. His talent for rapidly developing and executing Proof of Concepts (POCs) is a testament to his technical expertise and readiness to embrace complex challenges with confidence.\n\nFrom a technical standpoint, Akhilesh is a standout. His mastery of programming languages, coupled with an in-depth understanding of database management and optimization, allows him to consistently enhance backend performance and scalability. This technical proficiency has had a profound impact on the success of our projects, ensuring systems are robust, efficient, and scalable.\n\nIn addition to his technical abilities, Akhilesh is an exceptional team player. He fosters a collaborative and positive work environment, bringing people together to solve problems and achieve common goals. His excellent communication skills and reliability have earned him the trust and respect of his colleagues, making him a key resource for guidance and support across the team.\n\nAkhilesh is not just a fast learner but also someone who consistently goes above and beyond expectations, taking initiative and showing leadership when needed. His relentless pursuit of excellence and passion for problem-solving make him an invaluable asset to any team.\n\nIn summary, Akhilesh’s blend of technical brilliance, creative problem-solving, and collaborative mindset make him a highly respected and sought-after professional. I have no doubt that he will continue to excel and make a significant impact wherever his career takes him.",
+      "strengths_highlighted": [
+        "Innovative thinking",
+        "Creative problem-solving",
+        "Proof of Concept (POC) development",
+        "Backend optimization",
+        "Database expertise",
+        "Scalability improvements",
+        "Leadership",
+        "Communication",
+        "Reliability",
+        "Fast learner",
+        "Initiative"
+      ],
+      "impact_keywords": [
+        "Innovation",
+        "System Design",
+        "Backend Engineering",
+        "Leadership",
+        "Scalability"
+      ]
+    },
+    {
+      "author": {
+        "name": "Amith Tallanki",
+        "role": "Full Stack Machine Learning Engineer | Software Development Engineer II",
+        "company": "Microsoft",
+        "relationship": "Worked on same team",
+        "connection_level": "1st"
+      },
+      "date": "2023-05-22",
+      "context": "Worked together on same team",
+      "visibility": "All LinkedIn members",
+      "recommendation_raw": "Akhilesh is an outstanding full stack engineer with a deep understanding of programming languages and frameworks. His ability to architect and develop robust systems is truly commendable. He effortlessly tackles complex challenges, showcasing strong problem-solving skills. His expertise in database management and optimization significantly enhances backend performance and scalability.\n\nWhat sets him apart is his unwavering enthusiasm for his work. He approaches every project with contagious passion, going the extra mile to deliver exceptional results. His enthusiasm inspires the entire team, fostering a positive work environment. He also stays up-to-date with the latest industry trends and consistently brings innovative solutions to the table.\n\nHis attention to detail is also impeccable. He has a keen eye for spotting even the smallest errors, ensuring high-quality code. His meticulous approach leads to robust and reliable software solutions. His rigorous testing and debugging methodologies minimize downtime and enhance system stability. He also communicates effectively, fostering seamless cooperation with designers, frontend developers, and stakeholders. Apart from this he also actively seeks feedback and embraces opportunities for improvement, demonstrating his commitment to personal and professional growth.",
+      "strengths_highlighted": [
+        "Full stack development",
+        "System architecture",
+        "Problem solving",
+        "Database optimization",
+        "Attention to detail",
+        "Code quality",
+        "Testing and debugging",
+        "Team collaboration",
+        "Continuous learning",
+        "Enthusiasm and passion"
+      ],
+      "impact_keywords": [
+        "Full Stack Engineering",
+        "Code Quality",
+        "System Stability",
+        "Collaboration",
+        "Continuous Improvement"
+      ]
+    }
+  ],
+  "recommendations_summary": {
+    "total_recommendations": 3,
+    "sources": [
+      "Manager",
+      "Senior Staff Engineer",
+      "Peer (Microsoft Engineer)"
+    ],
+    "common_strengths_across_recommendations": [
+      "Strong technical expertise",
+      "Problem-solving ability",
+      "System design and architecture",
+      "Database optimization",
+      "Team collaboration",
+      "Leadership and mentorship",
+      "Continuous learning mindset",
+      "Attention to detail",
+      "Innovation and creativity"
+    ],
+    "credibility_score_signals": [
+      "Manager recommendation (high weight)",
+      "Senior engineer recommendation",
+      "Peer from Microsoft",
+      "Consistent themes across all testimonials"
+    ]
+  }
+}

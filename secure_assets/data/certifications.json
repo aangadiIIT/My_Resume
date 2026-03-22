@@ -1,0 +1,203 @@
+{
+  "certifications": [
+    {
+      "name": "Introduction to Prompt Engineering for Generative AI",
+      "issuer": "LinkedIn",
+      "issue_date": "2026-03",
+      "document_path": "/view-asset/certifications/CertificateOfCompletion_Introduction to Prompt Engineering for Generative AI.pdf",
+      "category": "Artificial Intelligence",
+      "skills": [
+        "Artificial Intelligence (AI)",
+        "Generative AI",
+        "Prompt Engineering",
+        "AI Prompting",
+        "Large Language Models (LLMs)"
+      ],
+      "source": "LinkedIn Learning"
+    },
+    {
+      "name": "YUVA AI for All",
+      "issuer": "Simplilearn",
+      "issue_date": "2026-02",
+      "document_path": "/view-asset/certifications/CertificateOfCompletion_YUVA AI for All.pdf",
+      "category": "Artificial Intelligence",
+      "skills": [
+        "Generative AI",
+        "AI Fundamentals",
+        "Prompt Engineering",
+        "AI Applications"
+      ],
+      "source": "Simplilearn"
+    },
+    {
+      "name": "Exploring SAP's 2026 Strategy - Internal - Course Completion",
+      "issuer": "SAP",
+      "issue_date": "2026-02",
+      "document_path": "/view-asset/certifications/Exploring SAP's 2026 Strategy Badge.pdf",
+      "category": "Enterprise / SAP",
+      "skills": [
+        "Enterprise Strategy",
+        "SAP Ecosystem",
+        "Cloud Transformation",
+        "Business Strategy",
+        "Digital Transformation"
+      ],
+      "source": "SAP Internal Learning"
+    },
+    {
+      "name": "Drive Ignite Transformation Skills 2026 - Year One Success - Welcome Onboarding Week",
+      "issuer": "SAP",
+      "issue_date": "2026-01",
+      "document_path": "/view-asset/certifications/SAP WOW Badge.pdf",
+      "category": "Enterprise / SAP",
+      "skills": [
+        "Enterprise Transformation",
+        "Organizational Strategy",
+        "SAP Processes",
+        "Business Operations",
+        "Corporate Onboarding"
+      ],
+      "source": "SAP Internal Learning"
+    },
+    {
+      "name": "Learning Kubernetes",
+      "issuer": "LinkedIn",
+      "issue_date": "2025-06",
+      "document_path": "/view-asset/certifications/CertificateOfCompletion_Learning Kubernetes.pdf",
+      "category": "Cloud / DevOps",
+      "skills": [
+        "Kubernetes",
+        "Container Orchestration",
+        "Cloud Native Applications",
+        "Cluster Management",
+        "Microservices Deployment"
+      ],
+      "source": "LinkedIn Learning"
+    },
+    {
+      "name": "Graphite and Grafana: Visualizing Application Performance",
+      "issuer": "LinkedIn",
+      "issue_date": "2025-06",
+      "document_path": "/view-asset/certifications/CertificateOfCompletion_Graphite and Grafana Visualizing Application Performance.pdf",
+      "category": "Monitoring / Observability",
+      "skills": [
+        "Grafana",
+        "Graphite",
+        "Monitoring",
+        "Observability",
+        "Metrics Visualization",
+        "Performance Analysis"
+      ],
+      "source": "LinkedIn Learning"
+    },
+    {
+      "name": "Learning Terraform",
+      "issuer": "LinkedIn",
+      "issue_date": "2025-06",
+      "document_path": "/view-asset/certifications/CertificateOfCompletion_Learning Terraform.pdf",
+      "category": "Cloud / DevOps",
+      "skills": [
+        "Terraform",
+        "Infrastructure as Code (IaC)",
+        "Cloud Automation",
+        "Provisioning",
+        "DevOps Automation"
+      ],
+      "source": "LinkedIn Learning"
+    },
+    {
+      "name": "Learning Jenkins",
+      "issuer": "LinkedIn",
+      "issue_date": "2023-12",
+      "document_path": "/view-asset/certifications/CertificateOfCompletion_Learning Jenkins.pdf",
+      "category": "DevOps / CI-CD",
+      "skills": [
+        "Jenkins",
+        "CI/CD",
+        "Pipeline Automation",
+        "Build Automation",
+        "Continuous Integration"
+      ],
+      "source": "LinkedIn Learning"
+    },
+    {
+      "name": "Kubernetes: Package Management with Helm",
+      "issuer": "LinkedIn",
+      "issue_date": "2023-09",
+      "document_path": "/view-asset/certifications/CertificateOfCompletion_Kubernetes Package Management with Helm.pdf",
+      "category": "Cloud / DevOps",
+      "skills": [
+        "Helm",
+        "Kubernetes",
+        "Package Management",
+        "Application Deployment",
+        "Release Management"
+      ],
+      "source": "LinkedIn Learning"
+    },
+    {
+      "name": "Kubernetes Essential Training: Application Development",
+      "issuer": "LinkedIn",
+      "issue_date": "2023-09",
+      "document_path": "/view-asset/certifications/CertificateOfCompletion_Kubernetes Essential Training Application Development.pdf",
+      "category": "Cloud / DevOps",
+      "skills": [
+        "Kubernetes",
+        "Application Deployment",
+        "Containers",
+        "Microservices",
+        "Cloud Native Development"
+      ],
+      "source": "LinkedIn Learning"
+    },
+    {
+      "name": "Docker for Developers",
+      "issuer": "LinkedIn",
+      "issue_date": "2023-09",
+      "document_path": "/view-asset/certifications/CertificateOfCompletion_Docker for Developers.pdf",
+      "category": "Cloud / DevOps",
+      "skills": [
+        "Docker",
+        "Containerization",
+        "Linux",
+        "Image Management",
+        "Container Lifecycle"
+      ],
+      "source": "LinkedIn Learning"
+    },
+    {
+      "name": "HTML Essential Training",
+      "issuer": "LinkedIn",
+      "issue_date": "2022-01",
+      "document_path": "/view-asset/certifications/CertificateOfCompletion_HTML Essential Training.pdf",
+      "category": "Frontend Development",
+      "skills": [
+        "HTML",
+        "Web Development",
+        "Frontend Development",
+        "UI Structure",
+        "Browser Rendering"
+      ],
+      "source": "LinkedIn Learning"
+    }
+  ],
+  "certifications_summary": {
+    "total_certifications": 12,
+    "categories": [
+      "Artificial Intelligence",
+      "Cloud / DevOps",
+      "Monitoring / Observability",
+      "Enterprise / SAP",
+      "Frontend Development"
+    ],
+    "dominant_category": "Cloud / DevOps",
+    "recent_focus_areas": [
+      "Generative AI",
+      "Cloud Native Technologies",
+      "Kubernetes",
+      "Infrastructure Automation",
+      "Enterprise Strategy (SAP)"
+    ],
+    "learning_trend": "Progression from Web Development → DevOps → Cloud → Kubernetes → Enterprise Cloud → AI"
+  }
+}

@@ -1,57 +1,204 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title><%= pageTitle %></title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <style>
-    body {
-      background-color: #e3f2fd;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      color: #1976D2;
-    }
-  </style>
+  <%- include('partials/head') %>
 </head>
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <h1><%= pageTitle %></h1>
+  <%- include('partials/header') %>
 
-        <div class="skills-container">
-          <h2>Technical Skills</h2>
-          <ul>
-            <li class="skill">HTML5</li>
-            <li class="skill">CSS3</li>
-            <li class="skill">JavaScript</li>
-            <li class="skill">React</li>
-            <li class="skill">Node.js</li>
-            <li class="skill">Express.js</li>
-            <li class="skill">Java</li>
-            <li class="skill">SQL</li>
-            <li class="skill">Docker</li>
-            <li class="skill">Kubernetes</li>
-            <li class="skill">Helm</li>
-            <li class="skill">Unix</li>
-          </ul>
-        </div>
-
-        <div class="skills-container">
-          <h2>Soft Skills</h2>
-          <ul>
-            <li class="skill">Problem Solving</li>
-            <li class="skill">Communication</li>
-            <li class="skill">Teamwork</li>
-            <li class="skill">Time Management</li>
-          </ul>
-        </div>
-        <p><a href="/">Back to Home</a></p>
-      </div>
+  <div class="container py-5 my-4">
+    <div class="text-center mb-5" data-aos="fade-down">
+      <h1 class="section-title">Technical Expertise</h1>
+      <p class="lead text-muted max-w-2xl mx-auto">
+        <% if(data.skills && data.skills.skills && data.skills.skills.skill_summary) { %>
+          Specializing in <%= data.skills.skills.skill_summary.primary_strengths.slice(0, 3).join(', ') %> among a curated span of <%= data.skills.skills.skill_summary.total_skills_count || 'multiple' %> robust technical competencies.
+        <% } else { %>
+          An overview of my technical capabilities and proficiency levels.
+        <% } %>
+      </p>
     </div>
+
+    <% if(data.skills && data.skills.skills) { %>
+      <% const { categorized, proficiency_levels, skill_summary } = data.skills.skills; %>
+
+      <!-- Interactive Skill Radar -->
+      <div class="row g-4 mb-5" data-aos="fade-up">
+        <div class="col-lg-12">
+          <div class="glass-card p-4 p-md-5">
+            <div class="row align-items-center">
+              <div class="col-lg-5 mb-4 mb-lg-0">
+                <h3 class="h3 fw-bold mb-3 text-gradient">Technical Breadth</h3>
+                <p class="text-muted mb-4">A visual representation of my expertise distribution across core engineering domains. This chart highlights the balance between operational excellence and development depth.</p>
+                <div class="d-flex flex-column gap-2">
+                  <div class="small d-flex justify-content-between align-items-center p-2 rounded" style="background: var(--shape-1);">
+                    <span class="text-primary fw-bold">Primary Focus:</span>
+                    <span class="badge bg-primary px-3">Cloud & DevOps</span>
+                  </div>
+                  <div class="small d-flex justify-content-between align-items-center p-2 rounded" style="background: var(--shape-2);">
+                    <span class="text-info fw-bold">Secondary Focus:</span>
+                    <span class="badge bg-info px-3 text-white">System Design</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-7">
+                <div style="max-height: 400px; position: relative;">
+                  <canvas id="skillsRadarChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Level Strengths Dashboard -->
+      <% if(skill_summary && proficiency_levels) { %>
+        <div class="row g-4 mb-5" data-aos="fade-up">
+          <div class="col-lg-6">
+            <div class="glass-card h-100 p-4 border-start border-primary border-4">
+              <h3 class="h5 fw-bold text-primary mb-3"><i class="fas fa-star me-2 pe-1"></i> Expert Level</h3>
+              <div class="d-flex flex-wrap">
+                <% proficiency_levels.expert.forEach(skill => { %>
+                  <span class="skill-pill fw-bold bg-primary text-white border-0"><%= skill %></span>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="glass-card h-100 p-4 border-start border-info border-4">
+              <h3 class="h5 fw-bold text-info mb-3"><i class="fas fa-check-circle me-2 pe-1"></i> Advanced Level</h3>
+              <div class="d-flex flex-wrap">
+                <% proficiency_levels.advanced.forEach(skill => { %>
+                  <span class="skill-pill fw-bold" style="background: rgba(13, 202, 240, 0.1); color: var(--text-primary); border-color: rgba(13, 202, 240, 0.3);"><%= skill %></span>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- Categorized Skills Grid -->
+      <% if(categorized) { %>
+        <h3 class="h3 fw-bold text-center mb-4 text-gradient" data-aos="fade-up">Skills by Domain</h3>
+        <div class="row g-4 mt-2">
+          
+          <% 
+            const formatCatName = (str) => {
+              return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            };
+            
+            const categoryIcons = {
+              'cloud_devops': 'fa-cloud',
+              'backend_development': 'fa-server',
+              'frontend_development': 'fa-desktop',
+              'monitoring_observability': 'fa-chart-pie',
+              'system_design_architecture': 'fa-sitemap',
+              'automation_tools': 'fa-cogs',
+              'networking': 'fa-network-wired',
+              'programming_languages': 'fa-code',
+              'ai_and_emerging': 'fa-brain',
+              'soft_skills': 'fa-users'
+            };
+          %>
+
+          <% Object.keys(categorized).forEach((catKey, idx) => { %>
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="<%= Math.min(idx * 100, 500) %>">
+              <div class="glass-card h-100 p-4 hover-lift">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="d-flex align-items-center justify-content-center rounded-circle me-3" style="width: 45px; height: 45px; background: var(--shape-1); color: var(--accent-primary); font-size: 1.2rem;">
+                    <i class="fas <%= categoryIcons[catKey] || 'fa-layer-group' %>"></i>
+                  </div>
+                  <h4 class="h5 fw-bold mb-0 m-0"><%= formatCatName(catKey) %></h4>
+                </div>
+                
+                <div class="d-flex flex-wrap mt-3">
+                  <% categorized[catKey].forEach(skill => { %>
+                    <span class="skill-pill" style="font-size: 0.85rem;"><%= skill %></span>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+
+        </div>
+      <% } %>
+    <% } %>
+
+    <!-- Funnel Navigation CTA -->
+    <div class="mt-5 pt-5 border-top text-center" style="border-color: var(--glass-border) !important;" data-aos="fade-up">
+      <p class="text-muted fw-bold text-uppercase tracking-widest mb-2">Next Chapter</p>
+      <h3 class="h2 fw-bolder mb-4">My Academic Foundation</h3>
+      <a href="/education" class="btn-primary-custom px-5 py-3 fs-5 shadow-sm">
+        View Education <i class="fas fa-graduation-cap ms-2"></i>
+      </a>
+    </div>
+
   </div>
+
+  <%- include('partials/footer') %>
+  
+  <!-- Chart.js and Radar Script -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const textColor = isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)';
+      const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+
+      const ctx = document.getElementById('skillsRadarChart').getContext('2d');
+      
+      const radarLabels = <%- JSON.stringify(data.radarLabels || []) %>;
+      const radarValues = <%- JSON.stringify(data.radarValues || []) %>;
+      console.log("Radar Labels:", radarLabels);
+      console.log("Radar Values:", radarValues);
+
+      if (radarLabels.length === 0 || radarValues.length === 0) {
+        console.warn("Radar data is empty, chart may not render.");
+      }
+
+      new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: radarLabels,
+          datasets: [{
+            label: 'Proficiency Level',
+            data: radarValues,
+            fill: true,
+            backgroundColor: 'rgba(59, 130, 246, 0.2)',
+            borderColor: 'rgb(59, 130, 246)',
+            pointBackgroundColor: 'rgb(59, 130, 246)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgb(59, 130, 246)',
+            borderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              angleLines: { color: gridColor },
+              grid: { color: gridColor },
+              pointLabels: {
+                color: textColor,
+                font: {
+                  size: 13,
+                  family: "'Inter', sans-serif",
+                  weight: '600'
+                }
+              },
+              ticks: { display: false, stepSize: 20 },
+              suggestedMin: 0,
+              suggestedMax: 100
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    });
+  </script>
+  
 </body>
 </html>

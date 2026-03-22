@@ -1,0 +1,203 @@
+{
+  "projects": [
+    {
+      "title": "Pre-Commit Tool [Continuous Integration - CI & Continuous Delivery - CD] || Full Stack Developing & Jenkins",
+      "organization": "Juniper Networks",
+      "duration": {
+        "start": "2020-07",
+        "end": "2025-12"
+      },
+      "type": "Enterprise Internal Project",
+      "description_raw": "At Juniper, we leverage our own Git repositories to streamline the software development lifecycle through a robust automated pipeline. Before any code is committed, a dedicated job is triggered in the pipeline that executes several crucial steps: it performs a checkout of the latest code, applies necessary patches, builds the application, and runs a suite of test scripts. This automated process significantly reduces the manual workload on developers, allowing them to focus on writing quality code rather than spending excessive time on build and test activities.\n\nThe integration of Continuous Delivery (CD) practices is fundamental to our approach, aligning with the principles of Software Studio 3.0. CD empowers teams to produce high-quality software in short cycles while ensuring that new features and enhancements can be reliably released at any time. By utilizing techniques such as automated testing and continuous integration (CI), we maintain a high standard in our software development processes.\n\nThe automated pipeline not only expedites the build and test phases but also ensures that code quality is upheld. Once the build and tests are successful, our tool automatically triggers the code commit into the Git repositories, seamlessly transitioning the code from development to version control. This methodology minimizes the risks associated with manual deployments, reduces human error, and enables us to push out enhancements and bug fixes to customers rapidly and reliably.\n\nOverall, this project exemplifies our commitment to delivering value through automation, allowing for low-risk software delivery with minimal manual overhead. By fostering a culture of continuous improvement and integration, we ensure that our development teams can respond swiftly to changing requirements while maintaining the highest quality standards in our software products.",
+      "problem_statement": [
+        "Manual code validation and deployment processes were time-consuming and error-prone",
+        "Developers spent excessive time on build and testing workflows",
+        "Lack of automated enforcement of code quality before commit",
+        "Risk of faulty code entering repositories"
+      ],
+      "solution": [
+        "Designed and implemented a pre-commit automated CI/CD pipeline",
+        "Integrated automated build, patching, and testing before code commit",
+        "Ensured only validated code is committed to repositories",
+        "Adopted Continuous Delivery (CD) principles for faster release cycles"
+      ],
+      "workflow": [
+        "Developer submits code for commit",
+        "Pipeline job is triggered automatically",
+        "Code checkout from repository",
+        "Apply necessary patches",
+        "Build application",
+        "Execute automated test suites",
+        "Validate results",
+        "If successful → auto commit to repository",
+        "If failed → notify developer"
+      ],
+      "architecture_components": [
+        "Git repositories",
+        "Jenkins CI/CD pipelines",
+        "Automated test framework",
+        "Build system",
+        "Patch management system",
+        "Containerized execution (Docker where applicable)"
+      ],
+      "impact": [
+        "Significantly reduced manual effort in build and test processes",
+        "Improved code quality through automated validation",
+        "Reduced deployment risks and human errors",
+        "Enabled faster and more reliable software delivery",
+        "Aligned development with Continuous Delivery practices"
+      ],
+      "skills": [
+        "Programming",
+        "Databases",
+        "Docker",
+        "System Architecture",
+        "Jenkins",
+        "Kubernetes",
+        "MySQL Galera",
+        "Web Applications",
+        "Communication",
+        "Java",
+        "JavaScript",
+        "Software Design",
+        "HTML",
+        "High Availability",
+        "Helm",
+        "SQL",
+        "Linux",
+        "SQL Database Administration"
+      ],
+      "technologies": [
+        "Jenkins",
+        "Docker",
+        "Kubernetes",
+        "Java",
+        "SQL",
+        "Git",
+        "Linux"
+      ]
+    },
+    {
+      "title": "Smart Water Monitoring System for Agriculture",
+      "organization": "SDM College of Engineering and Technology",
+      "duration": {
+        "start": "2019-07",
+        "end": "2020-06"
+      },
+      "type": "Academic / Research Project",
+      "description_raw": "This project is centered around the development of an innovative agricultural monitoring system designed to optimize water usage by accurately assessing the environmental needs of various crops. By monitoring temperature, humidity, and soil moisture levels, the system plays a crucial role in water conservation, which is vital for sustainable agriculture.\n\nThe system utilizes a distributed network of IoT sensors strategically placed throughout the agricultural fields. These sensors continuously collect data on soil moisture and temperature, providing real-time insights into the growing conditions of the crops. This data is then processed to determine the specific water requirements of each plant, ensuring that they receive the right amount of irrigation.\n\nAn essential component of the project is the automated irrigation system, which activates water pumps based on the moisture levels detected by the sensors. By delivering water precisely when and where it is needed, the system minimizes waste and promotes healthier crop growth, ultimately leading to increased yields.\n\nThe technology stack for this project includes IoT sensors for data collection, a WiFi modem for connectivity, and a user interface built with PHP and HTML for monitoring and control. The web interface allows farmers to visualize real-time data and manage the irrigation system remotely, enhancing usability and decision-making capabilities.\n\nBy combining cutting-edge technology with agricultural practices, this project not only aims to improve efficiency but also addresses the pressing challenge of water scarcity in farming. Ultimately, it empowers farmers to make informed decisions, ensuring sustainable farming practices that conserve resources while maximizing productivity.",
+      "problem_statement": [
+        "Traditional irrigation systems waste water due to lack of real-time monitoring",
+        "Farmers lack insights into soil and environmental conditions",
+        "Manual irrigation leads to inefficiency and reduced crop yield"
+      ],
+      "solution": [
+        "Developed IoT-based smart irrigation system",
+        "Automated water delivery based on real-time sensor data",
+        "Enabled remote monitoring and control via web interface"
+      ],
+      "system_components": [
+        "Soil moisture sensors",
+        "Temperature sensors",
+        "Humidity sensors",
+        "WiFi connectivity module",
+        "Water pump control system",
+        "Web-based monitoring dashboard"
+      ],
+      "workflow": [
+        "Sensors collect environmental data (soil moisture, temperature, humidity)",
+        "Data transmitted via WiFi module",
+        "Backend processes data and determines irrigation needs",
+        "Water pump activated automatically when required",
+        "User monitors system via web interface"
+      ],
+      "impact": [
+        "Improved water conservation",
+        "Enhanced crop yield through optimized irrigation",
+        "Reduced manual intervention in farming",
+        "Promoted sustainable agriculture practices"
+      ],
+      "skills": [
+        "Programming",
+        "Databases",
+        "Computer Hardware",
+        "Web Applications",
+        "Communication",
+        "JavaScript",
+        "SQL",
+        "SQL Database Administration"
+      ],
+      "technologies": [
+        "IoT Sensors",
+        "PHP",
+        "HTML",
+        "WiFi Module",
+        "Embedded Systems"
+      ]
+    },
+    {
+      "title": "BLE Object Finder Using Android App",
+      "organization": "SDM College of Engineering and Technology",
+      "duration": {
+        "start": "2019-01",
+        "end": "2019-05"
+      },
+      "type": "Academic Project",
+      "description_raw": "The Object Finder Android App addresses a common real-life problem faced by individuals in today’s fast-paced world: the frequent misplacement of important items due to busy schedules and distractions. This innovative app leverages Bluetooth Low Energy (BLE) connectivity to help users locate their lost belongings, people, or even pets, enhancing peace of mind and efficiency in daily life.\n\nAt its core, the Object Finder app operates by pairing with small BLE tags that can be attached to various items, such as keys, wallets, bags, or pet collars. Users can easily attach these tags to any object they wish to keep track of. Once connected, the app enables users to view the last known location of their items on an intuitive map interface, significantly reducing the time and frustration involved in searching for misplaced belongings.\n\nThe app features a user-friendly interface that allows for quick setup and easy navigation. Users can customise notifications and alerts, receiving real-time updates when they move out of range of their tagged objects. The app also offers a “Find” button, which activates an audible alarm on the BLE tag, making it easy to locate items even if they are nearby but out of sight.\n\nIn addition to locating personal items, the Object Finder app can be utilized to keep track of family members or pets, providing an added layer of security. This functionality is especially valuable in crowded places where keeping track of loved ones can be challenging.\n\nBy integrating cutting-edge BLE technology with a practical mobile application, this project not only simplifies everyday life for users but also promotes a sense of security and organization. The Object Finder app is poised to become an essential tool for anyone looking to minimize the stress of losing valuable items in their busy lives.",
+      "problem_statement": [
+        "Frequent misplacement of personal belongings",
+        "Difficulty in tracking lost items",
+        "Lack of simple real-time tracking solutions"
+      ],
+      "solution": [
+        "Developed Android app using BLE technology",
+        "Enabled real-time tracking of items using BLE tags",
+        "Provided alerts and audible detection features"
+      ],
+      "system_components": [
+        "Android mobile application",
+        "Bluetooth Low Energy (BLE) tags",
+        "Map-based tracking system",
+        "Notification and alert system",
+        "Audible alarm system"
+      ],
+      "workflow": [
+        "User attaches BLE tags to items",
+        "App pairs with BLE tags",
+        "App tracks last known location",
+        "User receives alerts if out of range",
+        "User can trigger alarm to locate item"
+      ],
+      "impact": [
+        "Improved user convenience in locating items",
+        "Reduced time spent searching for lost objects",
+        "Enhanced personal security and tracking"
+      ],
+      "skills": [
+        "Programming",
+        "Communication",
+        "Android Development"
+      ],
+      "technologies": [
+        "Android",
+        "Bluetooth Low Energy (BLE)",
+        "Mobile Development"
+      ]
+    }
+  ],
+  "projects_summary": {
+    "total_projects": 3,
+    "project_types": [
+      "Enterprise Production System",
+      "IoT System",
+      "Mobile Application"
+    ],
+    "core_domains": [
+      "CI/CD Automation",
+      "Cloud & DevOps",
+      "IoT Systems",
+      "Mobile Development"
+    ],
+    "highlight_project": "Pre-Commit CI/CD Pipeline (Enterprise-grade automation system)"
+  }
+}

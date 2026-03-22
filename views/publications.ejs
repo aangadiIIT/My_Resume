@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="container py-5 my-4">
+    <div class="text-center mb-5" data-aos="fade-down">
+      <h1 class="section-title">Publications</h1>
+      <p class="lead text-muted max-w-2xl mx-auto">
+        <% if(data.publications && data.publications.publications_summary) { %>
+          Research and academic contributions in <%= data.publications.publications_summary.primary_domain %>.
+        <% } else { %>
+          My research papers, articles, and publications.
+        <% } %>
+      </p>
+    </div>
+
+    <% if(data.publications && data.publications.publications) { %>
+      <div class="row g-4 justify-content-center">
+        <% data.publications.publications.forEach((pub, index) => { %>
+          <div class="col-lg-10" data-aos="fade-up" data-aos-delay="<%= Math.min(index * 100, 400) %>">
+            <div class="glass-card p-4 p-md-5">
+              
+              <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start mb-4">
+                <div>
+                  <div class="d-inline-flex align-items-center badge bg-primary-soft text-primary rounded-pill mb-2 px-3 py-2 border border-primary border-opacity-25">
+                    <i class="fas fa-book-open me-2"></i> <%= pub.publication_type %>
+                  </div>
+                  <h2 class="h3 fw-bold text-gradient mb-2"><%= pub.title %></h2>
+                  <h4 class="h6 text-muted mb-1">
+                    <span class="fw-bold">Journal:</span> <%= pub.journal %> (<%= pub.publisher %>)
+                  </h4>
+                  <div class="text-muted small mt-2">
+                    <i class="fas fa-users me-1"></i> <%= pub.authors.join(', ') %>
+                    <span class="mx-2">•</span>
+                    <i class="far fa-calendar-alt me-1"></i> <%= pub.publication_date %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <h5 class="h6 fw-bold text-primary mb-2">Abstract & Overview</h5>
+                <p class="text-muted fs-6" style="line-height: 1.8;"><%= pub.description_raw %></p>
+              </div>
+
+              <div class="row g-4 mt-2">
+                <% if(pub.problem_statement && pub.problem_statement.length > 0) { %>
+                  <div class="col-md-6">
+                    <div class="p-4 rounded h-100" style="background: var(--nav-bg); border: 1px solid var(--border-color);">
+                      <h5 class="h6 fw-bold text-warning mb-3"><i class="fas fa-exclamation-triangle me-2"></i>Problem Statement</h5>
+                      <ul class="icon-list small mb-0">
+                        <% pub.problem_statement.forEach(prob => { %>
+                          <li><%= prob %></li>
+                        <% }) %>
+                      </ul>
+                    </div>
+                  </div>
+                <% } %>
+                
+                <% if(pub.solution && pub.solution.length > 0) { %>
+                  <div class="col-md-6">
+                    <div class="p-4 rounded h-100" style="background: var(--nav-bg); border: 1px solid var(--border-color);">
+                      <h5 class="h6 fw-bold text-success mb-3"><i class="fas fa-lightbulb me-2"></i>Proposed Solution</h5>
+                      <ul class="icon-list small mb-0">
+                        <% pub.solution.forEach(sol => { %>
+                          <li><%= sol %></li>
+                        <% }) %>
+                      </ul>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+
+              <% if(pub.real_world_impact && pub.real_world_impact.length > 0) { %>
+                <div class="mt-4 p-3 rounded" style="background: var(--shape-3); border: 1px dashed #10b981;">
+                  <h5 class="h6 fw-bold mb-2" style="color: #059669;"><i class="fas fa-leaf me-2"></i> Real World Impact</h5>
+                  <ul class="mb-0 small ps-3" style="color: #065f46;">
+                    <% pub.real_world_impact.forEach(impact => { %>
+                      <li class="mb-1"><%= impact %></li>
+                    <% }) %>
+                  </ul>
+                </div>
+              <% } %>
+
+              <% if(pub.technologies_used && pub.technologies_used.length > 0) { %>
+                <div class="mt-4 pt-3 border-top" style="border-color: var(--glass-border) !important;">
+                  <span class="small fw-bold text-muted d-block mb-2">Technologies Used:</span>
+                  <div class="d-flex flex-wrap gap-1">
+                    <% pub.technologies_used.forEach(tech => { %>
+                      <span class="skill-pill" style="font-size: 0.8rem; padding: 0.2rem 0.8rem;"><%= tech %></span>
+                    <% }) %>
+                  </div>
+                </div>
+              <% } %>
+
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <!-- Funnel Navigation CTA -->
+    <div class="mt-5 pt-5 border-top text-center" style="border-color: var(--glass-border) !important;" data-aos="fade-up">
+      <p class="text-muted fw-bold text-uppercase tracking-widest mb-2">Final Step</p>
+      <h3 class="h2 fw-bolder mb-4">Let's Build Something Great</h3>
+      <a href="/contact-me" class="btn-primary-custom px-5 py-3 fs-5 shadow-sm" style="background: var(--accent-gradient);">
+        Get In Touch <i class="fas fa-paper-plane ms-2"></i>
+      </a>
+    </div>
+
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

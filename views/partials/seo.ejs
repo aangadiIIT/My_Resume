@@ -1,0 +1,47 @@
+<% 
+  const profile = (data.profile && data.profile.profile) || {};
+  const seoTitle = (typeof pageTitle !== 'undefined' && pageTitle) ? `${pageTitle} | ${profile.name || 'Akhilesh Angadi'}` : (profile.name || 'Akhilesh Angadi');
+  const seoDesc = profile.about_structured ? profile.about_structured.summary : 'Professional Software Engineer specializing in Cloud, DevOps, and Full Stack Development.';
+  const seoKeywords = "Software Engineer, DevOps, Cloud Engineering, Kubernetes, Docker, Node.js, SAP, Portfolio, Akhilesh Angadi";
+  const siteUrl = "https://akhilangadi.com"; 
+  const profileImg = profile.photoPath || "/view-asset/profile/profile.jpg";
+%>
+
+<title><%= seoTitle %></title>
+
+<!-- Standard Meta Tags -->
+<meta name="description" content="<%= seoDesc %>">
+<meta name="keywords" content="<%= seoKeywords %>">
+<meta name="author" content="<%= profile.name %>">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="<%= siteUrl %>">
+<meta property="og:title" content="<%= seoTitle %>">
+<meta property="og:description" content="<%= seoDesc %>">
+<meta property="og:image" content="<%= profileImg %>">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="<%= siteUrl %>">
+<meta property="twitter:title" content="<%= seoTitle %>">
+<meta property="twitter:description" content="<%= seoDesc %>">
+<meta property="twitter:image" content="<%= profileImg %>">
+
+<!-- JSON-LD Structured Data for Person -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Person",
+  "name": "<%= profile.name %>",
+  "jobTitle": "<%= profile.role || 'Software Engineer' %>",
+  "url": "<%= siteUrl %>",
+  "image": "<%= profileImg %>",
+  "sameAs": [
+    "https://linkedin.com/in/akhilesh-angadi",
+    "https://github.com/akhilangadi"
+  ],
+  "description": "<%= seoDesc %>",
+  "knowsAbout": ["Cloud Engineering", "DevOps", "Full Stack Development", "Kubernetes", "SAP Enterprise Cloud"]
+}
+</script>

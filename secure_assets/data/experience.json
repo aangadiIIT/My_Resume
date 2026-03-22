@@ -1,0 +1,233 @@
+{
+  "experience": [
+    {
+      "company": "SAP",
+      "role": "IT Cloud Service Specialist",
+      "employment_type": "Full-time",
+      "duration": {
+        "start": "2025-12",
+        "end": "Present"
+      },
+      "location": "Bengaluru, Karnataka, India",
+      "work_mode": "Hybrid",
+      "description_raw": "In my role, I played a key part in enabling SAP’s next-generation container services platform within ECS, contributing to the shift from traditional VM-based deployments to cloud-native, Kubernetes-driven architectures. I worked extensively with SAP Gardener to provision and manage Kubernetes clusters across AWS, Azure, and GCP, gaining deep exposure to large-scale, multi-cloud infrastructure. I helped onboard services like Enterprise Threat Detection, Cloud Connector, and Web Dispatcher onto Kubernetes, using ArgoCD, Argo Workflows, and Helm to implement GitOps-based automated deployments.\n\nI strengthened observability by integrating Prometheus, Grafana, and centralized logging pipelines, and supported container image management through AWS ECR with replication and vulnerability scanning. My work also included contributing to backup and restore setups using Velero, aligning with enterprise-grade security, resilience, and compliance requirements.\n\nThis role accelerated my growth as a cloud-native engineer, giving me hands-on expertise in Kubernetes, automation, distributed systems, and modern DevOps practices. It enabled me to combine technical depth with architectural thinking, improving my ability to design scalable services, troubleshoot complex cloud environments, and contribute meaningfully to next-generation platform engineering initiatives.",
+      "responsibilities": [
+        "Enabled transition from traditional VM-based deployments to Kubernetes-based cloud-native architecture",
+        "Provisioned and managed Kubernetes clusters using SAP Gardener across AWS, Azure, and GCP",
+        "Implemented GitOps-based deployments using ArgoCD and Argo Workflows",
+        "Onboarded enterprise services (Enterprise Threat Detection, Cloud Connector, Web Dispatcher) onto Kubernetes",
+        "Built observability stack using Prometheus, Grafana, and centralized logging",
+        "Managed container image lifecycle using AWS ECR (replication + vulnerability scanning)",
+        "Implemented backup and restore solutions using Velero",
+        "Worked on enterprise-grade security, compliance, and resilience systems"
+      ],
+      "impact": [
+        "Enabled large-scale cloud-native transformation across SAP ECS platform",
+        "Improved deployment automation and reliability using GitOps practices",
+        "Enhanced observability and monitoring across distributed systems",
+        "Strengthened system resilience through backup, restore, and HA strategies",
+        "Built strong expertise in multi-cloud Kubernetes infrastructure"
+      ],
+      "technologies": [
+        "Kubernetes",
+        "Docker",
+        "Helm",
+        "ArgoCD",
+        "Argo Workflows",
+        "Prometheus",
+        "Grafana",
+        "AWS ECR",
+        "Velero",
+        "SAP Gardener",
+        "AWS",
+        "Azure",
+        "GCP",
+        "GitOps"
+      ]
+    },
+    {
+      "company": "Juniper Networks",
+      "role": "Software Engineer 3",
+      "employment_type": "Full-time",
+      "duration": {
+        "start": "2023-12",
+        "end": "2025-12"
+      },
+      "location": "Bengaluru, Karnataka, India",
+      "description_raw": "As a Software Engineer 3, I’ve taken on key responsibilities that drive innovation and efficiency across our projects:\n\nCloud Migration: Spearheaded the transition of multiple applications to the cloud using Kubernetes, Helm, and Docker, ensuring enhanced scalability and reliability.\n\nDatabase Optimization: Led the migration of MySQL Standalone Databases to a High Availability architecture using Galera, significantly improving system resilience and uptime.\n\nVM Migration: Orchestrated the migration from vCenter VMs to Proxmox VMs, streamlining infrastructure and boosting virtualization performance.\n\nCI/CD Enhancement: Refined our Jenkins setup, optimizing the CI/CD pipeline for smoother, more efficient development and deployment cycles.\n\nTeam Development: Actively contributed to the hiring and onboarding of interns and team members, mentoring them into valuable, self-sufficient contributors within the project.\n\nThis role has allowed me to blend technical expertise with leadership, fostering innovation and growth in both infrastructure and talent.",
+      "responsibilities": [
+        "Led cloud migration of applications using Kubernetes, Docker, and Helm",
+        "Migrated MySQL standalone databases to High Availability using Galera cluster",
+        "Orchestrated migration from vCenter VMs to Proxmox virtualization platform",
+        "Optimized Jenkins CI/CD pipelines for improved efficiency",
+        "Mentored interns and contributed to hiring initiatives"
+      ],
+      "impact": [
+        "Improved scalability and reliability of applications through cloud migration",
+        "Enhanced database resilience and uptime using HA architecture",
+        "Reduced infrastructure overhead and improved performance via Proxmox migration",
+        "Accelerated deployment cycles through CI/CD improvements",
+        "Strengthened team productivity through mentorship"
+      ],
+      "technologies": [
+        "Kubernetes",
+        "Docker",
+        "Helm",
+        "Jenkins",
+        "MySQL Galera",
+        "Proxmox",
+        "Linux",
+        "CI/CD"
+      ]
+    },
+    {
+      "company": "Juniper Networks",
+      "role": "Software Engineer 2",
+      "employment_type": "Full-time",
+      "duration": {
+        "start": "2022-07",
+        "end": "2023-12"
+      },
+      "location": "Bengaluru, Karnataka, India",
+      "description_raw": "As a Software Engineer 2, I played a pivotal role in enhancing system reliability and optimizing team performance:\n\nHigh Availability Migration: Successfully transitioned web applications from load balancers to a High Availability setup using HA Proxy and Ucarp, ensuring seamless service and scalability improvements.\n\nAutomated OS Patching: Developed a robust automated solution for quarterly OS patching of virtual machines, meticulously crafted to uphold application availability and achieve zero downtime.\n\nIntelligent Chatbot Development: Designed and implemented a smart chatbot that monitors and analyzes user-submitted pipeline jobs. It delivers real-time insights to the users on their query and issue detection, intelligently resolving problems through automation or retry mechanisms, while keeping users informed of job statuses and outcomes.\n\nTeam Building and Mentorship: Actively engaged in the recruitment and onboarding of interns and team members, providing mentorship to nurture their skills and transform them into independent contributors to our projects.\n\nThis role allowed me to blend technical expertise with mentorship, driving both project success and team development effectively.",
+      "responsibilities": [
+        "Migrated applications to High Availability architecture using HAProxy and UCARP",
+        "Developed automated OS patching system ensuring zero downtime",
+        "Designed and implemented intelligent chatbot for pipeline monitoring",
+        "Automated issue detection and resolution mechanisms",
+        "Mentored interns and contributed to team hiring"
+      ],
+      "impact": [
+        "Achieved near-zero downtime infrastructure updates",
+        "Improved system reliability and availability",
+        "Reduced manual effort through automation and chatbot system",
+        "Enhanced team productivity through mentorship"
+      ],
+      "technologies": [
+        "HAProxy",
+        "UCARP",
+        "Java",
+        "Jenkins",
+        "Linux",
+        "Automation",
+        "CI/CD"
+      ]
+    },
+    {
+      "company": "Juniper Networks",
+      "role": "Software Engineer 1",
+      "employment_type": "Full-time",
+      "duration": {
+        "start": "2020-07",
+        "end": "2022-06"
+      },
+      "location": "Bengaluru, Karnataka, India",
+      "description_raw": "As a Software Engineer 1, I focused on driving performance improvements and collaboration:\n\nWeb Application Optimisation: Enhanced loading times by optimising MySQL queries, resulting in a faster and more responsive user experience.\n\nUI Enhancements: Improved multiple UI sections to deliver a better overall user experience, ensuring intuitive navigation and functionality.\n\nREST API Development: Developed robust REST APIs tailored to the specific needs of other teams, facilitating seamless data access and integration.\n\nMonitoring Solutions: Created Java JARs to run as cron jobs for monitoring application performance and CI/CD pipeline health, proactively identifying issues and ensuring system reliability.\n\nTalent Acquisition Support: Actively participated in the hiring process for interns and team members, contributing to building a skilled and dynamic team.\n\nIn this role, I cultivated my technical abilities while fostering a collaborative environment that promotes innovation and efficiency.",
+      "responsibilities": [
+        "Optimized MySQL queries improving application performance",
+        "Enhanced UI/UX across multiple web application modules",
+        "Developed REST APIs for cross-team data integration",
+        "Built monitoring tools using Java cron jobs",
+        "Participated in hiring processes"
+      ],
+      "impact": [
+        "Improved application speed and responsiveness",
+        "Enabled seamless integration between systems",
+        "Strengthened monitoring and system reliability",
+        "Contributed to team growth through hiring support"
+      ],
+      "technologies": [
+        "Java",
+        "SQL",
+        "REST APIs",
+        "HTML",
+        "JavaScript",
+        "Linux",
+        "MySQL"
+      ]
+    },
+    {
+      "company": "Juniper Networks",
+      "role": "Software Engineer Intern",
+      "employment_type": "Internship",
+      "duration": {
+        "start": "2020-01",
+        "end": "2020-06"
+      },
+      "location": "Bengaluru, Karnataka, India",
+      "description_raw": "As a Software Engineer Intern, I contributed to project efficiency and user experience through the following key tasks:\n\nDashboard Development: Created multiple dashboards to visualise pipeline job information, providing users with valuable insights at a glance.\n\nUI Enhancements: Enhanced the dashboards to incorporate CRUD operations, enabling users to interact with the data seamlessly through a user-friendly interface.\n\nWorkflow Analysis: Gained a comprehensive understanding of project workflows and architecture, offering innovative ideas to optimise processes and improve overall efficiency.\n\nThis internship allowed me to apply my skills in a practical setting while gaining valuable insights into software development and project management.",
+      "responsibilities": [
+        "Developed dashboards for pipeline job monitoring",
+        "Implemented CRUD operations in UI",
+        "Analyzed workflows and suggested improvements"
+      ],
+      "technologies": [
+        "Java",
+        "JavaScript",
+        "SQL",
+        "HTML",
+        "Web Applications"
+      ]
+    },
+    {
+      "company": "Praneta Tech Solutions",
+      "role": "Website Designer Intern",
+      "employment_type": "Internship",
+      "duration": {
+        "start": "2019-06",
+        "end": "2019-07"
+      },
+      "location": "Hubli-Dharwad, Karnataka, India",
+      "description_raw": "During my internship, I gained valuable insights into User Interface (UI) and User Experience (UX) design for web applications, focusing on enhancing usability and creating intuitive, user-friendly experiences.",
+      "responsibilities": [
+        "Worked on UI/UX design improvements",
+        "Enhanced usability of web applications"
+      ],
+      "technologies": [
+        "Web Design",
+        "UI/UX",
+        "HTML",
+        "CSS"
+      ]
+    },
+    {
+      "company": "BSNL RTTC",
+      "role": "Advanced Data Communication Network Intern",
+      "employment_type": "Internship",
+      "duration": {
+        "start": "2018-12",
+        "end": "2019-01"
+      },
+      "location": "Mysore, Karnataka, India",
+      "description_raw": "During my internship, I delved into the fascinating world of network protocols and the intricate design of routers that connect to modems, enhancing the functionality of internet access devices. This experience ignited my passion for building robust and efficient network infrastructures.",
+      "responsibilities": [
+        "Studied network protocols",
+        "Analyzed router and modem connectivity design",
+        "Learned fundamentals of networking infrastructure"
+      ],
+      "technologies": [
+        "Computer Networking",
+        "Network Protocols",
+        "Routing"
+      ]
+    }
+  ],
+  "experience_summary": {
+    "total_years_experience": "6+ years",
+    "companies_worked": [
+      "SAP",
+      "Juniper Networks"
+    ],
+    "career_progression": [
+      "Intern → Software Engineer 1 → Software Engineer 2 → Software Engineer 3 → Cloud Service Specialist"
+    ],
+    "core_growth_areas": [
+      "Full Stack Development",
+      "DevOps",
+      "Cloud Engineering",
+      "Kubernetes",
+      "System Architecture",
+      "High Availability Systems"
+    ]
+  }
+}

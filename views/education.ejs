@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="container py-5 my-4">
+    <div class="text-center mb-5" data-aos="fade-down">
+      <h1 class="section-title">Education</h1>
+      <p class="lead text-muted max-w-2xl mx-auto">
+        <% if(data.education && data.education.education_summary) { %>
+          Academic foundations built across <%= data.education.education_summary.countries_of_education.join(' and ') %>, culminating in a <%= data.education.education_summary.highest_degree %>.
+        <% } else { %>
+          My academic history and foundational knowledge.
+        <% } %>
+      </p>
+    </div>
+
+    <% if(data.education && data.education.education) { %>
+      <div class="vertical-timeline" data-aos="fade-up">
+        <% data.education.education.forEach((edu, index) => { %>
+          <div class="timeline-item" data-aos="fade-up" data-aos-delay="<%= Math.min(index * 100, 400) %>">
+            <div class="glass-card p-4 p-md-5">
+              
+              <div class="row align-items-center mb-4">
+                <div class="col-md-8">
+                  <h3 class="h4 fw-bold text-gradient mb-1"><%= edu.degree %> - <%= edu.field_of_study %></h3>
+                  <h4 class="h5 fw-bold text-primary mb-2"><i class="fas fa-university me-2"></i> <%= edu.institution %></h4>
+                </div>
+                <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                  <div class="timeline-date d-inline-block fw-bold fs-6 mb-1 py-1 px-3 rounded-pill" style="background: var(--shape-1);">
+                    <i class="far fa-calendar-alt me-1"></i> <%= edu.duration.start %> - <%= edu.duration.end || 'Present' %>
+                  </div>
+                  <div class="text-muted small mt-1">
+                    <i class="fas fa-map-marker-alt me-1"></i> <%= edu.location %>
+                  </div>
+                </div>
+              </div>
+
+              <p class="text-muted fs-5 mb-4"><%= edu.description_raw %></p>
+
+              <div class="row g-4 mt-2 border-top pt-4" style="border-color: var(--glass-border) !important;">
+                
+                <% if(edu.grade && edu.grade.value) { %>
+                  <div class="col-12 col-md-4 col-lg-3">
+                    <div class="p-3 text-center rounded h-100" style="background: var(--nav-bg); border: 1px solid var(--border-color);">
+                      <i class="fas fa-award text-accent fs-3 mb-2"></i>
+                      <div class="small text-muted text-uppercase fw-bold"><%= edu.grade.type %></div>
+                      <div class="fs-4 fw-bolder text-primary"><%= edu.grade.value %></div>
+                    </div>
+                  </div>
+                <% } %>
+                
+                <div class="col-12 col-md-8 col-lg-9">
+                  <div class="row g-4">
+                    <% if(edu.academic_focus_areas && edu.academic_focus_areas.length > 0) { %>
+                      <div class="col-md-6">
+                        <h5 class="h6 fw-bold text-primary mb-2"><i class="fas fa-book-open me-2"></i> Focus Areas</h5>
+                        <ul class="icon-list small">
+                          <% edu.academic_focus_areas.forEach(focus => { %>
+                            <li><%= focus %></li>
+                          <% }) %>
+                        </ul>
+                      </div>
+                    <% } %>
+                    
+                    <% if(edu.activities_and_leadership && edu.activities_and_leadership.length > 0) { %>
+                      <div class="col-md-6">
+                        <h5 class="h6 fw-bold text-primary mb-2"><i class="fas fa-users me-2"></i> Leadership & Activities</h5>
+                        <ul class="icon-list small">
+                          <% edu.activities_and_leadership.forEach(act => { %>
+                            <li><%= act %></li>
+                          <% }) %>
+                        </ul>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+
+              <% if(edu.skills_acquired && edu.skills_acquired.length > 0) { %>
+                <div class="mt-4 pt-3 border-top" style="border-color: var(--glass-border) !important;">
+                  <span class="small fw-bold text-muted d-block mb-2">Key Competencies Acquired:</span>
+                  <div class="d-flex flex-wrap gap-1">
+                    <% edu.skills_acquired.forEach(skill => { %>
+                      <span class="skill-pill" style="font-size: 0.8rem; padding: 0.2rem 0.8rem;"><%= skill %></span>
+                    <% }) %>
+                  </div>
+                </div>
+              <% } %>
+              
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <!-- Funnel Navigation CTA -->
+    <div class="mt-5 pt-5 border-top text-center" style="border-color: var(--glass-border) !important;" data-aos="fade-up">
+      <p class="text-muted fw-bold text-uppercase tracking-widest mb-2">Next Chapter</p>
+      <h3 class="h2 fw-bolder mb-4">Continuous Learning & Certifications</h3>
+      <a href="/certifications" class="btn-primary-custom px-5 py-3 fs-5 shadow-sm">
+        View Certifications <i class="fas fa-certificate ms-2"></i>
+      </a>
+    </div>
+
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

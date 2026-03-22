@@ -1,0 +1,122 @@
+{
+  "education": [
+    {
+      "institution": "Illinois Institute of Technology",
+      "degree": "Master of Science (MS)",
+      "field_of_study": "Information Technology and Management",
+      "duration": {
+        "start": "2022-01",
+        "end": "2023-12"
+      },
+      "location": "Chicago, USA",
+      "grade": {
+        "type": "GPA",
+        "value": "3.7"
+      },
+      "description_raw": "Master of Science in Information Technology and Management with strong focus on software development, databases, and system design.",
+      "skills_acquired": [
+        "JavaScript",
+        "Communication",
+        "Strategic Planning",
+        "Project Management",
+        "Programming",
+        "SQL",
+        "Web Applications",
+        "SQL Database Administration",
+        "Databases",
+        "Time Management",
+        "Computer Science",
+        "Microsoft Office",
+        "Problem Solving",
+        "Project Planning"
+      ],
+      "academic_focus_areas": [
+        "Software Development",
+        "Database Systems",
+        "Project Management",
+        "System Design",
+        "Web Technologies"
+      ]
+    },
+    {
+      "institution": "Shri Dharmasthala Manjunatheshwara College of Engineering and Technology (SDMCET)",
+      "degree": "Bachelor of Engineering (B.E.)",
+      "field_of_study": "Computer Science",
+      "duration": {
+        "start": "2016",
+        "end": "2020"
+      },
+      "location": "Dharwad, Karnataka, India",
+      "grade": {
+        "type": "CGPA",
+        "value": "8.52"
+      },
+      "description_raw": "Bachelor’s degree in Computer Science with focus on programming, databases, and core computer science fundamentals.",
+      "skills_acquired": [
+        "JavaScript",
+        "Communication",
+        "Programming",
+        "SQL",
+        "Web Applications",
+        "SQL Database Administration",
+        "Databases",
+        "C Programming",
+        "Computer Science",
+        "Microsoft Office",
+        "Problem Solving"
+      ],
+      "academic_focus_areas": [
+        "Data Structures",
+        "Algorithms",
+        "Database Management Systems",
+        "Operating Systems",
+        "Computer Networks",
+        "Software Engineering"
+      ]
+    },
+    {
+      "institution": "JSS Banashankari Arts, Commerce & S.K.Gubbi Science College",
+      "degree": "Pre-University (PUC)",
+      "field_of_study": "Science",
+      "duration": {
+        "start": "2014",
+        "end": "2016"
+      },
+      "location": "Dharwad, Karnataka, India",
+      "description_raw": "Pre-University education in Science stream with active involvement in extracurricular and leadership activities.",
+      "skills_acquired": [
+        "Communication",
+        "Microsoft Office"
+      ],
+      "activities_and_leadership": [
+        "Head of Table-Tennis Team",
+        "NCC Cadet",
+        "Class Representative"
+      ],
+      "academic_focus_areas": [
+        "Physics",
+        "Chemistry",
+        "Mathematics"
+      ]
+    }
+  ],
+  "education_summary": {
+    "highest_degree": "Master of Science (MS)",
+    "primary_domain": "Information Technology and Computer Science",
+    "countries_of_education": [
+      "USA",
+      "India"
+    ],
+    "academic_strengths": [
+      "Programming",
+      "Databases",
+      "System Design",
+      "Project Management"
+    ],
+    "leadership_experience": [
+      "Class Representative",
+      "Sports Team Leadership (Table Tennis)",
+      "NCC Cadet"
+    ]
+  }
+}

@@ -1,38 +1,105 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title><%= pageTitle %></title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <style>
-    body {
-      background-color: #e3f2fd;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      color: #1976D2;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <h1><%= pageTitle %></h1>
+<html lang="en">
 
-        <div class="personal-details">
-          <img src="/images/profile-photo.jpg" alt="Profile Photo" class="profile-photo">
-          <p><strong>Name:</strong> Akhilesh Angadi</p>
-          <p><strong>Email:</strong> aangadi@hawk.iit.edu</p>
-          <p><strong>Phone:</strong> +91 9738045396</p>
-          <p><strong>Location:</strong> Dharwad, Karnataka, India.</p>
-          <p><strong>Date of Birth:</strong> February 9, 1998</p>
-        </div>
-        <p><a href="/">Back to Home</a></p>
+<head>
+  <%- include('partials/head') %>
+</head>
+
+<body>
+  <%- include('partials/header') %>
+
+    <div class="container py-5 my-4">
+      <div class="text-center mb-5" data-aos="fade-down">
+        <h1 class="section-title">About Me</h1>
+        <p class="lead text-muted max-w-2xl mx-auto">Get to know the person behind the code.</p>
       </div>
+
+      <div class="row g-4 mb-5">
+      <!-- Who I Am (Elongated Bio) -->
+      <div class="col-lg-8" data-aos="fade-right">
+        <div class="glass-card h-100 p-5">
+          <h3 class="h4 border-bottom pb-3 mb-4 fw-bold text-accent"><i class="fas fa-user-circle me-2"></i> Who I Am
+          </h3>
+          <p class="text-muted mb-4 fs-6" style="line-height: 1.8; white-space: pre-line;">
+            <%= data.profile.profile.about_raw %>
+          </p>
+        </div>
+      </div>
+
+      <!-- Details Sidebar -->
+      <div class="col-lg-4" data-aos="fade-left">
+        <div class="d-flex flex-column gap-4">
+          
+          <!-- Personal Info Card -->
+          <div class="glass-card p-4 shadow-sm border-top border-4 border-primary">
+            <h3 class="h5 border-bottom pb-2 mb-3 fw-bold text-primary"><i class="fas fa-info-circle me-2"></i> Personal Details</h3>
+            <ul class="icon-list small">
+              <li><strong class="text-primary me-2">Name:</strong> <%= data.profile.profile.name %></li>
+              <li><strong class="text-primary me-2">Age:</strong> <%= data.profile.profile.personal_details.age %> Years</li>
+              <li><strong class="text-primary me-2">Nationality:</strong> <%= data.profile.profile.personal_details.nationality %></li>
+              <li><strong class="text-primary me-2">Location:</strong> <%= data.profile.profile.contact.location_current %></li>
+              <li><strong class="text-primary me-2">Email:</strong> <a href="mailto:<%= data.profile.profile.contact.email %>" class="text-decoration-none"><%= data.profile.profile.contact.email %></a></li>
+              <li><strong class="text-primary me-2">Phone:</strong> <%= data.profile.profile.contact.phone %></li>
+              <% if(data.profile.profile.headline_structured && data.profile.profile.headline_structured.education_highlight) { %>
+                <li><strong class="text-primary me-2">Degree:</strong> <%= data.profile.profile.headline_structured.education_highlight.split('in')[0].trim() %></li>
+              <% } %>
+              <li><strong class="text-primary me-2">Pronouns:</strong> <%= data.profile.profile.pronouns %></li>
+            </ul>
+          </div>
+
+          <!-- Professional Interests Card -->
+          <div class="glass-card p-4 shadow-sm">
+            <h3 class="h5 border-bottom pb-2 mb-3 fw-bold text-accent"><i class="fas fa-hashtag me-2"></i> Interests & Focus</h3>
+            <div class="d-flex flex-wrap gap-2">
+              <% data.profile.profile.tags.forEach(tag => { %>
+                <span class="skill-pill py-1 px-3 m-0" style="font-size: 0.8rem;"><%= tag %></span>
+              <% }) %>
+            </div>
+          </div>
+
+          <!-- Languages Card -->
+          <div class="glass-card p-4 shadow-sm">
+            <h3 class="h5 border-bottom pb-2 mb-3 fw-bold text-accent"><i class="fas fa-language me-2"></i> Languages</h3>
+            
+            <% if(data.languages && data.languages.detailed) { %>
+              <div class="d-flex flex-column gap-3">
+                <% data.languages.detailed.forEach(lang => { %>
+                  <div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="fw-bold small"><%= lang.language %></span>
+                      <span class="badge bg-primary text-white rounded-pill px-2 py-1" style="font-size: 0.7rem;"><%= lang.proficiency_level_standardized %></span>
+                    </div>
+                    <div class="progress border-radius-sm" style="height: 6px; background: rgba(0,0,0,0.05);">
+                      <div class="progress-bar bg-primary" role="progressbar" style="width: <%= lang.progressWidth %>;" aria-valuenow="<%= lang.progressWidth %>" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <p class="text-muted small">Language details unavailable.</p>
+            <% } %>
+          </div>
+
+        </div>
+      </div>
+
     </div>
+
+    </div>
+    
+    <!-- Funnel Navigation CTA -->
+    <div class="mt-5 pt-5 border-top text-center" style="border-color: var(--glass-border) !important;"
+      data-aos="fade-up">
+      <p class="text-muted fw-bold text-uppercase tracking-widest mb-2">Next Chapter</p>
+      <h3 class="h2 fw-bolder mb-4">Professional Experience</h3>
+      <a href="/experience" class="btn-primary-custom px-5 py-3 fs-5 shadow-sm">
+        View Experience <i class="fas fa-briefcase ms-2"></i>
+      </a>
+    </div>
+
   </div>
+
+  <%- include('partials/footer') %>
 </body>
+
 </html>

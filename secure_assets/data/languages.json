@@ -1,0 +1,38 @@
+{
+  "detailed": [
+    {
+      "language": "English",
+      "proficiency": "Full professional proficiency",
+      "proficiency_level_standardized": "C1/C2",
+      "usage_context": [
+        "Professional communication",
+        "Technical documentation",
+        "Meetings and presentations"
+      ]
+    },
+    {
+      "language": "Hindi",
+      "proficiency": "Limited working proficiency",
+      "proficiency_level_standardized": "A2/B1",
+      "usage_context": [
+        "Basic communication",
+        "Informal conversations"
+      ]
+    },
+    {
+      "language": "Kannada",
+      "proficiency": "Native or bilingual proficiency",
+      "proficiency_level_standardized": "Native",
+      "usage_context": [
+        "Daily communication",
+        "Fluent speaking and understanding"
+      ]
+    }
+  ],
+  "summary": {
+    "primary_language": "Kannada",
+    "professional_language": "English",
+    "additional_language": "Hindi",
+    "total_languages": 3
+  }
+}
