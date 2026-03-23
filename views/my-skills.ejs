@@ -148,12 +148,6 @@
       
       const radarLabels = <%- JSON.stringify(data.radarLabels || []) %>;
       const radarValues = <%- JSON.stringify(data.radarValues || []) %>;
-      console.log("Radar Labels:", radarLabels);
-      console.log("Radar Values:", radarValues);
-
-      if (radarLabels.length === 0 || radarValues.length === 0) {
-        console.warn("Radar data is empty, chart may not render.");
-      }
 
       new Chart(ctx, {
         type: 'radar',

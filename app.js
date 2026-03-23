@@ -149,9 +149,6 @@ function getResumeData() {
         (cat.ai_and_emerging || []).length * 25
       ];
       combinedData.radarValues = values.map(v => Math.min(v, 100));
-      console.log("[DEBUG] Radar Data Calculated:", combinedData.radarValues);
-    } else {
-      console.warn("[DEBUG] Skills data structure mismatch for radar chart");
     }
 
     // Pre-calculate Typed.js Strings
