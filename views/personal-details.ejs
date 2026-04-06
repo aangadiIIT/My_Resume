@@ -15,78 +15,101 @@
       </div>
 
       <div class="row g-4 mb-5">
-      <!-- Who I Am (Elongated Bio) -->
-      <div class="col-lg-8" data-aos="fade-right">
-        <div class="glass-card h-100 p-5">
-          <h3 class="h4 border-bottom pb-3 mb-4 fw-bold text-accent"><i class="fas fa-user-circle me-2"></i> Who I Am
-          </h3>
-          <p class="text-muted mb-4 fs-6" style="line-height: 1.8; white-space: pre-line;">
-            <%= data.profile.profile.about_raw %>
-          </p>
-        </div>
-      </div>
-
-      <!-- Details Sidebar -->
-      <div class="col-lg-4" data-aos="fade-left">
-        <div class="d-flex flex-column gap-4">
-          
-          <!-- Personal Info Card -->
-          <div class="glass-card p-4 shadow-sm border-top border-4 border-primary">
-            <h3 class="h5 border-bottom pb-2 mb-3 fw-bold text-primary"><i class="fas fa-info-circle me-2"></i> Personal Details</h3>
-            <ul class="icon-list small">
-              <li><strong class="text-primary me-2">Name:</strong> <%= data.profile.profile.name %></li>
-              <li><strong class="text-primary me-2">Age:</strong> <%= data.profile.profile.personal_details.age %> Years</li>
-              <li><strong class="text-primary me-2">Nationality:</strong> <%= data.profile.profile.personal_details.nationality %></li>
-              <li><strong class="text-primary me-2">Location:</strong> <%= data.profile.profile.contact.location_current %></li>
-              <li><strong class="text-primary me-2">Email:</strong> <a href="mailto:<%= data.profile.profile.contact.email %>" class="text-decoration-none"><%= data.profile.profile.contact.email %></a></li>
-              <li><strong class="text-primary me-2">Phone:</strong> <%= data.profile.profile.contact.phone %></li>
-              <% if(data.profile.profile.headline_structured && data.profile.profile.headline_structured.education_highlight) { %>
-                <li><strong class="text-primary me-2">Degree:</strong> <%= data.profile.profile.headline_structured.education_highlight.split('in')[0].trim() %></li>
-              <% } %>
-              <li><strong class="text-primary me-2">Pronouns:</strong> <%= data.profile.profile.pronouns %></li>
-            </ul>
+        <!-- Who I Am (Elongated Bio) -->
+        <div class="col-lg-8" data-aos="fade-right">
+          <div class="glass-card h-100 p-5">
+            <h3 class="h4 border-bottom pb-3 mb-4 fw-bold text-accent"><i class="fas fa-user-circle me-2"></i> Who I Am
+            </h3>
+            <p class="text-muted mb-4 fs-6" style="line-height: 1.8; white-space: pre-line;">
+              <%= data.profile.profile.about_raw %>
+            </p>
           </div>
+        </div>
 
-          <!-- Professional Interests Card -->
-          <div class="glass-card p-4 shadow-sm">
-            <h3 class="h5 border-bottom pb-2 mb-3 fw-bold text-accent"><i class="fas fa-hashtag me-2"></i> Interests & Focus</h3>
-            <div class="d-flex flex-wrap gap-2">
-              <% data.profile.profile.tags.forEach(tag => { %>
-                <span class="skill-pill py-1 px-3 m-0" style="font-size: 0.8rem;"><%= tag %></span>
-              <% }) %>
+        <!-- Details Sidebar -->
+        <div class="col-lg-4" data-aos="fade-left">
+          <div class="d-flex flex-column gap-4">
+
+            <!-- Personal Info Card -->
+            <div class="glass-card p-4 shadow-sm border-top border-4 border-primary">
+              <h3 class="h5 border-bottom pb-2 mb-3 fw-bold text-primary"><i class="fas fa-info-circle me-2"></i>
+                Personal Details</h3>
+              <ul class="icon-list small">
+                <li><strong class="text-primary me-2">Name:</strong>
+                  <%= data.profile.profile.name %>
+                </li>
+                <li><strong class="text-primary me-2">Nationality:</strong>
+                  <%= data.profile.profile.personal_details.nationality %>
+                </li>
+                <li><strong class="text-primary me-2">Location:</strong>
+                  <%= data.profile.profile.contact.location_current %>
+                </li>
+                <li><strong class="text-primary me-2">Email:</strong> <a
+                    href="mailto:<%= data.profile.profile.contact.email %>" class="text-decoration-none">
+                    <%= data.profile.profile.contact.email %>
+                  </a></li>
+                <% if(data.profile.profile.headline_structured &&
+                  data.profile.profile.headline_structured.education_highlight) { %>
+                  <li><strong class="text-primary me-2">Degree:</strong>
+                    <%= data.profile.profile.headline_structured.education_highlight.split('in')[0].trim() %>
+                  </li>
+                  <% } %>
+                    <li><strong class="text-primary me-2">Pronouns:</strong>
+                      <%= data.profile.profile.pronouns %>
+                    </li>
+              </ul>
             </div>
-          </div>
 
-          <!-- Languages Card -->
-          <div class="glass-card p-4 shadow-sm">
-            <h3 class="h5 border-bottom pb-2 mb-3 fw-bold text-accent"><i class="fas fa-language me-2"></i> Languages</h3>
-            
-            <% if(data.languages && data.languages.detailed) { %>
-              <div class="d-flex flex-column gap-3">
-                <% data.languages.detailed.forEach(lang => { %>
-                  <div>
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                      <span class="fw-bold small"><%= lang.language %></span>
-                      <span class="badge bg-primary text-white rounded-pill px-2 py-1" style="font-size: 0.7rem;"><%= lang.proficiency_level_standardized %></span>
-                    </div>
-                    <div class="progress border-radius-sm" style="height: 6px; background: rgba(0,0,0,0.05);">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: <%= lang.progressWidth %>;" aria-valuenow="<%= lang.progressWidth %>" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </div>
-                <% }) %>
+            <!-- Professional Interests Card -->
+            <div class="glass-card p-4 shadow-sm">
+              <h3 class="h5 border-bottom pb-2 mb-3 fw-bold text-accent"><i class="fas fa-hashtag me-2"></i> Interests &
+                Focus</h3>
+              <div class="d-flex flex-wrap gap-2">
+                <% data.profile.profile.tags.forEach(tag=> { %>
+                  <span class="skill-pill py-1 px-3 m-0" style="font-size: 0.8rem;">
+                    <%= tag %>
+                  </span>
+                  <% }) %>
               </div>
-            <% } else { %>
-              <p class="text-muted small">Language details unavailable.</p>
-            <% } %>
-          </div>
+            </div>
 
+            <!-- Languages Card -->
+            <div class="glass-card p-4 shadow-sm">
+              <h3 class="h5 border-bottom pb-2 mb-3 fw-bold text-accent"><i class="fas fa-language me-2"></i> Languages
+              </h3>
+
+              <% if(data.languages && data.languages.detailed) { %>
+                <div class="d-flex flex-column gap-3">
+                  <% data.languages.detailed.forEach(lang=> { %>
+                    <div>
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold small">
+                          <%= lang.language %>
+                        </span>
+                        <span class="badge bg-primary text-white rounded-pill px-2 py-1" style="font-size: 0.7rem;">
+                          <%= lang.proficiency_level_standardized %>
+                        </span>
+                      </div>
+                      <div class="progress border-radius-sm" style="height: 6px; background: rgba(0,0,0,0.05);">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                          style="width: <%= lang.progressWidth %>;" aria-valuenow="<%= lang.progressWidth %>"
+                          aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                    <% }) %>
+                </div>
+                <% } else { %>
+                  <p class="text-muted small">Language details unavailable.</p>
+                  <% } %>
+            </div>
+
+          </div>
         </div>
+
       </div>
 
     </div>
 
-    </div>
-    
     <!-- Funnel Navigation CTA -->
     <div class="mt-5 pt-5 border-top text-center" style="border-color: var(--glass-border) !important;"
       data-aos="fade-up">
@@ -97,9 +120,9 @@
       </a>
     </div>
 
-  </div>
+    </div>
 
-  <%- include('partials/footer') %>
+    <%- include('partials/footer') %>
 </body>
 
 </html>

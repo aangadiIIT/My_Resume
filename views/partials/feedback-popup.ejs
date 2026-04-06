@@ -1,0 +1,147 @@
+<div class="feedback-popup glass-card" id="feedbackPopup">
+  <button class="close-btn" id="closeFeedbackBtn">&times;</button>
+  <div class="feedback-content" id="feedbackFormStep">
+    <div class="feedback-icon">🚀</div>
+    <h5 class="text-adaptive-feedback">How am I doing?</h5>
+    <p class="small text-muted-adaptive-feedback mb-3">Your feedback helps me improve!</p>
+    
+    <form id="inlineFeedbackForm">
+      <div class="mb-2">
+        <input type="text" name="name" class="form-control form-control-sm glass-input" placeholder="Your Name" required>
+      </div>
+      <div class="mb-2">
+        <input type="email" name="email" class="form-control form-control-sm glass-input" placeholder="Your Email" required>
+      </div>
+      <div class="mb-2">
+        <label class="form-label x-small text-muted-adaptive-feedback mb-1">Rating</label>
+        <div class="d-flex justify-content-between gap-1">
+          <% const colors=['#ef4444', '#f97316' , '#facc15' , '#a3e635' , '#22c55e' ]; %>
+            <% for(let i=1; i<=5; i++) { %>
+              <div class="flex-fill">
+                <input type="radio" class="btn-check" name="rating" id="rate<%= i %>" value="<%= i %>" required>
+                <label class="btn btn-outline-secondary btn-xs w-100 p-1 rating-btn" for="rate<%= i %>"
+                  style="--rating-color: <%= colors[i-1] %>; border-color: <%= colors[i-1] %>; color: <%= colors[i-1] %>;"><%= i %></label>
+              </div>
+              <% } %>
+        </div>
+      </div>
+      <div class="mb-3">
+        <textarea name="message" class="form-control form-control-sm glass-input" rows="2" placeholder="Tell me more..." required></textarea>
+        <input type="hidden" name="subject" value="Website Feedback">
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary btn-sm flex-fill rounded-pill">Submit</button>
+        <button type="button" class="btn btn-link btn-sm text-muted-adaptive-feedback text-decoration-none" id="maybeLaterBtn">Maybe later</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="feedback-success d-none text-center py-4" id="feedbackSuccessStep">
+    <div class="fs-1 mb-2">🎉</div>
+    <h5 class="fw-bold text-adaptive-feedback">Thank You!</h5>
+    <p class="small text-muted-adaptive-feedback">Your feedback has been received.</p>
+    <button class="btn btn-outline-primary btn-sm rounded-pill mt-2" id="finalCloseBtn">Close</button>
+  </div>
+</div>
+
+<style>
+.feedback-popup { position: fixed; bottom: 25px; left: -400px; width: 330px; z-index: 3000; padding: 1.5rem; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: var(--glass-bg) !important; border: 1px solid var(--glass-border) !important; box-shadow: var(--glass-shadow); }
+.feedback-popup.active { left: 25px; }
+.rating-btn { border-width: 2px; font-weight: bold; background: transparent; transition: all 0.2s; }
+.rating-btn:hover, .btn-check:checked + .rating-btn { background-color: var(--rating-color) !important; border-color: var(--rating-color) !important; color: white !important; }
+.text-adaptive-feedback { color: var(--text-primary) !important; }
+.text-muted-adaptive-feedback { color: var(--text-secondary) !important; }
+.feedback-popup .close-btn { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5rem; color: var(--text-tertiary); cursor: pointer; }
+</style>
+
+<script>
+  function closeFeedbackPopup() { document.getElementById('feedbackPopup').classList.remove('active'); }
+
+  const maybeLaterBtn = document.getElementById('maybeLaterBtn');
+  if (maybeLaterBtn) {
+    maybeLaterBtn.addEventListener('click', () => {
+      closeFeedbackPopup();
+      localStorage.setItem('feedbackMaybeLater', Date.now());
+    });
+  }
+
+  const closeBtn = document.getElementById('closeFeedbackBtn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      closeFeedbackPopup();
+      localStorage.setItem('feedbackDismissed', Date.now()); // Store timestamp for 12h logic
+    });
+  }
+
+  const finalCloseBtn = document.getElementById('finalCloseBtn');
+  if (finalCloseBtn) {
+    finalCloseBtn.addEventListener('click', closeFeedbackPopup);
+  }
+
+  const feedbackFormItem = document.getElementById('inlineFeedbackForm');
+  if (feedbackFormItem) {
+    feedbackFormItem.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(feedbackFormItem);
+      const data = {};
+      formData.forEach((value, key) => data[key] = value);
+
+      try {
+        await fetch('/contact-me', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        document.getElementById('feedbackFormStep').classList.add('d-none');
+        document.getElementById('feedbackSuccessStep').classList.remove('d-none');
+        localStorage.setItem('feedbackSubmitted', 'true');
+      } catch (err) { console.error("Feedback failed", err); }
+    });
+  }
+
+  let exitIntentToggle = false;
+  function checkFeedback() {
+    // 1. If submitted, NEVER show again
+    if (localStorage.getItem('feedbackSubmitted')) return;
+
+    // 2. If dismissed or "maybe later", check for 12-hour expiry (43,200,000 ms)
+    const EXPIRY = 12 * 60 * 60 * 1000;
+    const dismissed = localStorage.getItem('feedbackDismissed');
+    const maybe = localStorage.getItem('feedbackMaybeLater');
+
+    if (dismissed && (Date.now() - parseInt(dismissed) < EXPIRY)) return;
+    if (maybe && (Date.now() - parseInt(maybe) < EXPIRY)) return;
+
+    // Exit Intent
+    document.addEventListener('mouseleave', (e) => {
+      // clientY < 0 indicates mouse moved out of the top of the viewport
+      if (e.clientY <= 0 && !exitIntentToggle) {
+        showFeedbackPopup();
+        exitIntentToggle = true;
+      }
+    });
+
+    // Time-based trigger (Reduced from 45s to 20s for better visibility)
+    setTimeout(() => {
+      if (!exitIntentToggle) showFeedbackPopup();
+    }, 20000);
+  }
+
+  function showFeedbackPopup() {
+    // Small delay to allow other widgets (like Command Palette) to finish closing/cleaning up
+    setTimeout(() => {
+      const isAnyWidgetActive = ['chatWindow', 'metricsDashboard', 'cmdPaletteBackdrop', 'hiringPopup']
+        .some(id => {
+          const el = document.getElementById(id);
+          return el && el.classList.contains('active');
+        });
+      
+      if (isAnyWidgetActive) return;
+
+      if (typeof UIManager !== 'undefined') UIManager.closeAll('feedback');
+      document.getElementById('feedbackPopup').classList.add('active');
+    }, 100);
+  }
+
+  checkFeedback();
+</script>

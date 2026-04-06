@@ -36,22 +36,6 @@
               </div>
             </div>
 
-            <div class="glass-card p-4 border-start border-4" style="border-color: #10b981 !important;">
-              <div class="d-flex align-items-center">
-                <div class="d-flex align-items-center justify-content-center rounded-circle me-3"
-                  style="width: 50px; height: 50px; background: var(--shape-3); color: #10b981; font-size: 1.2rem;">
-                  <i class="fas fa-phone-alt"></i>
-                </div>
-                <div>
-                  <h3 class="h6 fw-bold mb-1 text-muted text-uppercase">Phone</h3>
-                  <a href="tel:<%= data.profile.profile.contact.phone %>"
-                    class="fw-bold fs-6 text-success text-decoration-none">
-                    <%= data.profile.profile.contact.phone %>
-                  </a>
-                </div>
-              </div>
-            </div>
-
             <div class="glass-card p-4 border-start border-4" style="border-color: #8b5cf6 !important;">
               <div class="d-flex align-items-center">
                 <div class="d-flex align-items-center justify-content-center rounded-circle me-3"
@@ -138,6 +122,13 @@
               </div>
             </form>
           </div>
+        </div>
+      </div>
+
+      <!-- Feedback Section -->
+      <div class="row mt-5" data-aos="fade-up">
+        <div class="col-12">
+          <%- include('partials/feedback-form') %>
         </div>
       </div>
     </div>

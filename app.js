@@ -4,6 +4,8 @@ const path = require('path');
 const logger = require('morgan');
 const helmet = require('helmet');
 const fs = require('fs');
+const os = require('os');
+const compression = require('compression');
 
 const app = express();
 
@@ -12,11 +14,16 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "script-src": ["'self'", "'unsafe-inline'", "cdn.jsdelivr.net", "unpkg.com", "cdnjs.cloudflare.com"],
+      "script-src": ["'self'", "cdn.jsdelivr.net", "unpkg.com", "cdnjs.cloudflare.com", "'unsafe-inline'"],
+      "style-src": ["'self'", "fonts.googleapis.com", "cdn.jsdelivr.net", "unpkg.com", "cdnjs.cloudflare.com", "'unsafe-inline'"],
+      "font-src": ["'self'", "fonts.gstatic.com", "cdnjs.cloudflare.com"],
       "img-src": ["'self'", "data:", "https:"],
     },
   },
 }));
+
+// Compress all responses
+app.use(compression());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,7 +39,7 @@ let cachedResumeData = null;
 let lastDataLoadTime = 0;
 const CACHE_DURATION = 1000 * 60 * 5; // 5 minutes cache
 
-function getResumeData() {
+async function getResumeData() {
   const now = Date.now();
   if (cachedResumeData && (now - lastDataLoadTime < CACHE_DURATION)) {
     return cachedResumeData;
@@ -42,16 +49,18 @@ function getResumeData() {
   const combinedData = {};
 
   try {
-    if (!fs.existsSync(dataDir)) {
+    try {
+        await fs.promises.access(dataDir);
+    } catch {
         console.error("Data directory missing:", dataDir);
         return null;
     }
 
-    const files = fs.readdirSync(dataDir);
-    files.forEach(file => {
+    const files = await fs.promises.readdir(dataDir);
+    for (const file of files) {
       if (file.endsWith('.json')) {
         const filePath = path.join(dataDir, file);
-        const fileContent = fs.readFileSync(filePath, 'utf8');
+        const fileContent = await fs.promises.readFile(filePath, 'utf8');
         const key = path.basename(file, '.json');
         try {
             combinedData[key] = JSON.parse(fileContent);
@@ -59,7 +68,7 @@ function getResumeData() {
             console.error(`Error parsing ${file}:`, parseErr);
         }
       }
-    });
+    }
 
     // Pre-calculate Resume Metrics for UI Efficiency
     if (combinedData.experience && combinedData.experience.experience_summary) {
@@ -175,14 +184,85 @@ function getResumeData() {
   }
 }
 
-// Middleware to inject resume data into all views
-app.use((req, res, next) => {
-  const data = getResumeData();
-  if (!data || !data.profile) {
-    return next(createError(500, "Failed to load resume data. Site is currently offline."));
+
+// --- Visit Tracking Logic ---
+const statsFilePath = path.join(__dirname, 'public', 'data', 'stats.json');
+let stats = { visits: 0, visitors: {} };
+
+try {
+  if (fs.existsSync(statsFilePath)) {
+    stats = JSON.parse(fs.readFileSync(statsFilePath, 'utf8'));
   }
+  // Ensure internal objects exist to prevent crashes
+  if (!stats.visits) stats.visits = 0;
+  if (!stats.visitors) stats.visitors = {};
+} catch (err) {
+  console.error("Error loading stats:", err);
+}
+
+// Helper to get CPU load (simple average)
+function getCpuUsage() {
+  const cpus = os.cpus();
+  let totalIdle = 0, totalTick = 0;
+  cpus.forEach(cpu => {
+    for (let type in cpu.times) totalTick += cpu.times[type];
+    totalIdle += cpu.times.idle;
+  });
+  return 100 - Math.floor((totalIdle / totalTick) * 100);
+}
+
+// Middleware to inject resume data and track visits
+app.use(async (req, res, next) => {
+  // Track visits (exclude static files and API calls)
+  if (!req.path.includes('.') && !req.path.startsWith('/api/') && !req.path.startsWith('/view-asset/')) {
+    stats.visits++;
+    
+    // Simple Visitor Tracking (IP and User Agent)
+    const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+    const ua = req.get('User-Agent') || 'unknown';
+    
+    if (!stats.visitors[ip]) {
+      stats.visitors[ip] = { hits: 0, ua: ua, firstSeen: new Date().toISOString() };
+    }
+    stats.visitors[ip].hits++;
+    stats.visitors[ip].lastSeen = new Date().toISOString();
+
+    try {
+      // Async write to avoid blocking event loop
+      fs.promises.writeFile(statsFilePath, JSON.stringify(stats)).catch(err => {
+        console.error("Error saving stats async:", err);
+      });
+    } catch (err) {
+      console.error("Error saving stats:", err);
+    }
+  }
+
+  const data = (await getResumeData()) || cachedResumeData || { profile: { profile: { name: 'Resume', social_links: {}, contact: {} } } };
+  
+  if (!data || !data.profile) {
+    // This should only happen if even our fallback fails miserably
+    return next(createError(500, "Fatal Data Error. Site is currently offline."));
+  }
+  
   res.locals.data = data;
+  res.locals.totalVisits = stats.visits;
   next();
+});
+
+// --- API Endpoints ---
+app.get('/api/site-metrics', (req, res) => {
+  const memTotal = os.totalmem();
+  const memFree = os.freemem();
+  const ramUsage = Math.floor(((memTotal - memFree) / memTotal) * 100);
+
+  res.json({
+    uptime: Math.floor(process.uptime()),
+    visits: stats.visits,
+    status: 'Operational',
+    cpu: getCpuUsage(),
+    ram: ramUsage,
+    visitors: stats.visitors
+  });
 });
 
 // --- Routes ---
@@ -232,21 +312,35 @@ app.get('/contact-me', (req, res) => {
 });
 
 app.post('/contact-me', async (req, res) => {
-  const { name, email, subject, message } = req.body;
+  const { name, email, subject, message, rating } = req.body;
+  const ratingHeader = rating ? `[Rating: ${rating}/5] ` : '';
+  const enrichedMessage = ratingHeader + message;
+  
+  console.log(`[FEEDBACK] Received: name=${name}, rating=${rating}, subject=${subject}`);
+  
   const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSd1IAe_XPmBDZ3JFcp8me0fh9yFhHQj7dVU-_0Cqf_qu-8czg/formResponse';
   const formData = new URLSearchParams();
   
   formData.append('entry.1760114498', name);    // Full Name
   formData.append('entry.912588963', email);   // Email
-  formData.append('entry.716766072', subject); // Subject
-  formData.append('entry.797942613', message); // Message
+  formData.append('entry.716766072', subject || 'Website Feedback'); // Subject
+  formData.append('entry.2000139713', rating ? String(rating) : ''); // Rating (Linear Scale)
+  formData.append('entry.797942613', enrichedMessage); // Message (with rating)
 
   try {
-    await fetch(formUrl, {
+    // Associate name with IP for analytics
+    const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+    if (stats.visitors[ip]) {
+      stats.visitors[ip].name = name;
+      fs.writeFileSync(statsFilePath, JSON.stringify(stats));
+    }
+
+    const googleRes = await fetch(formUrl, {
       method: 'POST',
       body: formData,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     });
+    console.log(`[GOOGLE_FORM] Status: ${googleRes.status} ${googleRes.statusText}`);
   } catch (err) {
     console.error('Google Form Submission Error:', err);
   }
@@ -260,7 +354,7 @@ app.post('/contact-me', async (req, res) => {
 // Secure Asset Serving Route
 app.get('/view-asset/:category/:file', (req, res) => {
   const { category, file } = req.params;
-  const allowedCategories = ['awards', 'certifications', 'profile', 'documents'];
+  const allowedCategories = ['awards', 'certifications', 'profile', 'documents', 'Analytics'];
   
   if (!allowedCategories.includes(category)) {
     return res.status(403).send('Access Denied');
@@ -281,6 +375,8 @@ app.get('/view-asset/:category/:file', (req, res) => {
     assetPath = path.join(__dirname, 'secure_assets', 'certifications', file);
   } else if (category === 'documents') {
     assetPath = path.join(__dirname, 'secure_assets', 'documents', file);
+  } else if (category === 'Analytics' || category === 'data') {
+    assetPath = path.join(__dirname, 'public', 'data', file);
   }
 
   if (fs.existsSync(assetPath)) {
@@ -304,6 +400,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.data = cachedResumeData || { profile: { profile: { name: 'Resume', social_links: {}, contact: {} } } };
   res.status(err.status || 500);
   res.render('error', { pageTitle: 'Error' });
 });

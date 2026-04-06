@@ -68,13 +68,10 @@
     },
     "contact": {
       "email": "akhilesh.a.angadi@gmail.com",
-      "phone": "+91 9738045396",
       "location_current": "Bengaluru, Karnataka, India",
       "location_hometown": "Dharwad, Karnataka, India"
     },
     "personal_details": {
-      "date_of_birth": "1998-02-09",
-      "age": 28,
       "nationality": "Indian"
     },
     "social_links": {

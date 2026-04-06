@@ -1,0 +1,294 @@
+<div class="metrics-widget" id="metricsWidget">
+  <div class="metrics-toggle" id="metricsToggle" title="Live Site Health">
+    <div class="metrics-pulse"></div>
+    <i class="fas fa-heart-pulse"></i>
+  </div>
+
+  <div class="metrics-dashboard" id="metricsDashboard">
+    <div class="metrics-header pb-2 border-bottom">
+      <h4 class="mb-0 text-adaptive">
+        <i class="fas fa-microchip me-2"></i>System Health
+      </h4>
+      <div class="metric-status-dot" id="healthStatusDot" title="Operational"></div>
+    </div>
+
+    <div class="metrics-scroller">
+
+      <!-- 🔥 LIVE USERS -->
+      <div id="liveUsers" class="x-small text-success text-center mb-2 fw-bold"></div>
+
+      <div class="gauge-container mb-3">
+        <div class="gauge-item">
+          <canvas id="cpuGauge" style="height: 60px;"></canvas>
+          <div class="gauge-label text-adaptive">
+            CPU <span id="cpuTrend"></span>
+          </div>
+        </div>
+        <div class="gauge-item">
+          <canvas id="ramGauge" style="height: 60px;"></canvas>
+          <div class="gauge-label text-adaptive">RAM</div>
+        </div>
+      </div>
+
+      <div class="metric-row d-flex justify-content-center mb-3 px-2 gap-4">
+        <div class="text-center">
+          <div class="x-small text-muted-adaptive text-uppercase mb-1">Uptime</div>
+          <div class="metric-value small text-adaptive font-monospace" id="uptimeValue">...</div>
+        </div>
+        <div class="text-center" id="totalVisitsTrigger" style="cursor: pointer;">
+          <div class="x-small text-muted-adaptive text-uppercase mb-1">Total Visits</div>
+          <div class="metric-value small text-adaptive fw-bold" id="totalVisitsValue">
+            <%= typeof totalVisits !== 'undefined' ? totalVisits : '...' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-row d-flex justify-content-center mb-3 px-2">
+        <div class="text-center">
+          <div class="x-small text-muted-adaptive text-uppercase mb-1">Avg Load</div>
+          <div class="metric-value small text-success font-monospace" id="loadTime">...</div>
+        </div>
+      </div>
+
+      <div id="visitorAnalytics" class="d-none border-top pt-2">
+        <h6 class="x-small text-muted-adaptive text-uppercase mb-2 px-2">Recent Visitors</h6>
+        <div class="analytics-content scroll-y-mini px-1" id="visitorList" style="max-height: 180px;">
+          <p class="text-muted-adaptive text-center py-3 small">Loading...</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .metrics-scroller {
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
+    padding-top: 10px;
+  }
+  .text-adaptive { color: var(--text-primary) !important; }
+  .text-muted-adaptive { color: var(--text-tertiary) !important; }
+  [data-theme='dark'] .text-adaptive { color: #ffffff !important; }
+  [data-theme='dark'] .text-muted-adaptive { color: rgba(255, 255, 255, 0.6) !important; }
+  
+  #healthStatusDot { transition: background 0.3s, box-shadow 0.3s; }
+</style>
+
+<script>
+let cpuChart, ramChart;
+let cpuVal = 0, ramVal = 0;
+let prevCpu = null;
+let interval = null;
+
+// ---------------- GAUGE INIT ---------------- //
+
+function initGauges() {
+  const config = (label, color, getVal) => ({
+    type: 'doughnut',
+    data: {
+      labels: [label, 'Remaining'],
+      datasets: [{
+        data: [0, 100],
+        backgroundColor: [color, 'rgba(128,128,128,0.1)'],
+        borderWidth: 0,
+        circumference: 180,
+        rotation: 270
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '80%',
+      plugins: { 
+        legend: { display: false },
+        tooltip: {
+          enabled: true,
+          displayColors: false,
+          callbacks: {
+            label: (ctx) => {
+              const isMain = ctx.dataIndex === 0;
+              const v = isMain ? getVal() : 100 - getVal();
+              return (isMain ? 'Usage' : label) + ': ' + v.toFixed(1) + '%';
+            }
+          }
+        }
+      }
+    }
+  });
+
+  cpuChart = new Chart(document.getElementById('cpuGauge'), config('CPU', '#10b981', () => cpuVal));
+  ramChart = new Chart(document.getElementById('ramGauge'), config('RAM', '#3b82f6', () => ramVal));
+}
+
+// ---------------- UPDATE ---------------- //
+
+function getMetricColor(val) {
+  if (val > 85) return '#ef4444'; // Red
+  if (val > 65) return '#f59e0b'; // Yellow
+  return '#10b981'; // Green
+}
+
+function updateGauge(chart, value) {
+  if (!chart) return;
+  chart.data.datasets[0].data = [value, 100 - value];
+  chart.data.datasets[0].backgroundColor[0] = getMetricColor(value);
+  chart.update();
+}
+
+// ---------------- HEALTH STATUS ---------------- //
+
+function updateHealth(cpu, ram) {
+  const dot = document.getElementById('healthStatusDot');
+  if (!dot) return;
+
+  if (cpu > 85 || ram > 85) {
+    dot.style.background = '#ef4444';
+    dot.style.boxShadow = '0 0 10px #ef4444';
+    dot.title = "Critical Load";
+  } else if (cpu > 65 || ram > 65) {
+    dot.style.background = '#f59e0b';
+    dot.style.boxShadow = '0 0 10px #f59e0b';
+    dot.title = "Moderate Load";
+  } else {
+    dot.style.background = '#10b981';
+    dot.style.boxShadow = '0 0 10px #10b981';
+    dot.title = "Operational";
+  }
+}
+
+// ---------------- TREND ---------------- //
+
+function getTrend(current, prev) {
+  if (prev === null) return '';
+  return current > prev ? '⬆️' : current < prev ? '⬇️' : '➡️';
+}
+
+// ---------------- FETCH ---------------- //
+
+async function fetchMetrics(updateList = false) {
+  try {
+    const res = await fetch('/api/site-metrics');
+    const data = await res.json();
+
+    cpuVal = data.cpu;
+    ramVal = data.ram;
+
+    updateGauge(cpuChart, cpuVal);
+    updateGauge(ramChart, ramVal);
+
+    // 🔥 HEALTH
+    updateHealth(cpuVal, ramVal);
+
+    // 🔥 TREND
+    const trend = getTrend(cpuVal, prevCpu);
+    prevCpu = cpuVal;
+    const trendEl = document.getElementById('cpuTrend');
+    if (trendEl) trendEl.innerText = trend;
+
+    // 🔥 LIVE USERS
+    const users = Object.keys(data.visitors || {}).length;
+    const usersEl = document.getElementById('liveUsers');
+    if (usersEl) usersEl.innerText = `👁 ${users} active users`;
+
+    // 🔥 TOTAL VISITS
+    const totalEl = document.getElementById('totalVisitsValue');
+    if (totalEl && data.totalVisits) totalEl.innerText = data.totalVisits;
+
+    // 🔥 UPTIME
+    const u = data.uptime || 0;
+    const h = Math.floor(u / 3600);
+    const m = Math.floor((u % 3600) / 60);
+    const s = Math.floor(u % 60);
+    const uptimeEl = document.getElementById('uptimeValue');
+    if (uptimeEl) uptimeEl.innerText = `${h}h ${m}m ${s}s`;
+
+    // 🔥 VISITOR LIST
+    const vList = document.getElementById('visitorList');
+    if (vList && (updateList || !vList.classList.contains('loaded'))) {
+      vList.innerHTML = '';
+      const visitors = Object.entries(data.visitors || {})
+        .sort((a, b) => new Date(b[1].lastSeen) - new Date(a[1].lastSeen));
+
+      if (visitors.length === 0) {
+        vList.innerHTML = '<p class="text-muted-adaptive text-center py-3 small">No recent visitors</p>';
+      } else {
+        visitors.forEach(([ip, info]) => {
+          vList.innerHTML += `
+            <div class="visitor-card mb-2 p-2 rounded" style="background: rgba(128,128,128,0.05); border: 1px solid rgba(128,128,128,0.1);">
+              <div class="visitor-ip x-small text-adaptive d-flex justify-content-between">
+                <span>${ip === '::1' ? 'Local' : ip} ${info.name ? '<span class="badge bg-primary ms-1">' + info.name + '</span>' : ''}</span>
+              </div>
+              <div class="visitor-meta d-flex justify-content-between x-small text-muted-adaptive mt-1">
+                <span>Hits: ${info.hits}</span>
+                <span>${new Date(info.lastSeen).toLocaleTimeString()}</span>
+              </div>
+            </div>
+          `;
+        });
+        vList.classList.add('loaded');
+      }
+    }
+
+  } catch (e) {
+    console.error("Metrics fetch failed:", e);
+  }
+}
+
+// ---------------- AUTO REFRESH ---------------- //
+
+function startAutoRefresh() {
+  if (interval) return;
+  interval = setInterval(fetchMetrics, 10000); 
+}
+
+function stopAutoRefresh() {
+  if (interval) {
+    clearInterval(interval);
+    interval = null;
+  }
+}
+
+// ---------------- TOGGLE ---------------- //
+
+function toggleDashboard() {
+  const dashboard = document.getElementById('metricsDashboard');
+  const isOpening = !dashboard.classList.contains('active');
+
+  if (isOpening) {
+    if (typeof UIManager !== 'undefined') UIManager.closeAll('metrics');
+    if (!cpuChart) initGauges();
+    fetchMetrics();
+    startAutoRefresh();
+  } else {
+    stopAutoRefresh();
+  }
+  dashboard.classList.toggle('active');
+}
+
+// ---------------- EVENTS ---------------- //
+
+document.getElementById('metricsToggle').addEventListener('click', toggleDashboard);
+document.getElementById('totalVisitsTrigger').addEventListener('click', () => {
+  const analytics = document.getElementById('visitorAnalytics');
+  if (analytics) {
+    analytics.classList.toggle('d-none');
+    if (!analytics.classList.contains('d-none')) fetchMetrics(true);
+  }
+});
+
+// Load time
+try {
+  const perf = performance.getEntriesByType('navigation')[0];
+  if (perf) {
+    document.getElementById('loadTime').innerText = (perf.duration / 1000).toFixed(2) + 's';
+  }
+} catch (e) {}
+
+// Stop refresh on window hide
+window.addEventListener('blur', stopAutoRefresh);
+window.addEventListener('focus', () => {
+    const d = document.getElementById('metricsDashboard');
+    if (d && d.classList.contains('active')) startAutoRefresh();
+});
+</script>

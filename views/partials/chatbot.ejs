@@ -1,0 +1,39 @@
+<div class="chatbot-widget" id="chatbotWidget">
+  <div class="chat-window glass-card" id="chatWindow">
+    <div class="chat-header">
+      <div class="d-flex align-items-center gap-2">
+        <div class="bot-avatar-mini">🤖</div>
+        <div class="d-flex flex-column line-height-1">
+          <div class="fw-bold small text-white">Akhilesh AI <span class="online-dot"></span></div>
+          <div class="x-small text-muted" style="font-size: 0.65rem;">Virtual Assistant</div>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="user-mode-badge" id="userModeBadge" style="display:none"></div>
+        <div class="header-actions">
+          <button class="header-btn" id="maximizeChatBtn" title="Maximize"><i class="fas fa-expand-alt"></i></button>
+          <button class="header-btn" id="closeChatBtn" title="Close">&times;</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-body" id="chatBody">
+      <div id="initialBotMessage" class="message bot-message text-white">
+        Hi! I'm Akhilesh's virtual assistant. Ask me anything about him!
+      </div>
+    </div>
+
+    <div class="chat-footer">
+      <input type="text" id="chatInput" placeholder="Ask about experience, skills, projects..." class="text-white">
+      <button id="sendChatBtn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <div class="chat-toggle" id="chatToggle" title="Chat with Akhilesh AI">
+    <i class="fas fa-comment-dots"></i>
+  </div>
+</div>
+
+<link rel="stylesheet" href="/stylesheets/chatbot.css">
+<script src="/scripts/chatbot-engine.js"></script>
+<script src="/scripts/chatbot-ui.js"></script>

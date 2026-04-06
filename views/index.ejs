@@ -5,7 +5,12 @@
   <%- include('partials/head') %>
 </head>
 
-<body>
+  <style>
+    /* Magnetic Buttons */
+    .magnetic-btn {
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+    }
+  </style>
   <%- include('partials/header') %>
 
     <!-- Hero Section -->
@@ -38,18 +43,18 @@
               <% } %>
 
                 <div class="d-flex flex-wrap gap-3 mb-4 align-items-center">
-                  <a href="/experience" class="btn-primary-custom">
+                  <a href="/experience" class="btn-primary-custom magnetic-btn" data-magnetic>
                     <i class="fas fa-briefcase me-2"></i> View Experience
                   </a>
-                  <a href="/my-works" class="btn-outline-custom">
+                  <a href="/my-works" class="btn-outline-custom magnetic-btn" data-magnetic>
                     <i class="fas fa-code me-2"></i> View Projects
                   </a>
-                  <a href="/contact-me" class="btn-outline-custom"
+                  <a href="/contact-me" class="btn-outline-custom magnetic-btn" data-magnetic
                     style="border-color: var(--text-tertiary); color: var(--text-secondary);">
                     <i class="fas fa-envelope me-2"></i> Contact Me
                   </a>
-                  <a href="/view-asset/documents/Resume.pdf" class="btn btn-link text-muted text-decoration-none fw-bold ms-2"
-                    download="Resume.pdf">
+                  <a href="/view-asset/documents/Resume.pdf"
+                    class="btn btn-link text-muted text-decoration-none fw-bold ms-2" download="Resume.pdf">
                     <i class="fas fa-file-pdf me-1"></i> Download Resume
                   </a>
                 </div>
@@ -76,19 +81,19 @@
             </div>
 
             <% if(data.yrsExperience) { %>
-                <div class="d-flex align-items-center justify-content-center glass-card px-4 py-2 mx-auto shadow-sm"
-                  style="border-radius: 30px; width: max-content; max-width: 100%; border-color: var(--accent-primary) !important;"
-                  data-aos="fade-up" data-aos-delay="300">
-                  <i class="fas fa-briefcase text-gradient fs-3 me-3"></i>
-                  <div class="text-start lh-1">
-                    <span class="fw-bolder fs-4 text-gradient d-block">
-                      <%= data.yrsExperience %>+ Years
-                    </span>
-                    <span class="fw-bold text-muted text-uppercase"
-                      style="font-size: 0.75rem; letter-spacing: 1.5px;">Experience</span>
-                  </div>
+              <div class="d-flex align-items-center justify-content-center glass-card px-4 py-2 mx-auto shadow-sm"
+                style="border-radius: 30px; width: max-content; max-width: 100%; border-color: var(--accent-primary) !important;"
+                data-aos="fade-up" data-aos-delay="300">
+                <i class="fas fa-briefcase text-gradient fs-3 me-3"></i>
+                <div class="text-start lh-1">
+                  <span class="fw-bolder fs-4 text-gradient d-block">
+                    <%= data.yrsExperience %>+ Years
+                  </span>
+                  <span class="fw-bold text-muted text-uppercase"
+                    style="font-size: 0.75rem; letter-spacing: 1.5px;">Experience</span>
                 </div>
-            <% } %>
+              </div>
+              <% } %>
           </div>
 
         </div>
@@ -149,13 +154,13 @@
                       </p>
                       <div class="mt-4 d-flex justify-content-between align-items-center">
                         <% if(topCert.document_path) { %>
-                          <button class="btn btn-sm btn-outline-primary rounded-pill fw-bold pdf-trigger" 
-                                  data-pdf="<%= topCert.document_path %>" data-title="<%= topCert.name %>">
+                          <button class="btn btn-sm btn-outline-primary rounded-pill fw-bold pdf-trigger"
+                            data-pdf="<%= topCert.document_path %>" data-title="<%= topCert.name %>">
                             <i class="far fa-file-pdf me-1"></i> PDF
                           </button>
-                        <% } %>
-                        <a href="/certifications" class="text-accent fw-bold text-decoration-none small">View All
-                          Certifications <i class="fas fa-arrow-right ms-1"></i></a>
+                          <% } %>
+                            <a href="/certifications" class="text-accent fw-bold text-decoration-none small">View All
+                              Certifications <i class="fas fa-arrow-right ms-1"></i></a>
                       </div>
                     </div>
                   </div>
@@ -174,13 +179,15 @@
                                 <h4 class="h5 fw-bold mb-2">
                                   <%= topAward.title %>
                                 </h4>
-                                <p class="text-muted small mb-0 fst-italic">"<%= topAward.description_raw.split('.')[0] %>."</p>
+                                <p class="text-muted small mb-0 fst-italic">"<%= topAward.description_raw.split('.')[0]
+                                    %>."</p>
                               </div>
                               <% if(topAward.image_path) { %>
                                 <div class="flex-shrink-0">
-                                  <img src="<%= topAward.image_path %>" alt="Award" class="rounded shadow-sm border" style="width: 80px; height: 60px; object-fit: cover;">
+                                  <img src="<%= topAward.image_path %>" alt="Award" class="rounded shadow-sm border"
+                                    style="width: 80px; height: 60px; object-fit: cover;">
                                 </div>
-                              <% } %>
+                                <% } %>
                             </div>
                             <div class="mt-4 text-end">
                               <a href="/honors-awards" class="text-success fw-bold text-decoration-none small">View All
@@ -192,7 +199,7 @@
             </div>
           </div>
           <% } %>
-          
+
             <div class="container mb-5">
               <%- include('partials/recommendations') %>
             </div>
@@ -212,24 +219,27 @@
             </div>
 
             <%- include('partials/footer') %>
-            <%- include('partials/pdf-viewer') %>
+              <%- include('partials/pdf-viewer') %>
 
-              <!-- Typed.js Configuration -->
-              <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                  const strings = <%- JSON.stringify(data.typedStrings || []) %>;
-                  
-                  if (strings.length > 0 && document.getElementById('typed-headline')) {
-                    new Typed('#typed-headline', {
-                      strings: strings,
-                      typeSpeed: 60,
-                      backSpeed: 40,
-                      backDelay: 1500,
-                      loop: true
+                <!-- Micro-Interactions Script -->
+                <script>
+                  document.addEventListener('DOMContentLoaded', () => {
+
+                    // Magnetic Buttons
+                    document.querySelectorAll('[data-magnetic]').forEach(btn => {
+                      btn.addEventListener('mousemove', (e) => {
+                        const rect = btn.getBoundingClientRect();
+                        const x = e.clientX - rect.left - rect.width / 2;
+                        const y = e.clientY - rect.top - rect.height / 2;
+                        btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+                      });
+                      btn.addEventListener('mouseleave', () => {
+                        btn.style.transform = `translate(0px, 0px)`;
+                      });
                     });
-                  }
-                });
-              </script>
+                  });
+                </script>
+                <script id="index-script" data-strings="<%= JSON.stringify(data.typedStrings || []) %>" src="/scripts/app/index.js"></script>
 </body>
 
 </html>

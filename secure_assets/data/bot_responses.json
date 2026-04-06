@@ -1,0 +1,173 @@
+{
+  "responses": {
+    "small_talk": {
+      "answer": [
+        "Hello! I'm Akhilesh's AI Assistant. How can I help you today?",
+        "Hi there! I'm here to help you explore Akhilesh's career, projects, and skills.",
+        "Hey! Ready to dive into Akhilesh's professional journey? What would you like to know?",
+        "Greetings! I'm a deterministic knowledge engine powered by Akhilesh's real data.",
+        "Hi! Feel free to ask about his SAP experience, his IoT projects, or his technical skills."
+      ],
+      "deeper_answer": "I am a context-aware chatbot designed to provide 100% accurate, data-driven information about Akhilesh's professional background.",
+      "suggestions": [
+        "Tell me about his SAP work",
+        "What are his core skills?",
+        "Download his resume"
+      ]
+    },
+    "thanks": {
+      "answer": [
+        "You're very welcome! Happy to help.",
+        "Anytime! Let me know if you have more questions.",
+        "Glad I could be of assistance!",
+        "Cheer! It's a pleasure helping you explore Akhilesh's profile.",
+        "You got it! What else is on your mind?"
+      ],
+      "deeper_answer": "Providing accurate and helpful information is my primary goal.",
+      "suggestions": [
+        "Show his projects",
+        "How to contact him?"
+      ]
+    },
+    "bye": {
+      "answer": [
+        "Goodbye! Have a productive day ahead.",
+        "See you later! Feel free to return anytime.",
+        "Bye! It was a pleasure assisting you.",
+        "Take care! Hope you found what you were looking for.",
+        "Signing off! Catch you next time."
+      ],
+      "deeper_answer": "I'll be here whenever you need more details about Akhilesh's work.",
+      "suggestions": [
+        "Wait, one more thing...",
+        "Tell me about his SAP work"
+      ]
+    },
+    "jokes": {
+      "answer": [
+        "Why do programmers always mix up Halloween and Christmas? Because Oct 31 == Dec 25!",
+        "How many programmers does it take to change a light bulb? None, that's a hardware problem.",
+        "['hip', 'hip'] (hip hip array!)",
+        "A SQL query walks into a bar, walks up to two tables, and asks, 'Can I join you?'",
+        "Why did the web developer walk out of a restaurant? Because of the table layout.",
+        "Real programmers count from 0.",
+        "I've got a great UDP joke, but I'm not sure if you'll get it.",
+        "There are 10 types of people in the world: those who understand binary, and those who don't.",
+        "Why did the functions stop calling each other? Because they had constant arguments.",
+        "What's the object-oriented way to become wealthy? Inheritance.",
+        "Why did the developer go broke? Because he used up all his cache.",
+        "To understand what recursion is, you must first understand what recursion is.",
+        "I would tell you a joke about DNS, but you might have to wait 24 hours to get it.",
+        "Why do Java developers wear glasses? Because they don't C#.",
+        "An optimist says: 'The glass is half full.' A pessimist says: 'The Glass is half empty.' An engineer says: 'The glass is twice as big as it needs to be.'",
+        "What is a programmer's favorite hangout place? The Foo Bar.",
+        "Why was the JavaScript developer sad? Because he didn't know how to 'null' his feelings.",
+        "Software developers like to solve problems. If there are no problems available, they will create their own problems.",
+        "How do you tell an introverted computer scientist from an extroverted one? An extroverted computer scientist looks at your shoes when they talk to you.",
+        "A programmer had a problem. He decided to use Java. Now he has a ProblemFactory.",
+        "Hardware is the part of a computer that you can kick; software is the part you can only curse at.",
+        "Why was the cell phone wearing glasses? Because it lost its contacts."
+      ],
+      "deeper_answer": "Code humor is the best humor. Need another one?",
+      "suggestions": [
+        "Tell me a riddle",
+        "Go back to career info"
+      ]
+    },
+    "riddles": {
+      "answer": [
+        "What has keys but can't open locks? A piano (or a keyboard!).",
+        "The more of this there is, the less you see. What is it? Darkness.",
+        "What has a head and a tail but no body? A coin.",
+        "What can travel around the world while staying in a corner? A stamp.",
+        "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I? A map.",
+        "What belongs to you, but others use it more than you do? Your name.",
+        "What has to be broken before you can use it? An egg.",
+        "I’m tall when I’m young, and I’m short when I’m old. What am I? A candle.",
+        "What month of the year has 28 days? All of them.",
+        "What is full of holes but still holds water? A sponge.",
+        "What question can you never answer yes to? Are you asleep yet?",
+        "What is always in front of you but can’t be seen? The future.",
+        "There’s a one-story house in which everything is yellow. Yellow walls, yellow doors, yellow furniture. What color are the stairs? There are no stairs—it’s a one-story house.",
+        "What can you break, even if you never pick it up or touch it? A promise.",
+        "What goes up but never comes down? Your age.",
+        "A man who was outside in the rain without an umbrella or hat didn’t get a single hair on his head wet. Why? He was bald.",
+        "What gets wet while drying? A towel.",
+        "I can’t be bought, but I can be stolen with a glance. I’m worthless to one, but priceless to two. What am I? Love.",
+        "What has words, but never speaks? A book.",
+        "What has many keys but can’t even open a single door? A piano.",
+        "What can you catch, but not throw? A cold.",
+        "What starts with T, ends with T, and has T in it? A teapot."
+      ],
+      "deeper_answer": "Logic and lateral thinking are key to great engineering. Want another one?",
+      "suggestions": [
+        "Tell me a joke",
+        "Show SAP experience"
+      ]
+    },
+    "facts": {
+      "answer": [
+        "The first computer programmer was Ada Lovelace, who wrote an algorithm for the Analytical Engine in the 1840s.",
+        "The word 'bug' was coined in 1947 when a moth was found trapped in a Harvard Mark II computer.",
+        "The first hard drive ever made could only hold 5MB of data.",
+        "Python is named after the comedy group Monty Python, not the snake.",
+        "The 'ping' command is named after the sound a sonar makes.",
+        "The first domain name ever registered was Symbolics.com on March 15, 1885.",
+        "About 90% of the world's currency only exists on computers.",
+        "The first web page went live on August 6, 1991.",
+        "Linux powers 100% of the world's top 500 supercomputers.",
+        "The 'C' programming language was developed at Bell Labs between 1972 and 1973.",
+        "The Apollo 11 guidance computer had less memory than a modern calculator.",
+        "A group of programmers is called a merge conflict. (Just kidding, but it should be!)",
+        "The most popular programming language in the world is JavaScript.",
+        "Git was created by Linus Torvalds in just 10 days.",
+        "The first computer mouse was made of wood.",
+        "There are over 700 programming languages in existence.",
+        "The space in a 3.5-inch floppy disk is less than one high-resolution photo today.",
+        "The 404 error code was named after a room at CERN where the original web servers were located.",
+        "Email was invented before the World Wide Web.",
+        "Computers don't actually understand anything besides 0 and 1.",
+        "The first computer virus was called Creeper, created in 1971.",
+        "A CAPTCHA is an acronym for 'Completely Automated Public Turing test to tell Computers and Humans Apart'."
+      ],
+      "deeper_answer": "Technology history is fascinating. Want more trivia?",
+      "suggestions": [
+        "Tell me a joke",
+        "What are his skills?"
+      ]
+    },
+    "feedback": {
+      "answer": [
+        "You can use the contact form available on this website to send a message or feedback. 🔗 View Contact Page"
+      ],
+      "deeper_answer": "Feedback is very important for Akhilesh's continuous improvement.",
+      "suggestions": [
+        "Contact him",
+        "Resume"
+      ]
+    },
+    "persona_private": {
+      "answer": [
+        "Akhilesh values professional focus in this portfolio. For personal inquiries like age or offline details, LinkedIn is the best place to connect!",
+        "This assistant is designed to explore his professional career, skills, and projects. Personal details are kept private."
+      ],
+      "deeper_answer": "Maintaining a professional persona is key to his brand. He is currently focused on Cloud Platform Engineering and DevOps at SAP.",
+      "suggestions": [
+        "View his experience",
+        "See his skills",
+        "LinkedIn"
+      ]
+    },
+    "hire_him_mode": {
+      "answer": [
+        "Akhilesh brings 6+ years of hands-on Cloud and DevOps engineering across SAP Enterprise Cloud Services and Juniper Networks. He is Kubernetes, Docker, Terraform, Ansible, Jenkins, GitOps, and CI/CD pipeline expert  , has led cloud-native migrations at scale, and consistently delivers measurable impact — from reducing deployment cycles to building highly available, multi-cloud infrastructure. He is collaborative, a proven mentor, and highly recommended by senior engineers and managers."
+      ],
+      "deeper_answer": "His value proposition: deep Kubernetes expertise + GitOps automation + full-stack background + a track record of delivering at enterprise scale. He bridges the gap between infrastructure and product engineering — exactly what growing cloud teams need.",
+      "suggestions": [
+        "View Resume",
+        "LinkedIn Profile",
+        "Contact him"
+      ]
+    }
+  }
+}
