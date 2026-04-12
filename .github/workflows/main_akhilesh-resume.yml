@@ -68,6 +68,18 @@ jobs:
         with:
           name: node-app
 
+      - name: "Hook or Crook: Forcible Kudu Reset"
+        run: |
+          PROFILE='${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DDCCD8B250364A4B8741409111F215B6 }}'
+          USER_NAME=$(echo "$PROFILE" | grep -o 'userName="[^"]*"' | head -1 | cut -d'"' -f2)
+          USER_PWD=$(echo "$PROFILE" | grep -o 'userPWD="[^"]*"' | head -1 | cut -d'"' -f2)
+          SCM_URL="https://akhilesh-resume.scm.azurewebsites.net"
+          
+          echo "🚀 Triggering forced server-side restart to clear 409 Conflict..."
+          curl -X POST -u "$USER_NAME:$USER_PWD" "$SCM_URL/api/operations/restart"
+          echo "⏳ Waiting 20 seconds for lock release..."
+          sleep 20
+
       - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
