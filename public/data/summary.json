@@ -4,7 +4,7 @@
       "id": "staff_27dfe89b",
       "intent": "resume_download",
       "domain": "resume",
-      "priority": 5000,
+      "priority": 3500,
       "exact_questions": [
         "download resume",
         "get resume",
@@ -21,10 +21,6 @@
         },
         {
           "text": "resume",
-          "weight": 1.5
-        },
-        {
-          "text": "get",
           "weight": 1.5
         },
         {
@@ -64,7 +60,6 @@
       "high_entropy_keywords": [
         "download",
         "resume",
-        "get",
         "view",
         "link",
         "cv"
@@ -72,7 +67,6 @@
       "weights": {
         "download": 333.3333333333333,
         "resume": 250,
-        "get": 333.3333333333333,
         "view": 1000,
         "link": 500,
         "cv": 333.3333333333333
@@ -169,14 +163,14 @@
       "id": "staff_2f8a6bf3",
       "intent": "contact",
       "domain": "contact",
-      "priority": 4000,
+      "priority": 4500,
       "exact_questions": [
         "contact",
-        "how to reach him",
-        "get in touch",
+        "how to contact him",
+        "reach him",
+        "email address",
         "phone number",
-        "reach out",
-        "email address"
+        "get in touch"
       ],
       "keywords": [
         {
@@ -188,11 +182,11 @@
           "weight": 1.5
         },
         {
-          "text": "get",
+          "text": "email",
           "weight": 1.5
         },
         {
-          "text": "touch",
+          "text": "address",
           "weight": 1.5
         },
         {
@@ -204,15 +198,7 @@
           "weight": 1.5
         },
         {
-          "text": "out",
-          "weight": 1.5
-        },
-        {
-          "text": "email",
-          "weight": 1.5
-        },
-        {
-          "text": "address",
+          "text": "touch",
           "weight": 1.5
         }
       ],
@@ -231,42 +217,38 @@
       "suggestions": [],
       "follow_up": [
         {
-          "text": "Feedback",
-          "intent": "feedback"
+          "text": "LinkedIn Profile",
+          "intent": "linkedin"
         },
         {
-          "text": "LinkedIn",
-          "intent": "linkedin"
+          "text": "Download Resume",
+          "intent": "resume_download"
         }
       ],
       "high_entropy_keywords": [
         "contact",
         "reach",
-        "get",
-        "touch",
+        "email",
+        "address",
         "phone",
         "number",
-        "out",
-        "email",
-        "address"
+        "touch"
       ],
       "weights": {
-        "contact": 500,
-        "reach": 500,
-        "get": 333.3333333333333,
-        "touch": 1000,
+        "contact": 333.3333333333333,
+        "reach": 1000,
+        "email": 1000,
+        "address": 500,
         "phone": 1000,
         "number": 1000,
-        "out": 1000,
-        "email": 1000,
-        "address": 500
+        "touch": 1000
       },
       "phrases": [
+        "contact",
         "reach",
-        "get touch",
+        "email address",
         "phone number",
-        "reach out",
-        "email address"
+        "get touch"
       ],
       "ml_vectors": [
         {
@@ -282,8 +264,19 @@
           "w t": 1,
           " to": 1,
           "to ": 1,
-          "o r": 1,
-          " re": 1,
+          "o c": 1,
+          " co": 1,
+          "con": 1,
+          "ont": 1,
+          "nta": 1,
+          "tac": 1,
+          "act": 1,
+          "ct ": 1,
+          "t h": 1,
+          " hi": 1,
+          "him": 1
+        },
+        {
           "rea": 1,
           "eac": 1,
           "ach": 1,
@@ -293,16 +286,17 @@
           "him": 1
         },
         {
-          "get": 1,
-          "et ": 1,
-          "t i": 1,
-          " in": 1,
-          "in ": 1,
-          "n t": 1,
-          " to": 1,
-          "tou": 1,
-          "ouc": 1,
-          "uch": 1
+          "ema": 1,
+          "mai": 1,
+          "ail": 1,
+          "il ": 1,
+          "l a": 1,
+          " ad": 1,
+          "add": 1,
+          "ddr": 1,
+          "dre": 1,
+          "res": 1,
+          "ess": 1
         },
         {
           "pho": 1,
@@ -317,26 +311,16 @@
           "ber": 1
         },
         {
-          "rea": 1,
-          "eac": 1,
-          "ach": 1,
-          "ch ": 1,
-          "h o": 1,
-          " ou": 1,
-          "out": 1
-        },
-        {
-          "ema": 1,
-          "mai": 1,
-          "ail": 1,
-          "il ": 1,
-          "l a": 1,
-          " ad": 1,
-          "add": 1,
-          "ddr": 1,
-          "dre": 1,
-          "res": 1,
-          "ess": 1
+          "get": 1,
+          "et ": 1,
+          "t i": 1,
+          " in": 1,
+          "in ": 1,
+          "n t": 1,
+          " to": 1,
+          "tou": 1,
+          "ouc": 1,
+          "uch": 1
         }
       ],
       "negatives": []
@@ -345,7 +329,7 @@
       "id": "staff_d5189de0",
       "intent": "location",
       "domain": "contact",
-      "priority": 5000,
+      "priority": 3000,
       "exact_questions": [
         "location",
         "address",
@@ -405,7 +389,7 @@
         "address": 500,
         "located": 1000,
         "live": 1000,
-        "current": 1000,
+        "current": 250,
         "city": 500
       },
       "phrases": [
@@ -496,7 +480,7 @@
       "id": "staff_f1576406",
       "intent": "linkedin",
       "domain": "contact",
-      "priority": 5000,
+      "priority": 3000,
       "exact_questions": [
         "linkedin",
         "linkedin profile",
@@ -535,7 +519,7 @@
       ],
       "weights": {
         "linkedin": 333.3333333333333,
-        "profile": 333.3333333333333,
+        "profile": 250,
         "link": 500
       },
       "phrases": [
@@ -585,7 +569,7 @@
       "id": "staff_bf215181",
       "intent": "github",
       "domain": "contact",
-      "priority": 5000,
+      "priority": 3000,
       "exact_questions": [
         "github",
         "github profile",
@@ -635,7 +619,7 @@
       ],
       "weights": {
         "github": 250,
-        "profile": 333.3333333333333,
+        "profile": 250,
         "source": 1000,
         "code": 500,
         "git": 1000
@@ -695,7 +679,7 @@
       "id": "staff_39652074",
       "intent": "feedback",
       "domain": "contact",
-      "priority": 5000,
+      "priority": 3000,
       "exact_questions": [
         "how to give feedback",
         "give feedback",
@@ -737,7 +721,7 @@
         }
       ],
       "answer": [
-        "You can use the contact form available on this website to send a message or feedback. 🔗 View Contact Page"
+        "You can use the contact form available on this website to send a message or feedback. <a href=\"/contact-me\" class=\"chat-link\">🔗 View Contact Page</a>"
       ],
       "deeper_answer": "Feedback is very important for Akhilesh's continuous improvement.",
       "details": null,
@@ -768,7 +752,7 @@
       "weights": {
         "feedback": 250,
         "send": 1000,
-        "contact": 500,
+        "contact": 333.3333333333333,
         "form": 1000,
         "message": 500,
         "complaint": 1000,
@@ -896,13 +880,14 @@
       "id": "staff_ef983058",
       "intent": "headline",
       "domain": "identity",
-      "priority": 3000,
+      "priority": 3800,
       "exact_questions": [
         "headline",
         "title",
+        "what is his professional title",
+        "role summary",
         "what is his role",
-        "professional summary",
-        "about work"
+        "professional summary"
       ],
       "keywords": [
         {
@@ -914,19 +899,15 @@
           "weight": 1.5
         },
         {
-          "text": "role",
-          "weight": 1.5
-        },
-        {
           "text": "professional",
           "weight": 1.5
         },
         {
-          "text": "summary",
+          "text": "role",
           "weight": 1.5
         },
         {
-          "text": "work",
+          "text": "summary",
           "weight": 1.5
         }
       ],
@@ -948,23 +929,22 @@
       "high_entropy_keywords": [
         "headline",
         "title",
-        "role",
         "professional",
-        "summary",
-        "work"
+        "role",
+        "summary"
       ],
       "weights": {
         "headline": 1000,
-        "title": 1000,
-        "role": 200,
-        "professional": 500,
-        "summary": 200,
-        "work": 166.66666666666666
+        "title": 500,
+        "professional": 250,
+        "role": 166.66666666666666,
+        "summary": 166.66666666666666
       },
       "phrases": [
+        "professional title",
+        "role summary",
         "role",
-        "professional summary",
-        "work"
+        "professional summary"
       ],
       "ml_vectors": [
         {
@@ -979,6 +959,47 @@
           "tit": 1,
           "itl": 1,
           "tle": 1
+        },
+        {
+          "wha": 1,
+          "hat": 1,
+          "at ": 1,
+          "t i": 1,
+          " is": 1,
+          "is ": 2,
+          "s h": 1,
+          " hi": 1,
+          "his": 1,
+          "s p": 1,
+          " pr": 1,
+          "pro": 1,
+          "rof": 1,
+          "ofe": 1,
+          "fes": 1,
+          "ess": 1,
+          "ssi": 1,
+          "sio": 1,
+          "ion": 1,
+          "ona": 1,
+          "nal": 1,
+          "al ": 1,
+          "l t": 1,
+          " ti": 1,
+          "tit": 1,
+          "itl": 1,
+          "tle": 1
+        },
+        {
+          "rol": 1,
+          "ole": 1,
+          "le ": 1,
+          "e s": 1,
+          " su": 1,
+          "sum": 1,
+          "umm": 1,
+          "mma": 1,
+          "mar": 1,
+          "ary": 1
         },
         {
           "wha": 1,
@@ -1014,16 +1035,6 @@
           "mma": 1,
           "mar": 1,
           "ary": 1
-        },
-        {
-          "abo": 1,
-          "bou": 1,
-          "out": 1,
-          "ut ": 1,
-          "t w": 1,
-          " wo": 1,
-          "wor": 1,
-          "ork": 1
         }
       ],
       "negatives": []
@@ -1032,29 +1043,18 @@
       "id": "staff_ff483d1f",
       "intent": "identity",
       "domain": "identity",
-      "priority": 2000,
+      "priority": 4000,
       "exact_questions": [
-        "who are you",
-        "your name",
         "identity",
         "who is he",
         "biography",
         "background",
         "akhilesh",
-        "about this bot",
-        "persona",
-        "age",
-        "height"
+        "profile",
+        "bio",
+        "about"
       ],
       "keywords": [
-        {
-          "text": "you",
-          "weight": 1.5
-        },
-        {
-          "text": "name",
-          "weight": 1.5
-        },
         {
           "text": "identity",
           "weight": 1.5
@@ -1072,23 +1072,11 @@
           "weight": 1.5
         },
         {
-          "text": "this",
+          "text": "profile",
           "weight": 1.5
         },
         {
-          "text": "bot",
-          "weight": 1.5
-        },
-        {
-          "text": "persona",
-          "weight": 1.5
-        },
-        {
-          "text": "age",
-          "weight": 1.5
-        },
-        {
-          "text": "height",
+          "text": "bio",
           "weight": 1.5
         }
       ],
@@ -1163,58 +1151,25 @@
         }
       ],
       "high_entropy_keywords": [
-        "you",
-        "name",
         "identity",
         "biography",
         "background",
         "akhilesh",
-        "this",
-        "bot",
-        "persona",
-        "age",
-        "height"
+        "profile",
+        "bio"
       ],
       "weights": {
-        "you": 200,
-        "name": 1000,
         "identity": 1000,
         "biography": 1000,
         "background": 250,
         "akhilesh": 1000,
-        "this": 1000,
-        "bot": 333.3333333333333,
-        "persona": 1000,
-        "age": 500,
-        "height": 500
+        "profile": 250,
+        "bio": 1000
       },
       "phrases": [
-        "you",
-        "name",
-        "",
-        "this bot"
+        ""
       ],
       "ml_vectors": [
-        {
-          "who": 1,
-          "ho ": 1,
-          "o a": 1,
-          " ar": 1,
-          "are": 1,
-          "re ": 1,
-          "e y": 1,
-          " yo": 1,
-          "you": 1
-        },
-        {
-          "you": 1,
-          "our": 1,
-          "ur ": 1,
-          "r n": 1,
-          " na": 1,
-          "nam": 1,
-          "ame": 1
-        },
         {
           "ide": 1,
           "den": 1,
@@ -1260,6 +1215,199 @@
           "esh": 1
         },
         {
+          "pro": 1,
+          "rof": 1,
+          "ofi": 1,
+          "fil": 1,
+          "ile": 1
+        },
+        {
+          "bio": 1
+        },
+        {
+          "abo": 1,
+          "bou": 1,
+          "out": 1
+        }
+      ],
+      "negatives": [
+        "resume",
+        "projects",
+        "download",
+        "email",
+        "you"
+      ]
+    },
+    {
+      "id": "staff_7b54d2e7",
+      "intent": "bot_identity",
+      "domain": "identity",
+      "priority": 1800,
+      "exact_questions": [
+        "who are you",
+        "your name",
+        "what are you",
+        "who am i talking to",
+        "what is your purpose",
+        "about this bot",
+        "persona"
+      ],
+      "keywords": [
+        {
+          "text": "you",
+          "weight": 1.5
+        },
+        {
+          "text": "name",
+          "weight": 1.5
+        },
+        {
+          "text": "am",
+          "weight": 1.5
+        },
+        {
+          "text": "talking",
+          "weight": 1.5
+        },
+        {
+          "text": "purpose",
+          "weight": 1.5
+        },
+        {
+          "text": "this",
+          "weight": 1.5
+        },
+        {
+          "text": "bot",
+          "weight": 1.5
+        },
+        {
+          "text": "persona",
+          "weight": 1.5
+        }
+      ],
+      "answer": [
+        "I am Akhilesh's AI Portfolio Assistant. I'm a knowledge engine designed to help you explore his career, projects, and skills with 100% data-driven accuracy."
+      ],
+      "deeper_answer": "I'm built using a hybrid deterministic-AI engine to ensure everything I say is anchored in Akhilesh's real professional data.",
+      "details": null,
+      "details_formatted": null,
+      "suggestions": [
+        "How can you help?",
+        "Who is Akhilesh?",
+        "Show his skills"
+      ],
+      "follow_up": [
+        {
+          "text": "How can you help?",
+          "intent": "bot_help"
+        },
+        {
+          "text": "Who is Akhilesh?",
+          "intent": "identity"
+        }
+      ],
+      "high_entropy_keywords": [
+        "you",
+        "name",
+        "am",
+        "talking",
+        "purpose",
+        "this",
+        "bot",
+        "persona"
+      ],
+      "weights": {
+        "you": 111.11111111111111,
+        "name": 1000,
+        "am": 1000,
+        "talking": 1000,
+        "purpose": 1000,
+        "this": 500,
+        "bot": 142.85714285714286,
+        "persona": 1000
+      },
+      "phrases": [
+        "you",
+        "name",
+        "you",
+        "am talking",
+        "purpose",
+        "this bot"
+      ],
+      "ml_vectors": [
+        {
+          "who": 1,
+          "ho ": 1,
+          "o a": 1,
+          " ar": 1,
+          "are": 1,
+          "re ": 1,
+          "e y": 1,
+          " yo": 1,
+          "you": 1
+        },
+        {
+          "you": 1,
+          "our": 1,
+          "ur ": 1,
+          "r n": 1,
+          " na": 1,
+          "nam": 1,
+          "ame": 1
+        },
+        {
+          "wha": 1,
+          "hat": 1,
+          "at ": 1,
+          "t a": 1,
+          " ar": 1,
+          "are": 1,
+          "re ": 1,
+          "e y": 1,
+          " yo": 1,
+          "you": 1
+        },
+        {
+          "who": 1,
+          "ho ": 1,
+          "o a": 1,
+          " am": 1,
+          "am ": 1,
+          "m i": 1,
+          " i ": 1,
+          "i t": 1,
+          " ta": 1,
+          "tal": 1,
+          "alk": 1,
+          "lki": 1,
+          "kin": 1,
+          "ing": 1,
+          "ng ": 1,
+          "g t": 1,
+          " to": 1
+        },
+        {
+          "wha": 1,
+          "hat": 1,
+          "at ": 1,
+          "t i": 1,
+          " is": 1,
+          "is ": 1,
+          "s y": 1,
+          " yo": 1,
+          "you": 1,
+          "our": 1,
+          "ur ": 1,
+          "r p": 1,
+          " pu": 1,
+          "pur": 1,
+          "urp": 1,
+          "rpo": 1,
+          "pos": 1,
+          "ose": 1
+        },
+        {
           "abo": 1,
           "bou": 1,
           "out": 1,
@@ -1279,34 +1427,182 @@
           "rso": 1,
           "son": 1,
           "ona": 1
-        },
-        {
-          "age": 1
-        },
-        {
-          "hei": 1,
-          "eig": 1,
-          "igh": 1,
-          "ght": 1
         }
       ],
-      "negatives": [
-        "resume",
-        "projects",
-        "download",
-        "email"
-      ]
+      "negatives": []
+    },
+    {
+      "id": "staff_54f76626",
+      "intent": "bot_help",
+      "domain": "identity",
+      "priority": 1800,
+      "exact_questions": [
+        "how can you help",
+        "what can i ask you",
+        "help me",
+        "guide me",
+        "what do you do",
+        "bot help"
+      ],
+      "keywords": [
+        {
+          "text": "can",
+          "weight": 1.5
+        },
+        {
+          "text": "you",
+          "weight": 1.5
+        },
+        {
+          "text": "help",
+          "weight": 1.5
+        },
+        {
+          "text": "ask",
+          "weight": 1.5
+        },
+        {
+          "text": "guide",
+          "weight": 1.5
+        },
+        {
+          "text": "bot",
+          "weight": 1.5
+        }
+      ],
+      "answer": [
+        "I can walk you through his work at SAP and Juniper, show you his Cloud & DevOps projects, list his technical certifications, or even tell you a tech joke! What would you like to explore first?"
+      ],
+      "deeper_answer": "You can ask me about his 'Experience', 'Technical Skills', 'Academic Background', or 'Why hire him?'. I'm here to provide quick, accurate answers for recruiters.",
+      "details": null,
+      "details_formatted": null,
+      "suggestions": [
+        "Show SAP work",
+        "Download Resume",
+        "Tell me a joke"
+      ],
+      "follow_up": [
+        {
+          "text": "Experience",
+          "intent": "experience_summary"
+        },
+        {
+          "text": "Why hire him?",
+          "intent": "why_hire"
+        }
+      ],
+      "high_entropy_keywords": [
+        "can",
+        "you",
+        "help",
+        "ask",
+        "guide",
+        "bot"
+      ],
+      "weights": {
+        "can": 250,
+        "you": 111.11111111111111,
+        "help": 333.3333333333333,
+        "ask": 1000,
+        "guide": 333.3333333333333,
+        "bot": 142.85714285714286
+      },
+      "phrases": [
+        "can you help",
+        "can ask you",
+        "help",
+        "guide",
+        "you",
+        "bot help"
+      ],
+      "ml_vectors": [
+        {
+          "how": 1,
+          "ow ": 1,
+          "w c": 1,
+          " ca": 1,
+          "can": 1,
+          "an ": 1,
+          "n y": 1,
+          " yo": 1,
+          "you": 1,
+          "ou ": 1,
+          "u h": 1,
+          " he": 1,
+          "hel": 1,
+          "elp": 1
+        },
+        {
+          "wha": 1,
+          "hat": 1,
+          "at ": 1,
+          "t c": 1,
+          " ca": 1,
+          "can": 1,
+          "an ": 1,
+          "n i": 1,
+          " i ": 1,
+          "i a": 1,
+          " as": 1,
+          "ask": 1,
+          "sk ": 1,
+          "k y": 1,
+          " yo": 1,
+          "you": 1
+        },
+        {
+          "hel": 1,
+          "elp": 1,
+          "lp ": 1,
+          "p m": 1,
+          " me": 1
+        },
+        {
+          "gui": 1,
+          "uid": 1,
+          "ide": 1,
+          "de ": 1,
+          "e m": 1,
+          " me": 1
+        },
+        {
+          "wha": 1,
+          "hat": 1,
+          "at ": 1,
+          "t d": 1,
+          " do": 2,
+          "do ": 1,
+          "o y": 1,
+          " yo": 1,
+          "you": 1,
+          "ou ": 1,
+          "u d": 1
+        },
+        {
+          "bot": 1,
+          "ot ": 1,
+          "t h": 1,
+          " he": 1,
+          "hel": 1,
+          "elp": 1
+        }
+      ],
+      "negatives": []
     },
     {
       "id": "staff_f7b11037",
       "intent": "capabilities",
       "domain": "identity",
-      "priority": 3000,
+      "priority": 3100,
       "exact_questions": [
         "what can you do",
         "features",
         "capabilities",
-        "bot power"
+        "bot power",
+        "how to use",
+        "how to use this bot",
+        "bot guide",
+        "bot functions"
       ],
       "keywords": [
         {
@@ -1331,6 +1627,22 @@
         },
         {
           "text": "power",
+          "weight": 1.5
+        },
+        {
+          "text": "use",
+          "weight": 1.5
+        },
+        {
+          "text": "this",
+          "weight": 1.5
+        },
+        {
+          "text": "guide",
+          "weight": 1.5
+        },
+        {
+          "text": "functions",
           "weight": 1.5
         }
       ],
@@ -1365,19 +1677,31 @@
         "features",
         "capabilities",
         "bot",
-        "power"
+        "power",
+        "use",
+        "this",
+        "guide",
+        "functions"
       ],
       "weights": {
-        "can": 500,
-        "you": 200,
+        "can": 250,
+        "you": 111.11111111111111,
         "features": 1000,
-        "capabilities": 1000,
-        "bot": 333.3333333333333,
-        "power": 1000
+        "capabilities": 500,
+        "bot": 142.85714285714286,
+        "power": 1000,
+        "use": 500,
+        "this": 500,
+        "guide": 333.3333333333333,
+        "functions": 1000
       },
       "phrases": [
         "can you",
-        "bot power"
+        "bot power",
+        "use",
+        "use this bot",
+        "bot guide",
+        "bot functions"
       ],
       "ml_vectors": [
         {
@@ -1423,6 +1747,57 @@
           "pow": 1,
           "owe": 1,
           "wer": 1
+        },
+        {
+          "how": 1,
+          "ow ": 1,
+          "w t": 1,
+          " to": 1,
+          "to ": 1,
+          "o u": 1,
+          " us": 1,
+          "use": 1
+        },
+        {
+          "how": 1,
+          "ow ": 1,
+          "w t": 1,
+          " to": 1,
+          "to ": 1,
+          "o u": 1,
+          " us": 1,
+          "use": 1,
+          "se ": 1,
+          "e t": 1,
+          " th": 1,
+          "thi": 1,
+          "his": 1,
+          "is ": 1,
+          "s b": 1,
+          " bo": 1,
+          "bot": 1
+        },
+        {
+          "bot": 1,
+          "ot ": 1,
+          "t g": 1,
+          " gu": 1,
+          "gui": 1,
+          "uid": 1,
+          "ide": 1
+        },
+        {
+          "bot": 1,
+          "ot ": 1,
+          "t f": 1,
+          " fu": 1,
+          "fun": 1,
+          "unc": 1,
+          "nct": 1,
+          "cti": 1,
+          "tio": 1,
+          "ion": 1,
+          "ons": 1
         }
       ],
       "negatives": [
@@ -1489,7 +1864,7 @@
         }
       ],
       "answer": [
-        "Akhilesh values professional focus in this portfolio. For personal inquiries like age or offline details, LinkedIn is the best place to connect!",
+        "Akhilesh values professional focus in this portfolio. For personal inquiries, LinkedIn is the best place to connect!",
         "This assistant is designed to explore his professional career, skills, and projects. Personal details are kept private."
       ],
       "deeper_answer": "Maintaining a professional persona is key to his brand. He is currently focused on Cloud Platform Engineering and DevOps at SAP.",
@@ -1513,8 +1888,8 @@
         "income"
       ],
       "weights": {
-        "age": 500,
-        "height": 500,
+        "age": 1000,
+        "height": 1000,
         "eyes": 1000,
         "personal": 1000,
         "life": 1000,
@@ -1598,7 +1973,13 @@
         "sap gardener",
         "sap ecs",
         "it cloud service specialist",
-        "cloud service specialist"
+        "cloud service specialist",
+        "current company",
+        "current employer",
+        "working now",
+        "currently working",
+        "current workplace",
+        "where does he work now"
       ],
       "keywords": [
         {
@@ -1626,10 +2007,6 @@
           "weight": 1.5
         },
         {
-          "text": "it",
-          "weight": 1.5
-        },
-        {
           "text": "cloud",
           "weight": 1.5
         },
@@ -1640,14 +2017,46 @@
         {
           "text": "specialist",
           "weight": 1.5
+        },
+        {
+          "text": "current",
+          "weight": 1.5
+        },
+        {
+          "text": "company",
+          "weight": 1.5
+        },
+        {
+          "text": "employer",
+          "weight": 1.5
+        },
+        {
+          "text": "working",
+          "weight": 1.5
+        },
+        {
+          "text": "now",
+          "weight": 1.5
+        },
+        {
+          "text": "currently",
+          "weight": 1.5
+        },
+        {
+          "text": "workplace",
+          "weight": 1.5
+        },
+        {
+          "text": "work",
+          "weight": 1.5
         }
       ],
       "answer": [
-        "Regarding his professional background: He has worked as a IT Cloud Service Specialist at SAP (2025-12 - Present).",
-        "Akhilesh has worked extensively in this area. He has worked as a IT Cloud Service Specialist at SAP (2025-12 - Present).",
-        "His career highlights include: He has worked as a IT Cloud Service Specialist at SAP (2025-12 - Present)."
+        "Regarding his professional background: He has worked at SAP in various roles, moving from IT Cloud Service Specialist (2025-12 - Present).",
+        "Akhilesh has worked extensively in this area. He has worked at SAP in various roles, moving from IT Cloud Service Specialist (2025-12 - Present).",
+        "His career highlights include: He has worked at SAP in various roles, moving from IT Cloud Service Specialist (2025-12 - Present)."
       ],
-      "deeper_answer": "He has 6+ years of experience including roles at SAP and Juniper Networks.",
+      "deeper_answer": "His most recent role at SAP was IT Cloud Service Specialist. He has 6+ years of total experience.",
       "details": [
         {
           "company": "SAP",
@@ -1714,22 +2123,35 @@
         "achievements",
         "gardener",
         "ecs",
-        "it",
         "cloud",
         "service",
-        "specialist"
+        "specialist",
+        "current",
+        "company",
+        "employer",
+        "working",
+        "now",
+        "currently",
+        "workplace"
       ],
       "weights": {
-        "sap": 142.85714285714286,
-        "experience": 200,
-        "role": 200,
-        "achievements": 333.3333333333333,
+        "sap": 111.11111111111111,
+        "experience": 166.66666666666666,
+        "role": 166.66666666666666,
+        "achievements": 250,
         "gardener": 1000,
         "ecs": 1000,
-        "it": 1000,
         "cloud": 125,
         "service": 500,
-        "specialist": 500
+        "specialist": 500,
+        "current": 250,
+        "company": 500,
+        "employer": 500,
+        "working": 500,
+        "now": 500,
+        "currently": 1000,
+        "workplace": 1000,
+        "work": 90.9090909090909
       },
       "phrases": [
         "sap experience",
@@ -1738,8 +2160,14 @@
         "sap achievements",
         "sap gardener",
         "sap ecs",
-        "it cloud service specialist",
-        "cloud service specialist"
+        "cloud service specialist",
+        "cloud service specialist",
+        "current company",
+        "current employer",
+        "working now",
+        "currently working",
+        "current workplace",
+        "work now"
       ],
       "ml_vectors": [
         {
@@ -1879,6 +2307,104 @@
           "ali": 1,
           "lis": 1,
           "ist": 1
+        },
+        {
+          "cur": 1,
+          "urr": 1,
+          "rre": 1,
+          "ren": 1,
+          "ent": 1,
+          "nt ": 1,
+          "t c": 1,
+          " co": 1,
+          "com": 1,
+          "omp": 1,
+          "mpa": 1,
+          "pan": 1,
+          "any": 1
+        },
+        {
+          "cur": 1,
+          "urr": 1,
+          "rre": 1,
+          "ren": 1,
+          "ent": 1,
+          "nt ": 1,
+          "t e": 1,
+          " em": 1,
+          "emp": 1,
+          "mpl": 1,
+          "plo": 1,
+          "loy": 1,
+          "oye": 1,
+          "yer": 1
+        },
+        {
+          "wor": 1,
+          "ork": 1,
+          "rki": 1,
+          "kin": 1,
+          "ing": 1,
+          "ng ": 1,
+          "g n": 1,
+          " no": 1,
+          "now": 1
+        },
+        {
+          "cur": 1,
+          "urr": 1,
+          "rre": 1,
+          "ren": 1,
+          "ent": 1,
+          "ntl": 1,
+          "tly": 1,
+          "ly ": 1,
+          "y w": 1,
+          " wo": 1,
+          "wor": 1,
+          "ork": 1,
+          "rki": 1,
+          "kin": 1,
+          "ing": 1
+        },
+        {
+          "cur": 1,
+          "urr": 1,
+          "rre": 1,
+          "ren": 1,
+          "ent": 1,
+          "nt ": 1,
+          "t w": 1,
+          " wo": 1,
+          "wor": 1,
+          "ork": 1,
+          "rkp": 1,
+          "kpl": 1,
+          "pla": 1,
+          "lac": 1,
+          "ace": 1
+        },
+        {
+          "whe": 1,
+          "her": 1,
+          "ere": 1,
+          "re ": 1,
+          "e d": 1,
+          " do": 1,
+          "doe": 1,
+          "oes": 1,
+          "es ": 1,
+          "s h": 1,
+          " he": 1,
+          "he ": 1,
+          "e w": 1,
+          " wo": 1,
+          "wor": 1,
+          "ork": 1,
+          "rk ": 1,
+          "k n": 1,
+          " no": 1,
+          "now": 1
         }
       ],
       "negatives": []
@@ -1961,11 +2487,11 @@
         }
       ],
       "answer": [
-        "Regarding his professional background: He has worked as a Software Engineer 3 at Juniper Networks (2023-12 - 2025-12).",
-        "Akhilesh has worked extensively in this area. He has worked as a Software Engineer 3 at Juniper Networks (2023-12 - 2025-12).",
-        "His career highlights include: He has worked as a Software Engineer 3 at Juniper Networks (2023-12 - 2025-12)."
+        "Regarding his professional background: He has worked at Juniper Networks in various roles, moving from Software Engineer 3 → Software Engineer 2 → Software Engineer 1 → Software Engineer Intern (2023-12 - 2025-12).",
+        "Akhilesh has worked extensively in this area. He has worked at Juniper Networks in various roles, moving from Software Engineer 3 → Software Engineer 2 → Software Engineer 1 → Software Engineer Intern (2023-12 - 2025-12).",
+        "His career highlights include: He has worked at Juniper Networks in various roles, moving from Software Engineer 3 → Software Engineer 2 → Software Engineer 1 → Software Engineer Intern (2023-12 - 2025-12)."
       ],
-      "deeper_answer": "He has 6+ years of experience including roles at SAP and Juniper Networks.",
+      "deeper_answer": "His most recent role at Juniper Networks was Software Engineer 3. He has 6+ years of total experience.",
       "details": [
         {
           "company": "Juniper Networks",
@@ -2124,9 +2650,9 @@
         "high": 500,
         "performance": 1000,
         "networks": 500,
-        "experience": 200,
-        "role": 200,
-        "achievements": 333.3333333333333,
+        "experience": 166.66666666666666,
+        "role": 166.66666666666666,
+        "achievements": 250,
         "software": 250,
         "engineer": 250,
         "intern": 500,
@@ -2416,10 +2942,511 @@
       "negatives": []
     },
     {
+      "id": "staff_796897d5",
+      "intent": "experience_previous",
+      "domain": "experience",
+      "priority": 4300,
+      "exact_questions": [
+        "previous employer",
+        "past companies",
+        "where did he work before",
+        "earlier roles",
+        "prior experience",
+        "previously worked",
+        "past company",
+        "previous job",
+        "whom did he work for before",
+        "before sap",
+        "prior to sap",
+        "career before",
+        "work history before"
+      ],
+      "keywords": [
+        {
+          "text": "previous",
+          "weight": 1.5
+        },
+        {
+          "text": "employer",
+          "weight": 1.5
+        },
+        {
+          "text": "past",
+          "weight": 1.5
+        },
+        {
+          "text": "companies",
+          "weight": 1.5
+        },
+        {
+          "text": "work",
+          "weight": 1.5
+        },
+        {
+          "text": "before",
+          "weight": 1.5
+        },
+        {
+          "text": "earlier",
+          "weight": 1.5
+        },
+        {
+          "text": "roles",
+          "weight": 1.5
+        },
+        {
+          "text": "prior",
+          "weight": 1.5
+        },
+        {
+          "text": "experience",
+          "weight": 1.5
+        },
+        {
+          "text": "previously",
+          "weight": 1.5
+        },
+        {
+          "text": "worked",
+          "weight": 1.5
+        },
+        {
+          "text": "company",
+          "weight": 1.5
+        },
+        {
+          "text": "job",
+          "weight": 1.5
+        },
+        {
+          "text": "whom",
+          "weight": 1.5
+        },
+        {
+          "text": "sap",
+          "weight": 1.5
+        },
+        {
+          "text": "career",
+          "weight": 1.5
+        },
+        {
+          "text": "history",
+          "weight": 1.5
+        }
+      ],
+      "answer": [
+        "Regarding his professional background: He has worked at Juniper Networks in various roles, moving from Software Engineer 3 → Software Engineer 2 → Software Engineer 1 → Software Engineer Intern (2023-12 - 2025-12).",
+        "Akhilesh has worked extensively in this area. He has worked at Juniper Networks in various roles, moving from Software Engineer 3 → Software Engineer 2 → Software Engineer 1 → Software Engineer Intern (2023-12 - 2025-12).",
+        "His career highlights include: He has worked at Juniper Networks in various roles, moving from Software Engineer 3 → Software Engineer 2 → Software Engineer 1 → Software Engineer Intern (2023-12 - 2025-12)."
+      ],
+      "deeper_answer": "His most recent role at Juniper Networks was Software Engineer 3. He has 6+ years of total experience.",
+      "details": [
+        {
+          "company": "Juniper Networks",
+          "role": "Software Engineer 3",
+          "employment_type": "Full-time",
+          "duration": {
+            "start": "2023-12",
+            "end": "2025-12"
+          },
+          "location": "Bengaluru, Karnataka, India",
+          "description_raw": "As a Software Engineer 3, I’ve taken on key responsibilities that drive innovation and efficiency across our projects:\n\nCloud Migration: Spearheaded the transition of multiple applications to the cloud using Kubernetes, Helm, and Docker, ensuring enhanced scalability and reliability.\n\nDatabase Optimization: Led the migration of MySQL Standalone Databases to a High Availability architecture using Galera, significantly improving system resilience and uptime.\n\nVM Migration: Orchestrated the migration from vCenter VMs to Proxmox VMs, streamlining infrastructure and boosting virtualization performance.\n\nCI/CD Enhancement: Refined our Jenkins setup, optimizing the CI/CD pipeline for smoother, more efficient development and deployment cycles.\n\nTeam Development: Actively contributed to the hiring and onboarding of interns and team members, mentoring them into valuable, self-sufficient contributors within the project.\n\nThis role has allowed me to blend technical expertise with leadership, fostering innovation and growth in both infrastructure and talent.",
+          "responsibilities": [
+            "Led cloud migration of applications using Kubernetes, Docker, and Helm",
+            "Migrated MySQL standalone databases to High Availability using Galera cluster",
+            "Orchestrated migration from vCenter VMs to Proxmox virtualization platform",
+            "Optimized Jenkins CI/CD pipelines for improved efficiency",
+            "Mentored interns and contributed to hiring initiatives"
+          ],
+          "impact": [
+            "Improved scalability and reliability of applications through cloud migration",
+            "Enhanced database resilience and uptime using HA architecture",
+            "Reduced infrastructure overhead and improved performance via Proxmox migration",
+            "Accelerated deployment cycles through CI/CD improvements",
+            "Strengthened team productivity through mentorship"
+          ],
+          "technologies": [
+            "Kubernetes",
+            "Docker",
+            "Helm",
+            "Jenkins",
+            "MySQL Galera",
+            "Proxmox",
+            "Linux",
+            "CI/CD"
+          ]
+        },
+        {
+          "company": "Juniper Networks",
+          "role": "Software Engineer 2",
+          "employment_type": "Full-time",
+          "duration": {
+            "start": "2022-07",
+            "end": "2023-12"
+          },
+          "location": "Bengaluru, Karnataka, India",
+          "description_raw": "As a Software Engineer 2, I played a pivotal role in enhancing system reliability and optimizing team performance:\n\nHigh Availability Migration: Successfully transitioned web applications from load balancers to a High Availability setup using HA Proxy and Ucarp, ensuring seamless service and scalability improvements.\n\nAutomated OS Patching: Developed a robust automated solution for quarterly OS patching of virtual machines, meticulously crafted to uphold application availability and achieve zero downtime.\n\nIntelligent Chatbot Development: Designed and implemented a smart chatbot that monitors and analyzes user-submitted pipeline jobs. It delivers real-time insights to the users on their query and issue detection, intelligently resolving problems through automation or retry mechanisms, while keeping users informed of job statuses and outcomes.\n\nTeam Building and Mentorship: Actively engaged in the recruitment and onboarding of interns and team members, providing mentorship to nurture their skills and transform them into independent contributors to our projects.\n\nThis role allowed me to blend technical expertise with mentorship, driving both project success and team development effectively.",
+          "responsibilities": [
+            "Migrated applications to High Availability architecture using HAProxy and UCARP",
+            "Developed automated OS patching system ensuring zero downtime",
+            "Designed and implemented intelligent chatbot for pipeline monitoring",
+            "Automated issue detection and resolution mechanisms",
+            "Mentored interns and contributed to team hiring"
+          ],
+          "impact": [
+            "Achieved near-zero downtime infrastructure updates",
+            "Improved system reliability and availability",
+            "Reduced manual effort through automation and chatbot system",
+            "Enhanced team productivity through mentorship"
+          ],
+          "technologies": [
+            "HAProxy",
+            "UCARP",
+            "Java",
+            "Jenkins",
+            "Linux",
+            "Automation",
+            "CI/CD"
+          ]
+        },
+        {
+          "company": "Juniper Networks",
+          "role": "Software Engineer 1",
+          "employment_type": "Full-time",
+          "duration": {
+            "start": "2020-07",
+            "end": "2022-06"
+          },
+          "location": "Bengaluru, Karnataka, India",
+          "description_raw": "As a Software Engineer 1, I focused on driving performance improvements and collaboration:\n\nWeb Application Optimisation: Enhanced loading times by optimising MySQL queries, resulting in a faster and more responsive user experience.\n\nUI Enhancements: Improved multiple UI sections to deliver a better overall user experience, ensuring intuitive navigation and functionality.\n\nREST API Development: Developed robust REST APIs tailored to the specific needs of other teams, facilitating seamless data access and integration.\n\nMonitoring Solutions: Created Java JARs to run as cron jobs for monitoring application performance and CI/CD pipeline health, proactively identifying issues and ensuring system reliability.\n\nTalent Acquisition Support: Actively participated in the hiring process for interns and team members, contributing to building a skilled and dynamic team.\n\nIn this role, I cultivated my technical abilities while fostering a collaborative environment that promotes innovation and efficiency.",
+          "responsibilities": [
+            "Optimized MySQL queries improving application performance",
+            "Enhanced UI/UX across multiple web application modules",
+            "Developed REST APIs for cross-team data integration",
+            "Built monitoring tools using Java cron jobs",
+            "Participated in hiring processes"
+          ],
+          "impact": [
+            "Improved application speed and responsiveness",
+            "Enabled seamless integration between systems",
+            "Strengthened monitoring and system reliability",
+            "Contributed to team growth through hiring support"
+          ],
+          "technologies": [
+            "Java",
+            "SQL",
+            "REST APIs",
+            "HTML",
+            "JavaScript",
+            "Linux",
+            "MySQL"
+          ]
+        },
+        {
+          "company": "Juniper Networks",
+          "role": "Software Engineer Intern",
+          "employment_type": "Internship",
+          "duration": {
+            "start": "2020-01",
+            "end": "2020-06"
+          },
+          "location": "Bengaluru, Karnataka, India",
+          "description_raw": "As a Software Engineer Intern, I contributed to project efficiency and user experience through the following key tasks:\n\nDashboard Development: Created multiple dashboards to visualise pipeline job information, providing users with valuable insights at a glance.\n\nUI Enhancements: Enhanced the dashboards to incorporate CRUD operations, enabling users to interact with the data seamlessly through a user-friendly interface.\n\nWorkflow Analysis: Gained a comprehensive understanding of project workflows and architecture, offering innovative ideas to optimise processes and improve overall efficiency.\n\nThis internship allowed me to apply my skills in a practical setting while gaining valuable insights into software development and project management.",
+          "responsibilities": [
+            "Developed dashboards for pipeline job monitoring",
+            "Implemented CRUD operations in UI",
+            "Analyzed workflows and suggested improvements"
+          ],
+          "technologies": [
+            "Java",
+            "JavaScript",
+            "SQL",
+            "HTML",
+            "Web Applications"
+          ]
+        }
+      ],
+      "details_formatted": "• Juniper Networks. Software Engineer 3. Full-time. 2023-12. 2025-12. Bengaluru, Karnataka, India. As a Software Engineer 3, I’ve taken on key responsibilities that drive innovation and efficiency across our projects:\n\nCloud Migration: Spearheaded the transition of multiple applications to the cloud using Kubernetes, Helm, and Docker, ensuring enhanced scalability and reliability.\n\nDatabase Optimization: Led the migration of MySQL Standalone Databases to a High Availability architecture using Galera, significantly improving system resilience and uptime.\n\nVM Migration: Orchestrated the migration from vCenter VMs to Proxmox VMs, streamlining infrastructure and boosting virtualization performance.\n\nCI/CD Enhancement: Refined our Jenkins setup, optimizing the CI/CD pipeline for smoother, more efficient development and deployment cycles.\n\nTeam Development: Actively contributed to the hiring and onboarding of interns and team members, mentoring them into valuable, self-sufficient contributors within the project.\n\nThis role has allowed me to blend technical expertise with leadership, fostering innovation and growth in both infrastructure and talent.. Led cloud migration of applications using Kubernetes, Docker, and Helm, Migrated MySQL standalone databases to High Availability using Galera cluster, Orchestrated migration from vCenter VMs to Proxmox virtualization platform, Optimized Jenkins CI/CD pipelines for improved efficiency, Mentored interns and contributed to hiring initiatives. Improved scalability and reliability of applications through cloud migration, Enhanced database resilience and uptime using HA architecture, Reduced infrastructure overhead and improved performance via Proxmox migration, Accelerated deployment cycles through CI/CD improvements, Strengthened team productivity through mentorship. Kubernetes, Docker, Helm, Jenkins, MySQL Galera, Proxmox, Linux, CI/CD\n\n• Juniper Networks. Software Engineer 2. Full-time. 2022-07. 2023-12. Bengaluru, Karnataka, India. As a Software Engineer 2, I played a pivotal role in enhancing system reliability and optimizing team performance:\n\nHigh Availability Migration: Successfully transitioned web applications from load balancers to a High Availability setup using HA Proxy and Ucarp, ensuring seamless service and scalability improvements.\n\nAutomated OS Patching: Developed a robust automated solution for quarterly OS patching of virtual machines, meticulously crafted to uphold application availability and achieve zero downtime.\n\nIntelligent Chatbot Development: Designed and implemented a smart chatbot that monitors and analyzes user-submitted pipeline jobs. It delivers real-time insights to the users on their query and issue detection, intelligently resolving problems through automation or retry mechanisms, while keeping users informed of job statuses and outcomes.\n\nTeam Building and Mentorship: Actively engaged in the recruitment and onboarding of interns and team members, providing mentorship to nurture their skills and transform them into independent contributors to our projects.\n\nThis role allowed me to blend technical expertise with mentorship, driving both project success and team development effectively.. Migrated applications to High Availability architecture using HAProxy and UCARP, Developed automated OS patching system ensuring zero downtime, Designed and implemented intelligent chatbot for pipeline monitoring, Automated issue detection and resolution mechanisms, Mentored interns and contributed to team hiring. Achieved near-zero downtime infrastructure updates, Improved system reliability and availability, Reduced manual effort through automation and chatbot system, Enhanced team productivity through mentorship. HAProxy, UCARP, Java, Jenkins, Linux, Automation, CI/CD\n\n• Juniper Networks. Software Engineer 1. Full-time. 2020-07. 2022-06. Bengaluru, Karnataka, India. As a Software Engineer 1, I focused on driving performance improvements and collaboration:\n\nWeb Application Optimisation: Enhanced loading times by optimising MySQL queries, resulting in a faster and more responsive user experience.\n\nUI Enhancements: Improved multiple UI sections to deliver a better overall user experience, ensuring intuitive navigation and functionality.\n\nREST API Development: Developed robust REST APIs tailored to the specific needs of other teams, facilitating seamless data access and integration.\n\nMonitoring Solutions: Created Java JARs to run as cron jobs for monitoring application performance and CI/CD pipeline health, proactively identifying issues and ensuring system reliability.\n\nTalent Acquisition Support: Actively participated in the hiring process for interns and team members, contributing to building a skilled and dynamic team.\n\nIn this role, I cultivated my technical abilities while fostering a collaborative environment that promotes innovation and efficiency.. Optimized MySQL queries improving application performance, Enhanced UI/UX across multiple web application modules, Developed REST APIs for cross-team data integration, Built monitoring tools using Java cron jobs, Participated in hiring processes. Improved application speed and responsiveness, Enabled seamless integration between systems, Strengthened monitoring and system reliability, Contributed to team growth through hiring support. Java, SQL, REST APIs, HTML, JavaScript, Linux, MySQL\n\n• Juniper Networks. Software Engineer Intern. Internship. 2020-01. 2020-06. Bengaluru, Karnataka, India. As a Software Engineer Intern, I contributed to project efficiency and user experience through the following key tasks:\n\nDashboard Development: Created multiple dashboards to visualise pipeline job information, providing users with valuable insights at a glance.\n\nUI Enhancements: Enhanced the dashboards to incorporate CRUD operations, enabling users to interact with the data seamlessly through a user-friendly interface.\n\nWorkflow Analysis: Gained a comprehensive understanding of project workflows and architecture, offering innovative ideas to optimise processes and improve overall efficiency.\n\nThis internship allowed me to apply my skills in a practical setting while gaining valuable insights into software development and project management.. Developed dashboards for pipeline job monitoring, Implemented CRUD operations in UI, Analyzed workflows and suggested improvements. Java, JavaScript, SQL, HTML, Web Applications",
+      "suggestions": [],
+      "follow_up": [
+        {
+          "text": "Current Work",
+          "intent": "experience_sap"
+        },
+        {
+          "text": "Career Summary",
+          "intent": "experience_summary"
+        }
+      ],
+      "high_entropy_keywords": [
+        "previous",
+        "employer",
+        "past",
+        "companies",
+        "before",
+        "earlier",
+        "roles",
+        "prior",
+        "experience",
+        "previously",
+        "worked",
+        "company",
+        "job",
+        "whom",
+        "sap",
+        "career",
+        "history"
+      ],
+      "weights": {
+        "previous": 333.3333333333333,
+        "employer": 500,
+        "past": 333.3333333333333,
+        "companies": 1000,
+        "work": 90.9090909090909,
+        "before": 166.66666666666666,
+        "earlier": 500,
+        "roles": 1000,
+        "prior": 333.3333333333333,
+        "experience": 166.66666666666666,
+        "previously": 1000,
+        "worked": 500,
+        "company": 500,
+        "job": 250,
+        "whom": 1000,
+        "sap": 111.11111111111111,
+        "career": 250,
+        "history": 200
+      },
+      "phrases": [
+        "previous employer",
+        "past companies",
+        "work before",
+        "earlier roles",
+        "prior experience",
+        "previously worked",
+        "past company",
+        "previous job",
+        "whom work before",
+        "before sap",
+        "prior sap",
+        "career before",
+        "work history before"
+      ],
+      "ml_vectors": [
+        {
+          "pre": 1,
+          "rev": 1,
+          "evi": 1,
+          "vio": 1,
+          "iou": 1,
+          "ous": 1,
+          "us ": 1,
+          "s e": 1,
+          " em": 1,
+          "emp": 1,
+          "mpl": 1,
+          "plo": 1,
+          "loy": 1,
+          "oye": 1,
+          "yer": 1
+        },
+        {
+          "pas": 1,
+          "ast": 1,
+          "st ": 1,
+          "t c": 1,
+          " co": 1,
+          "com": 1,
+          "omp": 1,
+          "mpa": 1,
+          "pan": 1,
+          "ani": 1,
+          "nie": 1,
+          "ies": 1
+        },
+        {
+          "whe": 1,
+          "her": 1,
+          "ere": 1,
+          "re ": 1,
+          "e d": 1,
+          " di": 1,
+          "did": 1,
+          "id ": 1,
+          "d h": 1,
+          " he": 1,
+          "he ": 1,
+          "e w": 1,
+          " wo": 1,
+          "wor": 1,
+          "ork": 1,
+          "rk ": 1,
+          "k b": 1,
+          " be": 1,
+          "bef": 1,
+          "efo": 1,
+          "for": 1,
+          "ore": 1
+        },
+        {
+          "ear": 1,
+          "arl": 1,
+          "rli": 1,
+          "lie": 1,
+          "ier": 1,
+          "er ": 1,
+          "r r": 1,
+          " ro": 1,
+          "rol": 1,
+          "ole": 1,
+          "les": 1
+        },
+        {
+          "pri": 1,
+          "rio": 1,
+          "ior": 1,
+          "or ": 1,
+          "r e": 1,
+          " ex": 1,
+          "exp": 1,
+          "xpe": 1,
+          "per": 1,
+          "eri": 1,
+          "rie": 1,
+          "ien": 1,
+          "enc": 1,
+          "nce": 1
+        },
+        {
+          "pre": 1,
+          "rev": 1,
+          "evi": 1,
+          "vio": 1,
+          "iou": 1,
+          "ous": 1,
+          "usl": 1,
+          "sly": 1,
+          "ly ": 1,
+          "y w": 1,
+          " wo": 1,
+          "wor": 1,
+          "ork": 1,
+          "rke": 1,
+          "ked": 1
+        },
+        {
+          "pas": 1,
+          "ast": 1,
+          "st ": 1,
+          "t c": 1,
+          " co": 1,
+          "com": 1,
+          "omp": 1,
+          "mpa": 1,
+          "pan": 1,
+          "any": 1
+        },
+        {
+          "pre": 1,
+          "rev": 1,
+          "evi": 1,
+          "vio": 1,
+          "iou": 1,
+          "ous": 1,
+          "us ": 1,
+          "s j": 1,
+          " jo": 1,
+          "job": 1
+        },
+        {
+          "who": 1,
+          "hom": 1,
+          "om ": 1,
+          "m d": 1,
+          " di": 1,
+          "did": 1,
+          "id ": 1,
+          "d h": 1,
+          " he": 1,
+          "he ": 1,
+          "e w": 1,
+          " wo": 1,
+          "wor": 1,
+          "ork": 1,
+          "rk ": 1,
+          "k f": 1,
+          " fo": 1,
+          "for": 2,
+          "or ": 1,
+          "r b": 1,
+          " be": 1,
+          "bef": 1,
+          "efo": 1,
+          "ore": 1
+        },
+        {
+          "bef": 1,
+          "efo": 1,
+          "for": 1,
+          "ore": 1,
+          "re ": 1,
+          "e s": 1,
+          " sa": 1,
+          "sap": 1
+        },
+        {
+          "pri": 1,
+          "rio": 1,
+          "ior": 1,
+          "or ": 1,
+          "r t": 1,
+          " to": 1,
+          "to ": 1,
+          "o s": 1,
+          " sa": 1,
+          "sap": 1
+        },
+        {
+          "car": 1,
+          "are": 1,
+          "ree": 1,
+          "eer": 1,
+          "er ": 1,
+          "r b": 1,
+          " be": 1,
+          "bef": 1,
+          "efo": 1,
+          "for": 1,
+          "ore": 1
+        },
+        {
+          "wor": 1,
+          "ork": 1,
+          "rk ": 1,
+          "k h": 1,
+          " hi": 1,
+          "his": 1,
+          "ist": 1,
+          "sto": 1,
+          "tor": 1,
+          "ory": 1,
+          "ry ": 1,
+          "y b": 1,
+          " be": 1,
+          "bef": 1,
+          "efo": 1,
+          "for": 1,
+          "ore": 1
+        }
+      ],
+      "negatives": []
+    },
+    {
       "id": "staff_a11e28e1",
       "intent": "experience_summary",
       "domain": "experience",
-      "priority": 2500,
+      "priority": 4400,
       "exact_questions": [
         "experience highlights",
         "career summary",
@@ -2427,7 +3454,18 @@
         "career highlights",
         "professional background",
         "experience summary",
-        "work history"
+        "work history",
+        "timeline",
+        "professional timeline",
+        "career arc",
+        "job history",
+        "job",
+        "previous",
+        "earlier",
+        "past",
+        "history",
+        "before",
+        "prior"
       ],
       "keywords": [
         {
@@ -2460,6 +3498,38 @@
         },
         {
           "text": "history",
+          "weight": 1.5
+        },
+        {
+          "text": "timeline",
+          "weight": 1.5
+        },
+        {
+          "text": "arc",
+          "weight": 1.5
+        },
+        {
+          "text": "job",
+          "weight": 1.5
+        },
+        {
+          "text": "previous",
+          "weight": 1.5
+        },
+        {
+          "text": "earlier",
+          "weight": 1.5
+        },
+        {
+          "text": "past",
+          "weight": 1.5
+        },
+        {
+          "text": "before",
+          "weight": 1.5
+        },
+        {
+          "text": "prior",
           "weight": 1.5
         }
       ],
@@ -2504,20 +3574,35 @@
         "highlights",
         "career",
         "summary",
-        "work",
         "professional",
         "background",
-        "history"
+        "history",
+        "timeline",
+        "arc",
+        "job",
+        "previous",
+        "earlier",
+        "past",
+        "before",
+        "prior"
       ],
       "weights": {
-        "experience": 200,
+        "experience": 166.66666666666666,
         "highlights": 500,
-        "career": 500,
-        "summary": 200,
-        "work": 166.66666666666666,
-        "professional": 500,
+        "career": 250,
+        "summary": 166.66666666666666,
+        "work": 90.9090909090909,
+        "professional": 250,
         "background": 250,
-        "history": 1000
+        "history": 200,
+        "timeline": 500,
+        "arc": 1000,
+        "job": 250,
+        "previous": 333.3333333333333,
+        "earlier": 500,
+        "past": 333.3333333333333,
+        "before": 166.66666666666666,
+        "prior": 333.3333333333333
       },
       "phrases": [
         "experience highlights",
@@ -2526,7 +3611,10 @@
         "career highlights",
         "professional background",
         "experience summary",
-        "work history"
+        "work history",
+        "professional timeline",
+        "career arc",
+        "job history"
       ],
       "ml_vectors": [
         {
@@ -2646,6 +3734,96 @@
           "sto": 1,
           "tor": 1,
           "ory": 1
+        },
+        {
+          "tim": 1,
+          "ime": 1,
+          "mel": 1,
+          "eli": 1,
+          "lin": 1,
+          "ine": 1
+        },
+        {
+          "pro": 1,
+          "rof": 1,
+          "ofe": 1,
+          "fes": 1,
+          "ess": 1,
+          "ssi": 1,
+          "sio": 1,
+          "ion": 1,
+          "ona": 1,
+          "nal": 1,
+          "al ": 1,
+          "l t": 1,
+          " ti": 1,
+          "tim": 1,
+          "ime": 1,
+          "mel": 1,
+          "eli": 1,
+          "lin": 1,
+          "ine": 1
+        },
+        {
+          "car": 1,
+          "are": 1,
+          "ree": 1,
+          "eer": 1,
+          "er ": 1,
+          "r a": 1,
+          " ar": 1,
+          "arc": 1
+        },
+        {
+          "job": 1,
+          "ob ": 1,
+          "b h": 1,
+          " hi": 1,
+          "his": 1,
+          "ist": 1,
+          "sto": 1,
+          "tor": 1,
+          "ory": 1
+        },
+        {
+          "job": 1
+        },
+        {
+          "pre": 1,
+          "rev": 1,
+          "evi": 1,
+          "vio": 1,
+          "iou": 1,
+          "ous": 1
+        },
+        {
+          "ear": 1,
+          "arl": 1,
+          "rli": 1,
+          "lie": 1,
+          "ier": 1
+        },
+        {
+          "pas": 1,
+          "ast": 1
+        },
+        {
+          "his": 1,
+          "ist": 1,
+          "sto": 1,
+          "tor": 1,
+          "ory": 1
+        },
+        {
+          "bef": 1,
+          "efo": 1,
+          "for": 1,
+          "ore": 1
+        },
+        {
+          "pri": 1,
+          "rio": 1,
+          "ior": 1
         }
       ],
       "negatives": [
@@ -2694,10 +3872,6 @@
           "weight": 1.5
         },
         {
-          "text": "k8s",
-          "weight": 1.5
-        },
-        {
           "text": "terraform",
           "weight": 1.5
         },
@@ -2722,8 +3896,12 @@
           "weight": 1.5
         },
         {
-          "text": "cicd",
-          "weight": 1
+          "text": "ci",
+          "weight": 1.5
+        },
+        {
+          "text": "cd",
+          "weight": 1.5
         },
         {
           "text": "infrastructure",
@@ -2802,14 +3980,14 @@
       ],
       "high_entropy_keywords": [
         "kubernetes",
-        "k8s",
         "terraform",
         "docker",
         "devops",
         "helm",
         "skills",
         "know",
-        "cicd",
+        "ci",
+        "cd",
         "infrastructure",
         "as",
         "code",
@@ -2822,15 +4000,15 @@
         "ansible"
       ],
       "weights": {
-        "kubernetes": 333.3333333333333,
-        "k8s": 500,
+        "kubernetes": 200,
         "terraform": 1000,
         "docker": 500,
         "devops": 333.3333333333333,
         "helm": 1000,
         "skills": 100,
         "know": 333.3333333333333,
-        "cicd": 333.3333333333333,
+        "ci": 200,
+        "cd": 200,
         "infrastructure": 1000,
         "as": 500,
         "code": 500,
@@ -3036,7 +4214,7 @@
       "id": "staff_26ea44d8",
       "intent": "skills_summary",
       "domain": "skills",
-      "priority": 3500,
+      "priority": 4000,
       "exact_questions": [
         "skills",
         "tech stack",
@@ -3047,7 +4225,10 @@
         "all skills",
         "skill summary",
         "technical background",
-        "skill details"
+        "skill details",
+        "tech list",
+        "core competencies",
+        "capabilities"
       ],
       "keywords": [
         {
@@ -3092,6 +4273,22 @@
         },
         {
           "text": "background",
+          "weight": 1.5
+        },
+        {
+          "text": "list",
+          "weight": 1.5
+        },
+        {
+          "text": "core",
+          "weight": 1.5
+        },
+        {
+          "text": "competencies",
+          "weight": 1.5
+        },
+        {
+          "text": "capabilities",
           "weight": 1.5
         }
       ],
@@ -3144,20 +4341,28 @@
         "all",
         "skill",
         "summary",
-        "background"
+        "background",
+        "list",
+        "core",
+        "competencies",
+        "capabilities"
       ],
       "weights": {
         "skills": 100,
-        "tech": 500,
+        "tech": 333.3333333333333,
         "stack": 1000,
         "tools": 1000,
-        "can": 500,
+        "can": 250,
         "technical": 333.3333333333333,
         "expertise": 1000,
         "all": 500,
         "skill": 500,
-        "summary": 200,
-        "background": 250
+        "summary": 166.66666666666666,
+        "background": 250,
+        "list": 500,
+        "core": 1000,
+        "competencies": 1000,
+        "capabilities": 500
       },
       "phrases": [
         "tech stack",
@@ -3167,7 +4372,9 @@
         "all skills",
         "skill summary",
         "technical background",
-        "skill"
+        "skill",
+        "tech list",
+        "core competencies"
       ],
       "ml_vectors": [
         {
@@ -3298,9 +4505,52 @@
           "tai": 1,
           "ail": 1,
           "ils": 1
+        },
+        {
+          "tec": 1,
+          "ech": 1,
+          "ch ": 1,
+          "h l": 1,
+          " li": 1,
+          "lis": 1,
+          "ist": 1
+        },
+        {
+          "cor": 1,
+          "ore": 1,
+          "re ": 1,
+          "e c": 1,
+          " co": 1,
+          "com": 1,
+          "omp": 1,
+          "mpe": 1,
+          "pet": 1,
+          "ete": 1,
+          "ten": 1,
+          "enc": 1,
+          "nci": 1,
+          "cie": 1,
+          "ies": 1
+        },
+        {
+          "cap": 1,
+          "apa": 1,
+          "pab": 1,
+          "abi": 1,
+          "bil": 1,
+          "ili": 1,
+          "lit": 1,
+          "iti": 1,
+          "tie": 1,
+          "ies": 1
         }
       ],
-      "negatives": []
+      "negatives": [
+        "paper",
+        "publication",
+        "award",
+        "certifications"
+      ]
     },
     {
       "id": "staff_7b6d1e9e",
@@ -3403,7 +4653,7 @@
         "platforms": 1000,
         "public": 1000,
         "skills": 100,
-        "tech": 500
+        "tech": 333.3333333333333
       },
       "phrases": [
         "google cloud",
@@ -4053,7 +5303,7 @@
         "llm": 1000,
         "generative": 1000,
         "prompt": 1000,
-        "engineering": 1000,
+        "engineering": 500,
         "skills": 100
       },
       "phrases": [
@@ -4722,7 +5972,6 @@
         "research",
         "papers",
         "published",
-        "work",
         "articles",
         "journals",
         "paper",
@@ -4735,7 +5984,7 @@
         "research": 500,
         "papers": 1000,
         "published": 1000,
-        "work": 166.66666666666666,
+        "work": 90.9090909090909,
         "articles": 1000,
         "journals": 1000,
         "paper": 500,
@@ -4882,7 +6131,8 @@
         "what others say",
         "feedback from colleagues",
         "endorsements",
-        "what did his manager say"
+        "what did his manager say",
+        "references"
       ],
       "keywords": [
         {
@@ -4911,6 +6161,10 @@
         },
         {
           "text": "manager",
+          "weight": 1.5
+        },
+        {
+          "text": "references",
           "weight": 1.5
         }
       ],
@@ -5036,7 +6290,8 @@
         "feedback",
         "colleagues",
         "endorsements",
-        "manager"
+        "manager",
+        "references"
       ],
       "weights": {
         "recommendations": 1000,
@@ -5045,7 +6300,8 @@
         "feedback": 250,
         "colleagues": 1000,
         "endorsements": 1000,
-        "manager": 1000
+        "manager": 1000,
+        "references": 1000
       },
       "phrases": [
         "others",
@@ -5154,6 +6410,16 @@
           "r s": 1,
           " sa": 1,
           "say": 1
+        },
+        {
+          "ref": 1,
+          "efe": 1,
+          "fer": 1,
+          "ere": 1,
+          "ren": 1,
+          "enc": 1,
+          "nce": 1,
+          "ces": 1
         }
       ],
       "negatives": []
@@ -5387,7 +6653,7 @@
       "id": "staff_9d812e03",
       "intent": "hiring_mentorship",
       "domain": "experience",
-      "priority": 5500,
+      "priority": 4100,
       "exact_questions": [
         "hiring",
         "interviewer",
@@ -5398,7 +6664,8 @@
         "hiring initiatives",
         "recruitment",
         "onboarding interns",
-        "guide interns"
+        "guide interns",
+        "award for hiring"
       ],
       "keywords": [
         {
@@ -5456,6 +6723,10 @@
         {
           "text": "guide",
           "weight": 1.5
+        },
+        {
+          "text": "award",
+          "weight": 1.5
         }
       ],
       "answer": [
@@ -5508,15 +6779,16 @@
         "recruitment",
         "onboarding",
         "interns",
-        "guide"
+        "guide",
+        "award"
       ],
       "weights": {
-        "hiring": 500,
+        "hiring": 333.3333333333333,
         "interviewer": 500,
         "mentor": 1000,
         "mentorship": 500,
         "has": 500,
-        "worked": 1000,
+        "worked": 500,
         "as": 500,
         "take": 1000,
         "interviews": 1000,
@@ -5524,14 +6796,16 @@
         "recruitment": 1000,
         "onboarding": 1000,
         "interns": 500,
-        "guide": 1000
+        "guide": 333.3333333333333,
+        "award": 1000
       },
       "phrases": [
         "has worked as interviewer",
         "take interviews",
         "hiring initiatives",
         "onboarding interns",
-        "guide interns"
+        "guide interns",
+        "award hiring"
       ],
       "ml_vectors": [
         {
@@ -5675,6 +6949,22 @@
           "ter": 1,
           "ern": 1,
           "rns": 1
+        },
+        {
+          "awa": 1,
+          "war": 1,
+          "ard": 1,
+          "rd ": 1,
+          "d f": 1,
+          " fo": 1,
+          "for": 1,
+          "or ": 1,
+          "r h": 1,
+          " hi": 1,
+          "hir": 1,
+          "iri": 1,
+          "rin": 1,
+          "ing": 1
         }
       ],
       "negatives": []
@@ -5692,7 +6982,9 @@
         "academic background",
         "where did he study",
         "graduation",
-        "education details"
+        "education details",
+        "academic history",
+        "qualifications"
       ],
       "keywords": [
         {
@@ -5726,12 +7018,20 @@
         {
           "text": "graduation",
           "weight": 1.5
+        },
+        {
+          "text": "history",
+          "weight": 1.5
+        },
+        {
+          "text": "qualifications",
+          "weight": 1.5
         }
       ],
       "answer": [
-        "He holds a Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology.",
-        "Sure, here is the information: he holds a Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology.",
-        "Regarding education, he holds a Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology."
+        "He completed his Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology in 2023-12.",
+        "Sure, here is the information: he completed his Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology in 2023-12.",
+        "Regarding education, he completed his Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology in 2023-12."
       ],
       "deeper_answer": "Master of Science in Information Technology and Management with strong focus on software development, databases, and system design.",
       "details": [
@@ -5746,7 +7046,7 @@
           "location": "Chicago, USA",
           "grade": {
             "type": "GPA",
-            "value": "3.7"
+            "value": "3.7/4.0"
           },
           "description_raw": "Master of Science in Information Technology and Management with strong focus on software development, databases, and system design.",
           "skills_acquired": [
@@ -5784,7 +7084,7 @@
           "location": "Dharwad, Karnataka, India",
           "grade": {
             "type": "CGPA",
-            "value": "8.52"
+            "value": "8.52/10.0"
           },
           "description_raw": "Bachelor’s degree in Computer Science with focus on programming, databases, and core computer science fundamentals.",
           "skills_acquired": [
@@ -5835,7 +7135,7 @@
           ]
         }
       ],
-      "details_formatted": "🎓 Master of Science (MS)\nIllinois Institute of Technology (2022-01 - 2023-12)\nGrade: N/A\n\n🎓 Bachelor of Engineering (B.E.)\nShri Dharmasthala Manjunatheshwara College of Engineering and Technology (SDMCET) (2016 - 2020)\nGrade: N/A\n\n🎓 Pre-University (PUC)\nJSS Banashankari Arts, Commerce & S.K.Gubbi Science College (2014 - 2016)\nGrade: N/A",
+      "details_formatted": "🎓 Master of Science (MS)\nIllinois Institute of Technology (2022-01 - 2023-12)\nGrade: 3.7/4.0\n\n🎓 Bachelor of Engineering (B.E.)\nShri Dharmasthala Manjunatheshwara College of Engineering and Technology (SDMCET) (2016 - 2020)\nGrade: 8.52/10.0\n\n🎓 Pre-University (PUC)\nJSS Banashankari Arts, Commerce & S.K.Gubbi Science College (2014 - 2016)\nGrade: N/A",
       "suggestions": [],
       "follow_up": [
         {
@@ -5855,22 +7155,27 @@
         "academic",
         "background",
         "study",
-        "graduation"
+        "graduation",
+        "history",
+        "qualifications"
       ],
       "weights": {
         "education": 500,
         "degree": 333.3333333333333,
         "university": 500,
         "college": 500,
-        "academic": 1000,
+        "academic": 500,
         "background": 250,
         "study": 500,
-        "graduation": 1000
+        "graduation": 1000,
+        "history": 200,
+        "qualifications": 1000
       },
       "phrases": [
         "academic background",
         "study",
-        "education"
+        "education",
+        "academic history"
       ],
       "ml_vectors": [
         {
@@ -5968,6 +7273,36 @@
           "tai": 1,
           "ail": 1,
           "ils": 1
+        },
+        {
+          "aca": 1,
+          "cad": 1,
+          "ade": 1,
+          "dem": 1,
+          "emi": 1,
+          "mic": 1,
+          "ic ": 1,
+          "c h": 1,
+          " hi": 1,
+          "his": 1,
+          "ist": 1,
+          "sto": 1,
+          "tor": 1,
+          "ory": 1
+        },
+        {
+          "qua": 1,
+          "ual": 1,
+          "ali": 1,
+          "lif": 1,
+          "ifi": 1,
+          "fic": 1,
+          "ica": 1,
+          "cat": 1,
+          "ati": 1,
+          "tio": 1,
+          "ion": 1,
+          "ons": 1
         }
       ],
       "negatives": []
@@ -6007,9 +7342,9 @@
         }
       ],
       "answer": [
-        "He holds a Bachelor of Engineering (B.E.) in Computer Science from Shri Dharmasthala Manjunatheshwara College of Engineering and Technology (SDMCET).",
-        "Sure, here is the information: he holds a Bachelor of Engineering (B.E.) in Computer Science from Shri Dharmasthala Manjunatheshwara College of Engineering and Technology (SDMCET).",
-        "Regarding education bachelors, he holds a Bachelor of Engineering (B.E.) in Computer Science from Shri Dharmasthala Manjunatheshwara College of Engineering and Technology (SDMCET)."
+        "He completed his Bachelor of Engineering (B.E.) in Computer Science from Shri Dharmasthala Manjunatheshwara College of Engineering and Technology (SDMCET) in 2020.",
+        "Sure, here is the information: he completed his Bachelor of Engineering (B.E.) in Computer Science from Shri Dharmasthala Manjunatheshwara College of Engineering and Technology (SDMCET) in 2020.",
+        "Regarding education bachelors, he completed his Bachelor of Engineering (B.E.) in Computer Science from Shri Dharmasthala Manjunatheshwara College of Engineering and Technology (SDMCET) in 2020."
       ],
       "deeper_answer": "Bachelor’s degree in Computer Science with focus on programming, databases, and core computer science fundamentals.",
       "details": [
@@ -6024,7 +7359,7 @@
           "location": "Dharwad, Karnataka, India",
           "grade": {
             "type": "CGPA",
-            "value": "8.52"
+            "value": "8.52/10.0"
           },
           "description_raw": "Bachelor’s degree in Computer Science with focus on programming, databases, and core computer science fundamentals.",
           "skills_acquired": [
@@ -6050,7 +7385,7 @@
           ]
         }
       ],
-      "details_formatted": "🎓 Bachelor of Engineering (B.E.)\nShri Dharmasthala Manjunatheshwara College of Engineering and Technology (SDMCET) (2016 - 2020)\nGrade: N/A",
+      "details_formatted": "🎓 Bachelor of Engineering (B.E.)\nShri Dharmasthala Manjunatheshwara College of Engineering and Technology (SDMCET) (2016 - 2020)\nGrade: 8.52/10.0",
       "suggestions": [],
       "follow_up": [
         {
@@ -6228,9 +7563,9 @@
         }
       ],
       "answer": [
-        "He holds a Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology.",
-        "Sure, here is the information: he holds a Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology.",
-        "Regarding education masters, he holds a Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology."
+        "He completed his Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology in 2023-12.",
+        "Sure, here is the information: he completed his Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology in 2023-12.",
+        "Regarding education masters, he completed his Master of Science (MS) in Information Technology and Management from Illinois Institute of Technology in 2023-12."
       ],
       "deeper_answer": "Master of Science in Information Technology and Management with strong focus on software development, databases, and system design.",
       "details": [
@@ -6245,7 +7580,7 @@
           "location": "Chicago, USA",
           "grade": {
             "type": "GPA",
-            "value": "3.7"
+            "value": "3.7/4.0"
           },
           "description_raw": "Master of Science in Information Technology and Management with strong focus on software development, databases, and system design.",
           "skills_acquired": [
@@ -6273,7 +7608,7 @@
           ]
         }
       ],
-      "details_formatted": "🎓 Master of Science (MS)\nIllinois Institute of Technology (2022-01 - 2023-12)\nGrade: N/A",
+      "details_formatted": "🎓 Master of Science (MS)\nIllinois Institute of Technology (2022-01 - 2023-12)\nGrade: 3.7/4.0",
       "suggestions": [],
       "follow_up": [
         {
@@ -6399,7 +7734,7 @@
       "id": "staff_5abffac9",
       "intent": "certifications",
       "domain": "certifications",
-      "priority": 6000,
+      "priority": 3500,
       "exact_questions": [
         "certifications",
         "certificates",
@@ -6411,7 +7746,9 @@
         "exam",
         "how many certifications",
         "total certifications",
-        "list his certifications"
+        "list his certifications",
+        "licenses",
+        "accreditations"
       ],
       "keywords": [
         {
@@ -6456,6 +7793,14 @@
         },
         {
           "text": "list",
+          "weight": 1.5
+        },
+        {
+          "text": "licenses",
+          "weight": 1.5
+        },
+        {
+          "text": "accreditations",
           "weight": 1.5
         }
       ],
@@ -6670,7 +8015,9 @@
         "exam",
         "many",
         "total",
-        "list"
+        "list",
+        "licenses",
+        "accreditations"
       ],
       "weights": {
         "certifications": 250,
@@ -6683,7 +8030,9 @@
         "exam": 1000,
         "many": 500,
         "total": 500,
-        "list": 1000
+        "list": 500,
+        "licenses": 1000,
+        "accreditations": 1000
       },
       "phrases": [
         "learning badges",
@@ -6835,6 +8184,28 @@
           "tio": 1,
           "ion": 1,
           "ons": 1
+        },
+        {
+          "lic": 1,
+          "ice": 1,
+          "cen": 1,
+          "ens": 1,
+          "nse": 1,
+          "ses": 1
+        },
+        {
+          "acc": 1,
+          "ccr": 1,
+          "cre": 1,
+          "red": 1,
+          "edi": 1,
+          "dit": 1,
+          "ita": 1,
+          "tat": 1,
+          "ati": 1,
+          "tio": 1,
+          "ion": 1,
+          "ons": 1
         }
       ],
       "negatives": []
@@ -6865,10 +8236,6 @@
         },
         {
           "text": "administrator",
-          "weight": 1.5
-        },
-        {
-          "text": "k8s",
           "weight": 1.5
         },
         {
@@ -7081,21 +8448,19 @@
         "certified",
         "kubernetes",
         "administrator",
-        "k8s",
         "certification"
       ],
       "weights": {
         "cka": 500,
         "certified": 333.3333333333333,
-        "kubernetes": 333.3333333333333,
+        "kubernetes": 200,
         "administrator": 1000,
-        "k8s": 500,
         "certification": 1000
       },
       "phrases": [
         "certified kubernetes administrator",
         "cka certified",
-        "k8s certification"
+        "kubernetes certification"
       ],
       "ml_vectors": [
         {
@@ -7178,7 +8543,7 @@
       "id": "staff_09e1df54",
       "intent": "awards",
       "domain": "awards",
-      "priority": 1000,
+      "priority": 4000,
       "exact_questions": [
         "awards",
         "honors",
@@ -7188,7 +8553,10 @@
         "awards he received",
         "how many awards",
         "total awards",
-        "awards count"
+        "awards count",
+        "notable achievements",
+        "winner of",
+        "recognized for"
       ],
       "keywords": [
         {
@@ -7225,6 +8593,18 @@
         },
         {
           "text": "count",
+          "weight": 1.5
+        },
+        {
+          "text": "notable",
+          "weight": 1.5
+        },
+        {
+          "text": "winner",
+          "weight": 1.5
+        },
+        {
+          "text": "recognized",
           "weight": 1.5
         }
       ],
@@ -7570,24 +8950,33 @@
         "received",
         "many",
         "total",
-        "count"
+        "count",
+        "notable",
+        "winner",
+        "recognized"
       ],
       "weights": {
         "awards": 200,
         "honors": 1000,
-        "achievements": 333.3333333333333,
+        "achievements": 250,
         "recognition": 1000,
         "medals": 1000,
         "received": 1000,
         "many": 500,
         "total": 500,
-        "count": 1000
+        "count": 1000,
+        "notable": 1000,
+        "winner": 1000,
+        "recognized": 1000
       },
       "phrases": [
         "awards received",
         "many awards",
         "total awards",
-        "awards count"
+        "awards count",
+        "notable achievements",
+        "winner",
+        "recognized"
       ],
       "ml_vectors": [
         {
@@ -7687,6 +9076,49 @@
           "cou": 1,
           "oun": 1,
           "unt": 1
+        },
+        {
+          "not": 1,
+          "ota": 1,
+          "tab": 1,
+          "abl": 1,
+          "ble": 1,
+          "le ": 1,
+          "e a": 1,
+          " ac": 1,
+          "ach": 1,
+          "chi": 1,
+          "hie": 1,
+          "iev": 1,
+          "eve": 1,
+          "vem": 1,
+          "eme": 1,
+          "men": 1,
+          "ent": 1,
+          "nts": 1
+        },
+        {
+          "win": 1,
+          "inn": 1,
+          "nne": 1,
+          "ner": 1,
+          "er ": 1,
+          "r o": 1,
+          " of": 1
+        },
+        {
+          "rec": 1,
+          "eco": 1,
+          "cog": 1,
+          "ogn": 1,
+          "gni": 1,
+          "niz": 1,
+          "ize": 1,
+          "zed": 1,
+          "ed ": 1,
+          "d f": 1,
+          " fo": 1,
+          "for": 1
         }
       ],
       "negatives": []
@@ -7695,14 +9127,16 @@
       "id": "staff_4a7a4fb2",
       "intent": "projects_iot",
       "domain": "projects",
-      "priority": 2000,
+      "priority": 3500,
       "exact_questions": [
         "iot project",
         "smart irrigation",
         "raspberry pi",
         "hardware project",
         "embedded systems project",
-        "iot"
+        "iot",
+        "iot monitoring",
+        "describe his iot project"
       ],
       "keywords": [
         {
@@ -7739,6 +9173,14 @@
         },
         {
           "text": "systems",
+          "weight": 1.5
+        },
+        {
+          "text": "monitoring",
+          "weight": 1.5
+        },
+        {
+          "text": "describe",
           "weight": 1.5
         }
       ],
@@ -7827,25 +9269,31 @@
         "pi",
         "hardware",
         "embedded",
-        "systems"
+        "systems",
+        "monitoring",
+        "describe"
       ],
       "weights": {
-        "iot": 500,
-        "project": 125,
+        "iot": 250,
+        "project": 100,
         "smart": 1000,
         "irrigation": 1000,
         "raspberry": 1000,
         "pi": 1000,
         "hardware": 1000,
         "embedded": 1000,
-        "systems": 333.3333333333333
+        "systems": 333.3333333333333,
+        "monitoring": 1000,
+        "describe": 1000
       },
       "phrases": [
         "iot project",
         "smart irrigation",
         "raspberry pi",
         "hardware project",
-        "embedded systems project"
+        "embedded systems project",
+        "iot monitoring",
+        "describe iot project"
       ],
       "ml_vectors": [
         {
@@ -7929,6 +9377,44 @@
         },
         {
           "iot": 1
+        },
+        {
+          "iot": 1,
+          "ot ": 1,
+          "t m": 1,
+          " mo": 1,
+          "mon": 1,
+          "oni": 1,
+          "nit": 1,
+          "ito": 1,
+          "tor": 1,
+          "ori": 1,
+          "rin": 1,
+          "ing": 1
+        },
+        {
+          "des": 1,
+          "esc": 1,
+          "scr": 1,
+          "cri": 1,
+          "rib": 1,
+          "ibe": 1,
+          "be ": 1,
+          "e h": 1,
+          " hi": 1,
+          "his": 1,
+          "is ": 1,
+          "s i": 1,
+          " io": 1,
+          "iot": 1,
+          "ot ": 1,
+          "t p": 1,
+          " pr": 1,
+          "pro": 1,
+          "roj": 1,
+          "oje": 1,
+          "jec": 1,
+          "ect": 1
         }
       ],
       "negatives": []
@@ -7937,18 +9423,24 @@
       "id": "staff_08235e78",
       "intent": "projects_cicd",
       "domain": "projects",
-      "priority": 2000,
+      "priority": 4000,
       "exact_questions": [
         "cicd project",
         "automation script",
         "jenkins project",
         "github actions project",
         "devops project",
+        "ci/cd project",
+        "ci/cd",
         "cicd"
       ],
       "keywords": [
         {
-          "text": "cicd",
+          "text": "ci",
+          "weight": 1.5
+        },
+        {
+          "text": "cd",
           "weight": 1.5
         },
         {
@@ -8076,7 +9568,8 @@
         }
       ],
       "high_entropy_keywords": [
-        "cicd",
+        "ci",
+        "cd",
         "project",
         "automation",
         "script",
@@ -8086,8 +9579,9 @@
         "devops"
       ],
       "weights": {
-        "cicd": 333.3333333333333,
-        "project": 125,
+        "ci": 200,
+        "cd": 200,
+        "project": 100,
         "automation": 500,
         "script": 1000,
         "jenkins": 1000,
@@ -8096,11 +9590,12 @@
         "devops": 333.3333333333333
       },
       "phrases": [
-        "cicd project",
+        "ci cd project",
         "automation script",
         "jenkins project",
         "github actions project",
-        "devops project"
+        "devops project",
+        "ci cd project"
       ],
       "ml_vectors": [
         {
@@ -8185,6 +9680,22 @@
         },
         {
           "cic": 1,
+          "icd": 1,
+          "cd ": 1,
+          "d p": 1,
+          " pr": 1,
+          "pro": 1,
+          "roj": 1,
+          "oje": 1,
+          "jec": 1,
+          "ect": 1
+        },
+        {
+          "cic": 1,
+          "icd": 1
+        },
+        {
+          "cic": 1,
           "icd": 1
         }
       ],
@@ -8194,7 +9705,7 @@
       "id": "staff_5083d8d9",
       "intent": "projects_summary",
       "domain": "projects",
-      "priority": 3000,
+      "priority": 4400,
       "exact_questions": [
         "projects",
         "portfolio",
@@ -8203,7 +9714,11 @@
         "work samples",
         "show me his work",
         "project summary",
-        "all projects"
+        "all projects",
+        "work projects",
+        "his work",
+        "his portfolio",
+        "engineering projects"
       ],
       "keywords": [
         {
@@ -8244,6 +9759,10 @@
         },
         {
           "text": "all",
+          "weight": 1.5
+        },
+        {
+          "text": "engineering",
           "weight": 1.5
         }
       ],
@@ -8286,30 +9805,35 @@
         "github",
         "has",
         "built",
-        "work",
         "samples",
         "project",
         "summary",
-        "all"
+        "all",
+        "engineering"
       ],
       "weights": {
-        "projects": 500,
-        "portfolio": 1000,
+        "projects": 250,
+        "portfolio": 500,
         "github": 250,
         "has": 500,
         "built": 1000,
-        "work": 166.66666666666666,
+        "work": 90.9090909090909,
         "samples": 1000,
-        "project": 125,
-        "summary": 200,
-        "all": 500
+        "project": 100,
+        "summary": 166.66666666666666,
+        "all": 500,
+        "engineering": 500
       },
       "phrases": [
         "has built",
         "work samples",
         "work",
         "project summary",
-        "all projects"
+        "all projects",
+        "work projects",
+        "work",
+        "portfolio",
+        "engineering projects"
       ],
       "ml_vectors": [
         {
@@ -8399,6 +9923,60 @@
           "all": 1,
           "ll ": 1,
           "l p": 1,
+          " pr": 1,
+          "pro": 1,
+          "roj": 1,
+          "oje": 1,
+          "jec": 1,
+          "ect": 1,
+          "cts": 1
+        },
+        {
+          "wor": 1,
+          "ork": 1,
+          "rk ": 1,
+          "k p": 1,
+          " pr": 1,
+          "pro": 1,
+          "roj": 1,
+          "oje": 1,
+          "jec": 1,
+          "ect": 1,
+          "cts": 1
+        },
+        {
+          "his": 1,
+          "is ": 1,
+          "s w": 1,
+          " wo": 1,
+          "wor": 1,
+          "ork": 1
+        },
+        {
+          "his": 1,
+          "is ": 1,
+          "s p": 1,
+          " po": 1,
+          "por": 1,
+          "ort": 1,
+          "rtf": 1,
+          "tfo": 1,
+          "fol": 1,
+          "oli": 1,
+          "lio": 1
+        },
+        {
+          "eng": 1,
+          "ngi": 1,
+          "gin": 1,
+          "ine": 1,
+          "nee": 1,
+          "eer": 1,
+          "eri": 1,
+          "rin": 1,
+          "ing": 1,
+          "ng ": 1,
+          "g p": 1,
           " pr": 1,
           "pro": 1,
           "roj": 1,
@@ -8570,7 +10148,7 @@
         "proposition": 1000,
         "good": 333.3333333333333,
         "fit": 500,
-        "role": 200,
+        "role": 166.66666666666666,
         "sets": 1000,
         "apart": 1000,
         "edge": 1000,
@@ -8922,8 +10500,8 @@
           "weight": 1.5
         },
         {
-          "text": "next",
-          "weight": 1.5
+          "text": "re_trigger_match",
+          "weight": 1
         }
       ],
       "answer": [
@@ -8963,21 +10541,21 @@
         "yo",
         "bot",
         "symbolic_query",
-        "next"
+        "re_trigger_match"
       ],
       "weights": {
         "hi": 333.3333333333333,
         "hello": 1000,
-        "you": 200,
+        "you": 111.11111111111111,
         "hey": 500,
         "greetings": 1000,
         "there": 500,
         "whats": 1000,
         "up": 1000,
         "yo": 1000,
-        "bot": 333.3333333333333,
+        "bot": 142.85714285714286,
         "symbolic_query": 1000,
-        "next": 1000
+        "re_trigger_match": 1000
       },
       "phrases": [
         "you",
@@ -9181,7 +10759,7 @@
       "weights": {
         "thanks": 1000,
         "thank": 1000,
-        "you": 200,
+        "you": 111.11111111111111,
         "cheers": 1000,
         "awesome": 1000,
         "great": 1000,
@@ -9189,7 +10767,7 @@
         "helpful": 1000,
         "perfect": 1000,
         "good": 333.3333333333333,
-        "job": 1000,
+        "job": 250,
         "thx": 1000
       },
       "phrases": [
@@ -9515,7 +11093,7 @@
         "joke": 333.3333333333333,
         "funny": 1000,
         "laugh": 1000,
-        "you": 200,
+        "you": 111.11111111111111,
         "know": 333.3333333333333,
         "any": 1000,
         "jokes": 1000,
@@ -10390,7 +11968,7 @@
         },
         "feedback": {
           "answer": [
-            "You can use the contact form available on this website to send a message or feedback. 🔗 View Contact Page"
+            "You can use the contact form available on this website to send a message or feedback. <a href=\"/contact-me\" class=\"chat-link\">🔗 View Contact Page</a>"
           ],
           "deeper_answer": "Feedback is very important for Akhilesh's continuous improvement.",
           "suggestions": [
@@ -10400,7 +11978,7 @@
         },
         "persona_private": {
           "answer": [
-            "Akhilesh values professional focus in this portfolio. For personal inquiries like age or offline details, LinkedIn is the best place to connect!",
+            "Akhilesh values professional focus in this portfolio. For personal inquiries, LinkedIn is the best place to connect!",
             "This assistant is designed to explore his professional career, skills, and projects. Personal details are kept private."
           ],
           "deeper_answer": "Maintaining a professional persona is key to his brand. He is currently focused on Cloud Platform Engineering and DevOps at SAP.",
@@ -10408,6 +11986,28 @@
             "View his experience",
             "See his skills",
             "LinkedIn"
+          ]
+        },
+        "bot_identity": {
+          "answer": [
+            "I am Akhilesh's AI Portfolio Assistant. I'm a knowledge engine designed to help you explore his career, projects, and skills with 100% data-driven accuracy."
+          ],
+          "deeper_answer": "I'm built using a hybrid deterministic-AI engine to ensure everything I say is anchored in Akhilesh's real professional data.",
+          "suggestions": [
+            "How can you help?",
+            "Who is Akhilesh?",
+            "Show his skills"
+          ]
+        },
+        "bot_help": {
+          "answer": [
+            "I can walk you through his work at SAP and Juniper, show you his Cloud & DevOps projects, list his technical certifications, or even tell you a tech joke! What would you like to explore first?"
+          ],
+          "deeper_answer": "You can ask me about his 'Experience', 'Technical Skills', 'Academic Background', or 'Why hire him?'. I'm here to provide quick, accurate answers for recruiters.",
+          "suggestions": [
+            "Show SAP work",
+            "Download Resume",
+            "Tell me a joke"
           ]
         },
         "hire_him_mode": {
@@ -10639,7 +12239,7 @@
           "location": "Chicago, USA",
           "grade": {
             "type": "GPA",
-            "value": "3.7"
+            "value": "3.7/4.0"
           },
           "description_raw": "Master of Science in Information Technology and Management with strong focus on software development, databases, and system design.",
           "skills_acquired": [
@@ -10677,7 +12277,7 @@
           "location": "Dharwad, Karnataka, India",
           "grade": {
             "type": "CGPA",
-            "value": "8.52"
+            "value": "8.52/10.0"
           },
           "description_raw": "Bachelor’s degree in Computer Science with focus on programming, databases, and core computer science fundamentals.",
           "skills_acquired": [
@@ -11879,29 +13479,27 @@
       "type": "projects"
     }
   },
-  "timestamp": "2026-04-06T07:14:09.512Z",
+  "timestamp": "2026-04-10T08:02:40.653Z",
   "entropy_map": {
     "download": 3,
     "resume": 4,
-    "get": 3,
     "view": 1,
     "link": 2,
     "cv": 3,
-    "contact": 2,
-    "reach": 2,
-    "touch": 1,
-    "phone": 1,
-    "number": 1,
-    "out": 1,
+    "contact": 3,
+    "reach": 1,
     "email": 1,
     "address": 2,
+    "phone": 1,
+    "number": 1,
+    "touch": 1,
     "location": 1,
     "located": 1,
     "live": 1,
-    "current": 1,
+    "current": 4,
     "city": 2,
     "linkedin": 3,
-    "profile": 3,
+    "profile": 4,
     "github": 4,
     "source": 1,
     "code": 2,
@@ -11913,26 +13511,34 @@
     "complaint": 1,
     "suggestion": 1,
     "headline": 1,
-    "title": 1,
-    "role": 5,
-    "professional": 2,
-    "summary": 5,
-    "work": 6,
-    "you": 5,
-    "name": 1,
+    "title": 2,
+    "professional": 4,
+    "role": 6,
+    "summary": 6,
     "identity": 1,
     "biography": 1,
     "background": 4,
     "akhilesh": 1,
-    "this": 1,
-    "bot": 3,
+    "bio": 1,
+    "you": 9,
+    "name": 1,
+    "am": 1,
+    "talking": 1,
+    "purpose": 1,
+    "this": 2,
+    "bot": 7,
     "persona": 1,
-    "age": 2,
-    "height": 2,
-    "can": 2,
+    "can": 4,
+    "help": 3,
+    "ask": 1,
+    "guide": 3,
     "features": 1,
-    "capabilities": 1,
+    "capabilities": 2,
     "power": 1,
+    "use": 2,
+    "functions": 1,
+    "age": 1,
+    "height": 1,
     "eyes": 1,
     "personal": 1,
     "life": 1,
@@ -11940,15 +13546,21 @@
     "salary": 1,
     "pay": 1,
     "income": 1,
-    "sap": 7,
-    "experience": 5,
-    "achievements": 3,
+    "sap": 9,
+    "experience": 6,
+    "achievements": 4,
     "gardener": 1,
     "ecs": 1,
-    "it": 1,
     "cloud": 8,
     "service": 2,
     "specialist": 2,
+    "company": 2,
+    "employer": 2,
+    "working": 2,
+    "now": 2,
+    "currently": 1,
+    "workplace": 1,
+    "work": 11,
     "juniper": 10,
     "high": 2,
     "performance": 1,
@@ -11959,18 +13571,31 @@
     "se3": 1,
     "se2": 1,
     "se1": 1,
+    "previous": 3,
+    "past": 3,
+    "companies": 1,
+    "before": 6,
+    "earlier": 2,
+    "roles": 1,
+    "prior": 3,
+    "previously": 1,
+    "worked": 2,
+    "job": 4,
+    "whom": 1,
+    "career": 4,
+    "history": 5,
     "highlights": 2,
-    "career": 2,
-    "history": 1,
-    "kubernetes": 3,
-    "k8s": 2,
+    "timeline": 2,
+    "arc": 1,
+    "kubernetes": 5,
     "terraform": 1,
     "docker": 2,
     "devops": 3,
     "helm": 1,
     "skills": 10,
     "know": 3,
-    "cicd": 3,
+    "ci": 5,
+    "cd": 5,
     "infrastructure": 1,
     "as": 2,
     "gitops": 2,
@@ -11980,13 +13605,16 @@
     "workflows": 1,
     "automation": 2,
     "ansible": 1,
-    "tech": 2,
+    "tech": 3,
     "stack": 1,
     "tools": 1,
     "technical": 3,
     "expertise": 1,
     "all": 2,
     "skill": 2,
+    "list": 2,
+    "core": 1,
+    "competencies": 1,
     "aws": 1,
     "azure": 1,
     "google": 1,
@@ -12023,7 +13651,7 @@
     "llm": 1,
     "generative": 1,
     "prompt": 1,
-    "engineering": 1,
+    "engineering": 2,
     "system": 2,
     "architecture": 1,
     "networking": 1,
@@ -12055,6 +13683,7 @@
     "colleagues": 1,
     "endorsements": 1,
     "manager": 1,
+    "references": 1,
     "languages": 2,
     "speak": 4,
     "multilingual": 1,
@@ -12063,25 +13692,25 @@
     "english": 1,
     "hindi": 1,
     "kannada": 1,
-    "hiring": 2,
+    "hiring": 3,
     "interviewer": 2,
     "mentor": 1,
     "has": 2,
-    "worked": 1,
     "take": 1,
     "interviews": 1,
     "initiatives": 1,
     "recruitment": 1,
     "onboarding": 1,
     "interns": 2,
-    "guide": 1,
+    "award": 1,
     "education": 2,
     "degree": 3,
     "university": 2,
     "college": 2,
-    "academic": 1,
+    "academic": 2,
     "study": 2,
     "graduation": 1,
+    "qualifications": 1,
     "bachelors": 3,
     "undergraduate": 1,
     "masters": 2,
@@ -12099,7 +13728,8 @@
     "exam": 1,
     "many": 2,
     "total": 2,
-    "list": 1,
+    "licenses": 1,
+    "accreditations": 1,
     "cka": 2,
     "administrator": 1,
     "certification": 1,
@@ -12109,19 +13739,24 @@
     "medals": 1,
     "received": 1,
     "count": 1,
-    "iot": 2,
-    "project": 8,
+    "notable": 1,
+    "winner": 1,
+    "recognized": 1,
+    "iot": 4,
+    "project": 10,
     "smart": 1,
     "irrigation": 1,
     "raspberry": 1,
     "pi": 1,
     "hardware": 1,
     "embedded": 1,
+    "monitoring": 1,
+    "describe": 1,
     "script": 1,
     "jenkins": 1,
     "actions": 1,
-    "projects": 2,
-    "portfolio": 1,
+    "projects": 4,
+    "portfolio": 2,
     "built": 1,
     "samples": 1,
     "why": 3,
@@ -12151,7 +13786,7 @@
     "up": 1,
     "yo": 1,
     "symbolic_query": 1,
-    "next": 1,
+    "re_trigger_match": 1,
     "thanks": 1,
     "thank": 1,
     "cheers": 1,
@@ -12160,7 +13795,6 @@
     "cool": 1,
     "helpful": 1,
     "perfect": 1,
-    "job": 1,
     "thx": 1,
     "bye": 2,
     "goodbye": 1,
@@ -12194,16 +13828,13 @@
     "resume link": [
       "resume_download"
     ],
-    "get touch": [
+    "email address": [
       "contact"
     ],
     "phone number": [
       "contact"
     ],
-    "reach out": [
-      "contact"
-    ],
-    "email address": [
+    "get touch": [
       "contact"
     ],
     "current city": [
@@ -12224,16 +13855,25 @@
     "contact form": [
       "feedback"
     ],
-    "professional summary": [
+    "professional title": [
       "headline"
     ],
-    "this bot": [
-      "identity"
+    "am talking": [
+      "bot_identity"
     ],
-    "can you": [
-      "capabilities"
+    "this bot": [
+      "bot_identity"
+    ],
+    "can ask you": [
+      "bot_help"
     ],
     "bot power": [
+      "capabilities"
+    ],
+    "use this bot": [
+      "capabilities"
+    ],
+    "bot functions": [
       "capabilities"
     ],
     "personal life": [
@@ -12245,10 +13885,26 @@
     "sap ecs": [
       "experience_sap"
     ],
-    "it cloud service specialist": [
+    "cloud service specialist": [
+      "experience_sap",
       "experience_sap"
     ],
-    "cloud service specialist": [
+    "current company": [
+      "experience_sap"
+    ],
+    "current employer": [
+      "experience_sap"
+    ],
+    "working now": [
+      "experience_sap"
+    ],
+    "currently working": [
+      "experience_sap"
+    ],
+    "current workplace": [
+      "experience_sap"
+    ],
+    "work now": [
       "experience_sap"
     ],
     "high performance": [
@@ -12275,19 +13931,34 @@
     "juniper intern": [
       "experience_juniper"
     ],
-    "experience highlights": [
-      "experience_summary"
+    "previous employer": [
+      "experience_previous"
     ],
-    "career summary": [
+    "past companies": [
+      "experience_previous"
+    ],
+    "earlier roles": [
+      "experience_previous"
+    ],
+    "previously worked": [
+      "experience_previous"
+    ],
+    "past company": [
+      "experience_previous"
+    ],
+    "whom work before": [
+      "experience_previous"
+    ],
+    "experience highlights": [
       "experience_summary"
     ],
     "career highlights": [
       "experience_summary"
     ],
-    "professional background": [
+    "professional timeline": [
       "experience_summary"
     ],
-    "work history": [
+    "career arc": [
       "experience_summary"
     ],
     "know docker": [
@@ -12314,6 +13985,12 @@
     "skill summary": [
       "skills_summary"
     ],
+    "tech list": [
+      "skills_summary"
+    ],
+    "core competencies": [
+      "skills_summary"
+    ],
     "google cloud": [
       "skills_cloud"
     ],
@@ -12321,9 +13998,6 @@
       "skills_cloud"
     ],
     "public cloud": [
-      "skills_cloud"
-    ],
-    "cloud tech": [
       "skills_cloud"
     ],
     "api development": [
@@ -12434,7 +14108,13 @@
     "guide interns": [
       "hiring_mentorship"
     ],
+    "award hiring": [
+      "hiring_mentorship"
+    ],
     "academic background": [
+      "education"
+    ],
+    "academic history": [
       "education"
     ],
     "college degree": [
@@ -12470,7 +14150,7 @@
     "cka certified": [
       "certifications_cka"
     ],
-    "k8s certification": [
+    "kubernetes certification": [
       "certifications_cka"
     ],
     "awards received": [
@@ -12485,8 +14165,8 @@
     "awards count": [
       "awards"
     ],
-    "iot project": [
-      "projects_iot"
+    "notable achievements": [
+      "awards"
     ],
     "smart irrigation": [
       "projects_iot"
@@ -12498,6 +14178,12 @@
       "projects_iot"
     ],
     "embedded systems project": [
+      "projects_iot"
+    ],
+    "iot monitoring": [
+      "projects_iot"
+    ],
+    "describe iot project": [
       "projects_iot"
     ],
     "automation script": [
@@ -12516,6 +14202,9 @@
       "projects_summary"
     ],
     "all projects": [
+      "projects_summary"
+    ],
+    "engineering projects": [
       "projects_summary"
     ],
     "makes unique": [
@@ -12563,9 +14252,6 @@
     "thank you": [
       "thanks"
     ],
-    "good job": [
-      "thanks"
-    ],
     "see ya": [
       "bye"
     ],
@@ -12599,6 +14285,11 @@
     "jenkins": "projects_cicd",
     "argocd": "skills_devops",
     "helm": "skills_devops",
+    "cicd": "projects_cicd",
+    "ci/cd": "projects_cicd",
+    "pipeline": "projects_cicd",
+    "ci": "projects_cicd",
+    "cd": "projects_cicd",
     "sap": "experience_sap",
     "juniper": "experience_juniper",
     "networks": "experience_juniper",
@@ -12627,6 +14318,9 @@
     "bachelors": "education_bachelors",
     "masters": "education_masters",
     "university": "education",
+    "engineering": "education_bachelors",
+    "b.e": "education_bachelors",
+    "b.tech": "education_bachelors",
     "projects": "projects_summary",
     "iot": "projects_iot",
     "hardware": "projects_iot",
@@ -12647,8 +14341,8 @@
     "awards": "awards",
     "honors": "awards",
     "recognitions": "awards",
-    "instructions": "capabilities",
-    "capabilities": "capabilities",
+    "instructions": "bot_help",
+    "capabilities": "skills_summary",
     "features": "capabilities",
     "skills": "skills_summary",
     "experience": "experience_summary",
@@ -12657,32 +14351,60 @@
     "biography": "identity",
     "background": "identity",
     "identity": "identity",
+    "profile": "identity",
+    "role": "headline",
+    "title": "headline",
+    "position": "headline",
     "age": "persona_private",
     "salary": "persona_private",
-    "personal": "persona_private"
+    "personal": "persona_private",
+    "persona": "bot_identity",
+    "bot": "bot_identity",
+    "current": "experience_sap",
+    "present": "experience_sap",
+    "employer": "experience_sap",
+    "now": "experience_sap",
+    "workplace": "experience_sap",
+    "currently": "experience_sap",
+    "working": "experience_sap",
+    "latest": "experience_sap",
+    "previous": "experience_summary",
+    "past": "experience_summary",
+    "earlier": "experience_summary",
+    "before": "experience_summary",
+    "previously": "experience_summary",
+    "prior": "experience_summary",
+    "timeline": "experience_summary",
+    "history": "experience_summary",
+    "academic": "education",
+    "qualifications": "education",
+    "gpa": "education",
+    "cgpa": "education",
+    "list": "skills_summary",
+    "tech": "skills_summary",
+    "tools": "skills_summary",
+    "touch": "contact"
   },
   "keyword_weights": {
     "download": 333.3333333333333,
     "resume": 250,
-    "get": 333.3333333333333,
     "view": 1000,
     "link": 500,
     "cv": 333.3333333333333,
-    "contact": 500,
-    "reach": 500,
-    "touch": 1000,
-    "phone": 1000,
-    "number": 1000,
-    "out": 1000,
+    "contact": 333.3333333333333,
+    "reach": 1000,
     "email": 1000,
     "address": 500,
+    "phone": 1000,
+    "number": 1000,
+    "touch": 1000,
     "location": 1000,
     "located": 1000,
     "live": 1000,
-    "current": 1000,
+    "current": 250,
     "city": 500,
     "linkedin": 333.3333333333333,
-    "profile": 333.3333333333333,
+    "profile": 250,
     "github": 250,
     "source": 1000,
     "code": 500,
@@ -12694,26 +14416,34 @@
     "complaint": 1000,
     "suggestion": 1000,
     "headline": 1000,
-    "title": 1000,
-    "role": 200,
-    "professional": 500,
-    "summary": 200,
-    "work": 166.66666666666666,
-    "you": 200,
-    "name": 1000,
+    "title": 500,
+    "professional": 250,
+    "role": 166.66666666666666,
+    "summary": 166.66666666666666,
     "identity": 1000,
     "biography": 1000,
     "background": 250,
     "akhilesh": 1000,
-    "this": 1000,
-    "bot": 333.3333333333333,
+    "bio": 1000,
+    "you": 111.11111111111111,
+    "name": 1000,
+    "am": 1000,
+    "talking": 1000,
+    "purpose": 1000,
+    "this": 500,
+    "bot": 142.85714285714286,
     "persona": 1000,
-    "age": 500,
-    "height": 500,
-    "can": 500,
+    "can": 250,
+    "help": 333.3333333333333,
+    "ask": 1000,
+    "guide": 333.3333333333333,
     "features": 1000,
-    "capabilities": 1000,
+    "capabilities": 500,
     "power": 1000,
+    "use": 500,
+    "functions": 1000,
+    "age": 1000,
+    "height": 1000,
     "eyes": 1000,
     "personal": 1000,
     "life": 1000,
@@ -12721,15 +14451,21 @@
     "salary": 1000,
     "pay": 1000,
     "income": 1000,
-    "sap": 142.85714285714286,
-    "experience": 200,
-    "achievements": 333.3333333333333,
+    "sap": 111.11111111111111,
+    "experience": 166.66666666666666,
+    "achievements": 250,
     "gardener": 1000,
     "ecs": 1000,
-    "it": 1000,
     "cloud": 125,
     "service": 500,
     "specialist": 500,
+    "company": 500,
+    "employer": 500,
+    "working": 500,
+    "now": 500,
+    "currently": 1000,
+    "workplace": 1000,
+    "work": 90.9090909090909,
     "juniper": 100,
     "high": 500,
     "performance": 1000,
@@ -12740,18 +14476,31 @@
     "se3": 1000,
     "se2": 1000,
     "se1": 1000,
+    "previous": 333.3333333333333,
+    "past": 333.3333333333333,
+    "companies": 1000,
+    "before": 166.66666666666666,
+    "earlier": 500,
+    "roles": 1000,
+    "prior": 333.3333333333333,
+    "previously": 1000,
+    "worked": 500,
+    "job": 250,
+    "whom": 1000,
+    "career": 250,
+    "history": 200,
     "highlights": 500,
-    "career": 500,
-    "history": 1000,
-    "kubernetes": 333.3333333333333,
-    "k8s": 500,
+    "timeline": 500,
+    "arc": 1000,
+    "kubernetes": 200,
     "terraform": 1000,
     "docker": 500,
     "devops": 333.3333333333333,
     "helm": 1000,
     "skills": 100,
     "know": 333.3333333333333,
-    "cicd": 333.3333333333333,
+    "ci": 200,
+    "cd": 200,
     "infrastructure": 1000,
     "as": 500,
     "gitops": 500,
@@ -12761,13 +14510,16 @@
     "workflows": 1000,
     "automation": 500,
     "ansible": 1000,
-    "tech": 500,
+    "tech": 333.3333333333333,
     "stack": 1000,
     "tools": 1000,
     "technical": 333.3333333333333,
     "expertise": 1000,
     "all": 500,
     "skill": 500,
+    "list": 500,
+    "core": 1000,
+    "competencies": 1000,
     "aws": 1000,
     "azure": 1000,
     "google": 1000,
@@ -12804,7 +14556,7 @@
     "llm": 1000,
     "generative": 1000,
     "prompt": 1000,
-    "engineering": 1000,
+    "engineering": 500,
     "system": 500,
     "architecture": 1000,
     "networking": 1000,
@@ -12836,6 +14588,7 @@
     "colleagues": 1000,
     "endorsements": 1000,
     "manager": 1000,
+    "references": 1000,
     "languages": 500,
     "speak": 250,
     "multilingual": 1000,
@@ -12844,25 +14597,25 @@
     "english": 1000,
     "hindi": 1000,
     "kannada": 1000,
-    "hiring": 500,
+    "hiring": 333.3333333333333,
     "interviewer": 500,
     "mentor": 1000,
     "has": 500,
-    "worked": 1000,
     "take": 1000,
     "interviews": 1000,
     "initiatives": 1000,
     "recruitment": 1000,
     "onboarding": 1000,
     "interns": 500,
-    "guide": 1000,
+    "award": 1000,
     "education": 500,
     "degree": 333.3333333333333,
     "university": 500,
     "college": 500,
-    "academic": 1000,
+    "academic": 500,
     "study": 500,
     "graduation": 1000,
+    "qualifications": 1000,
     "bachelors": 333.3333333333333,
     "undergraduate": 1000,
     "masters": 500,
@@ -12880,7 +14633,8 @@
     "exam": 1000,
     "many": 500,
     "total": 500,
-    "list": 1000,
+    "licenses": 1000,
+    "accreditations": 1000,
     "cka": 500,
     "administrator": 1000,
     "certification": 1000,
@@ -12890,19 +14644,24 @@
     "medals": 1000,
     "received": 1000,
     "count": 1000,
-    "iot": 500,
-    "project": 125,
+    "notable": 1000,
+    "winner": 1000,
+    "recognized": 1000,
+    "iot": 250,
+    "project": 100,
     "smart": 1000,
     "irrigation": 1000,
     "raspberry": 1000,
     "pi": 1000,
     "hardware": 1000,
     "embedded": 1000,
+    "monitoring": 1000,
+    "describe": 1000,
     "script": 1000,
     "jenkins": 1000,
     "actions": 1000,
-    "projects": 500,
-    "portfolio": 1000,
+    "projects": 250,
+    "portfolio": 500,
     "built": 1000,
     "samples": 1000,
     "why": 333.3333333333333,
@@ -12932,7 +14691,7 @@
     "up": 1000,
     "yo": 1000,
     "symbolic_query": 1000,
-    "next": 1000,
+    "re_trigger_match": 1000,
     "thanks": 1000,
     "thank": 1000,
     "cheers": 1000,
@@ -12941,7 +14700,6 @@
     "cool": 1000,
     "helpful": 1000,
     "perfect": 1000,
-    "job": 1000,
     "thx": 1000,
     "bye": 500,
     "goodbye": 1000,

@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment
+.env
+
+# Build/Data
+public/data/stats.json
+public/data/summary.json
+public/data/llm-context.txt
+
+# Tests/Reports
+tests/detailed_audit_report.json
+tests/sanity_report.json
+
+# System
+.DS_Store
+Thumbs.db
+*.log
+logs/
+
+# Workspace
+.gemini/
+tmp/
+.vscode/
+models/
+test-results/
+playwright-report/

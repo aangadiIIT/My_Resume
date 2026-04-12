@@ -9,6 +9,13 @@ const compression = require('compression');
 
 const app = express();
 
+// CORE IMPORTS FOR GOLDEN GUARD
+const ChatbotEngine = require('./public/scripts/chatbot-engine');
+const { generateResponse } = require('./utils/ai-service');
+const { generateOnlineResponse } = require('./utils/online-ai-service');
+require('dotenv').config();
+const summary = JSON.parse(fs.readFileSync(path.join(__dirname, 'public', 'data', 'summary.json'), 'utf8'));
+
 // Security headers
 app.use(helmet({
   contentSecurityPolicy: {
@@ -39,6 +46,29 @@ let cachedResumeData = null;
 let lastDataLoadTime = 0;
 const CACHE_DURATION = 1000 * 60 * 5; // 5 minutes cache
 
+// LLM Context Cache
+let cachedLLMContext = null;
+let lastLLMContextLoad = 0;
+function getLLMContext() {
+  const now = Date.now();
+  if (cachedLLMContext && (now - lastLLMContextLoad < 300000)) return cachedLLMContext; // 5 min cache
+
+  try {
+    const snapshotPath = path.join(__dirname, 'public', 'data', 'llm-context.txt');
+    if (fs.existsSync(snapshotPath)) {
+      cachedLLMContext = fs.readFileSync(snapshotPath, 'utf8');
+      lastLLMContextLoad = now;
+      console.log(`[LLM] Context Snapshot loaded (${cachedLLMContext.length} chars)`);
+      return cachedLLMContext;
+    }
+  } catch (err) {
+    console.error("[LLM] Failed to load context snapshot:", err.message);
+  }
+  return "No context available.";
+}
+
+// Warm-up logic is now handled by scripts/warmup-ai.js during deployment.
+
 async function getResumeData() {
   const now = Date.now();
   if (cachedResumeData && (now - lastDataLoadTime < CACHE_DURATION)) {
@@ -50,10 +80,10 @@ async function getResumeData() {
 
   try {
     try {
-        await fs.promises.access(dataDir);
+      await fs.promises.access(dataDir);
     } catch {
-        console.error("Data directory missing:", dataDir);
-        return null;
+      console.error("Data directory missing:", dataDir);
+      return null;
     }
 
     const files = await fs.promises.readdir(dataDir);
@@ -63,9 +93,9 @@ async function getResumeData() {
         const fileContent = await fs.promises.readFile(filePath, 'utf8');
         const key = path.basename(file, '.json');
         try {
-            combinedData[key] = JSON.parse(fileContent);
+          combinedData[key] = JSON.parse(fileContent);
         } catch (parseErr) {
-            console.error(`Error parsing ${file}:`, parseErr);
+          console.error(`Error parsing ${file}:`, parseErr);
         }
       }
     }
@@ -144,7 +174,7 @@ async function getResumeData() {
     // Pre-calculate Radar Chart Data for Skills
     combinedData.radarValues = [0, 0, 0, 0, 0, 0]; // Default zeros
     combinedData.radarLabels = ['Cloud & DevOps', 'Backend', 'System Design', 'Frontend', 'Networking', 'AI & Testing'];
-    
+
     // Check for both possible structures (wrapped or direct)
     const skillsData = combinedData.skills?.skills || combinedData.skills;
     if (skillsData && skillsData.categorized) {
@@ -216,11 +246,11 @@ app.use(async (req, res, next) => {
   // Track visits (exclude static files and API calls)
   if (!req.path.includes('.') && !req.path.startsWith('/api/') && !req.path.startsWith('/view-asset/')) {
     stats.visits++;
-    
+
     // Simple Visitor Tracking (IP and User Agent)
     const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
     const ua = req.get('User-Agent') || 'unknown';
-    
+
     if (!stats.visitors[ip]) {
       stats.visitors[ip] = { hits: 0, ua: ua, firstSeen: new Date().toISOString() };
     }
@@ -238,12 +268,12 @@ app.use(async (req, res, next) => {
   }
 
   const data = (await getResumeData()) || cachedResumeData || { profile: { profile: { name: 'Resume', social_links: {}, contact: {} } } };
-  
+
   if (!data || !data.profile) {
     // This should only happen if even our fallback fails miserably
     return next(createError(500, "Fatal Data Error. Site is currently offline."));
   }
-  
+
   res.locals.data = data;
   res.locals.totalVisits = stats.visits;
   next();
@@ -315,12 +345,12 @@ app.post('/contact-me', async (req, res) => {
   const { name, email, subject, message, rating } = req.body;
   const ratingHeader = rating ? `[Rating: ${rating}/5] ` : '';
   const enrichedMessage = ratingHeader + message;
-  
+
   console.log(`[FEEDBACK] Received: name=${name}, rating=${rating}, subject=${subject}`);
-  
+
   const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSd1IAe_XPmBDZ3JFcp8me0fh9yFhHQj7dVU-_0Cqf_qu-8czg/formResponse';
   const formData = new URLSearchParams();
-  
+
   formData.append('entry.1760114498', name);    // Full Name
   formData.append('entry.912588963', email);   // Email
   formData.append('entry.716766072', subject || 'Website Feedback'); // Subject
@@ -351,11 +381,165 @@ app.post('/contact-me', async (req, res) => {
   });
 });
 
+// --- Core Intent Resolution & Context Awareness ---
+const INTENT_MAP_HINTS = {
+  'experience': ["What are his top skills?", "Why is he a good fit for DevOps?", "Show SAP impact?"],
+  'skills': ["Show certifications?", "Tell me about his IoT project?", "View professional awards?"],
+  'projects': ["What cloud tech does he use?", "Show DevOps automation work?", "How to contact him?"],
+  'education': ["Is he available for hire?", "Show his research work?", "Tell me about his SAP role?"],
+  'certifications': ["What are his main skills?", "Tell me about his career?", "Download resume PDF?"],
+  'awards': ["What did he do at SAP?", "Show his publications?", "Why hire Akhilesh?"],
+  'contact': ["Download resume?", "View LinkedIn profile?", "What can you do?"],
+  'identity': ["What are his main skills?", "Tell me about his projects?", "Show certifications?"],
+  'hire_role': ["Show certifications?", "Download resume?", "Contact Akhilesh now?"],
+  'small_talk': ["Tell me about his career?", "What are his main skills?", "How many awards?"],
+  'default': ["Tell me about his career?", "What are his top skills?", "Show certifications?"]
+};
+
+function getAdaptiveHints(intent = 'default', count = 3) {
+  // Extract base category (e.g., 'experience_sap' -> 'experience')
+  const baseCategory = Object.keys(INTENT_MAP_HINTS).find(cat => intent && intent.startsWith(cat)) || 'default';
+  const pool = INTENT_MAP_HINTS[baseCategory] || INTENT_MAP_HINTS.default;
+
+  // Shuffle for variety but keep relevant
+  return [...pool].sort(() => Math.random() - 0.5).slice(0, count);
+}
+app.post('/api/chat/llm', async (req, res) => {
+  const { query, history } = req.body;
+
+  try {
+    const snapshot = getLLMContext();
+
+    // --- STEP 1: DETERMINISTIC ENGINE (GOLDEN GUARD) ---
+    const engineResult = ChatbotEngine.findResponse(query, summary, {
+      lastIntent: (history && history.length > 0) ? history[history.length - 1].intent : null
+    });
+
+    const coreIntents = ['bot_identity', 'bot_help', 'small_talk', 'thanks', 'bye', 'jokes', 'facts', 'riddles', 'contact', 'resume_download', 'location', 'linkedin', 'github', 'feedback', 'experience_previous', 'projects_cicd'];
+    const isHighConfidence = engineResult.trace && engineResult.trace.confidence_bucket === 'HIGH';
+    const isCoreIntent = engineResult.trace && coreIntents.includes(engineResult.trace.intent);
+    const isExactMatch = engineResult.trace && (engineResult.trace.path === 'FAST_PATH_EXACT' || engineResult.trace.path === 'EXACT_MATCH');
+
+    // --- Pre-Inference Optimization: Precise Intent Match ---
+    // User Update: If confidence is HIGH, always use deterministic answer unless it's a 
+    // multi-domain, multi-intent, or deeper dive question requiring narrative synthesis.
+    if (isHighConfidence && !engineResult.isMultiIntent && !engineResult.isDetailed) {
+      console.log(`[BYPASS] High-Confidence Match: ${engineResult.trace.intent}. Skipping AI for fact preservation.`);
+
+      const finalHints = (engineResult.suggestions && engineResult.suggestions.length > 0)
+        ? engineResult.suggestions.slice(0, 3)
+        : getAdaptiveHints(engineResult.trace.intent);
+
+      return res.json({
+        answer: engineResult.answer,
+        hints: finalHints,
+        intent: engineResult.trace.intent,
+        engine: 'deterministic'
+      });
+    }
+
+    // LLM-First for Professional Domains: Only bypass LLM for Core Utility Intents
+    if (isCoreIntent) {
+      console.log(`[HYBRID] Using Deterministic Engine for Intent: ${engineResult.trace.intent}`);
+
+      // Fallback hints if engineResult.suggestions is missing or empty
+      const finalHints = (engineResult.suggestions && engineResult.suggestions.length > 0)
+        ? engineResult.suggestions.slice(0, 3)
+        : getAdaptiveHints(engineResult.trace.intent);
+
+      return res.json({
+        answer: engineResult.answer,
+        hints: finalHints,
+        intent: engineResult.trace.intent,
+        engine: 'deterministic'
+      });
+    }
+
+    // --- STEP 2: INTERNAL LLM FALLBACK (QWEN 2.5 0.5B ONNX) ---
+    const officialHints = (engineResult.suggestions && engineResult.suggestions.length >= 2)
+      ? engineResult.suggestions.slice(0, 3)
+      : getAdaptiveHints(engineResult.trace.intent);
+
+    try {
+      let candidates = engineResult.candidates || [];
+      
+      // --- Global Knowledge Grounding Fallback ---
+      // If no specific candidates were identified, provide core Bio/Role context to prevent persona detachment.
+      if (candidates.length === 0) {
+        console.log("[AI-LLM] No specific candidates. Grounding with System-Level Facts...");
+        const bio = summary.mappings.find(m => m.intent === 'identity');
+        const current = summary.mappings.find(m => m.intent === 'experience_sap');
+        if (bio) candidates.push({ intent: 'identity', domain: 'identity', content: Array.isArray(bio.answer)? bio.answer[0] : bio.answer });
+        if (current) candidates.push({ intent: 'experience_sap', domain: 'experience', content: Array.isArray(current.answer)? current.answer[0] : current.answer });
+      }
+
+      console.log(`[AI-LLM] Grounding with ${candidates.length} candidates...`);
+
+      let finalAnswer = "";
+      let finalHints = officialHints;
+      let usedEngine = "ai"; // Generic fallback
+
+      // --- HYBRID ROUTING ---
+      if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.length > 20) {
+        try {
+          console.log("[AI-LLM] Routing to Online Intelligence (Gemini)...");
+          finalAnswer = await generateOnlineResponse(query, history, candidates);
+          usedEngine = "online";
+        } catch (geminiErr) {
+          console.warn("[AI-LLM] Online Fallback Triggered. Using Local Llama...");
+          finalAnswer = await generateResponse(query, snapshot, history, candidates);
+          usedEngine = "offline";
+        }
+      } else {
+        console.log("[AI-LLM] Routing to Local Intelligence (Llama 3.2 1B)...");
+        finalAnswer = await generateResponse(query, snapshot, history, candidates);
+        usedEngine = "offline";
+      }
+
+      console.log(`[AI-LLM] Generated: "${finalAnswer.slice(0, 100)}..."`);
+
+      // Dynamically extract context-aware follow-up suggestions
+      const suggestionMatch = finalAnswer.match(/(?:\[?SUGGESTIONS\]?|Suggestions:|Follow-up questions:|Ask me about:)\s*(.*)/is);
+
+      if (suggestionMatch) {
+        finalAnswer = finalAnswer.split(suggestionMatch[0])[0].trim();
+        const extracted = suggestionMatch[1].split(/,|\n/)
+          .map(h => h.trim().replace(/^[:\-\*]\s*/, '').replace(/[.!?]$/, ''))
+          .filter(h => h.length > 2 && h.length < 50);
+
+        if (extracted.length > 0) {
+          finalHints = extracted.slice(0, 3);
+        }
+      }
+
+      res.json({
+        answer: finalAnswer,
+        hints: finalHints,
+        intent: engineResult.trace.intent || 'llm_fallback',
+        engine: usedEngine
+      });
+    } catch (err) {
+      if (err.message === "STRICT_GROUNDING_FAIL_NO_CANDIDATES") {
+        console.log('[AI-LLM] Strict Grounding Bypass: No facts found. Refusing to guess.');
+      } else {
+        console.error('[INTERNAL AI ERROR]:', err);
+      }
+      res.json({
+        answer: "I don't have that specific information in my digital profile.",
+        hints: officialHints || ["Tell me about his technical skills?", "Show his certifications?", "How to contact him?"]
+      });
+    }
+  } catch (outerErr) {
+    console.error('[CRITICAL ROUTE ERROR]:', outerErr);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // Secure Asset Serving Route
 app.get('/view-asset/:category/:file', (req, res) => {
   const { category, file } = req.params;
   const allowedCategories = ['awards', 'certifications', 'profile', 'documents', 'Analytics'];
-  
+
   if (!allowedCategories.includes(category)) {
     return res.status(403).send('Access Denied');
   }
@@ -383,7 +567,7 @@ app.get('/view-asset/:category/:file', (req, res) => {
     const absolutePath = path.resolve(assetPath);
     const secureRoot = path.resolve(path.join(__dirname, 'secure_assets'));
     if (!absolutePath.startsWith(secureRoot)) {
-        return res.status(403).send('Invalid Path');
+      return res.status(403).send('Invalid Path');
     }
     res.sendFile(absolutePath);
   } else {

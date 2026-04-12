@@ -1,6 +1,1 @@
-{
-  "total_visits": 0,
-  "chatbot_interactions": 0,
-  "feedback_received": 0,
-  "last_updated": "2026-04-06T07:12:16Z"
-}
+{"visits":235,"visitors":{"::1":{"hits":144,"ua":"unknown","firstSeen":"2026-04-08T18:12:07.438Z","lastSeen":"2026-04-10T07:34:17.473Z"},"::ffff:127.0.0.1":{"hits":91,"ua":"unknown","firstSeen":"2026-04-08T18:14:09.520Z","lastSeen":"2026-04-10T08:03:57.572Z"}}}

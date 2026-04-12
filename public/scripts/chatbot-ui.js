@@ -7,32 +7,89 @@ let chatContext = {
   depth: 0,
   lastFollowUps: [],
   history: [],
-  visited: new Set(),      // track visited intents for smart chip filtering
-  userMode: 'casual',      // 'casual' | 'recruiter' | 'explorer'
-  debugMode: false
+  visited: new Set(),
+  userMode: 'casual',
+  debugMode: false,
+  llmMode: true,
+  isProcessing: false,
+  abortController: null // 🛑 For ChatGPT-style "Stop"
 };
+const STORAGE_KEY = 'akhilesh_chat_state';
+const PERSISTENCE_WINDOW = 12 * 60 * 60 * 1000; // 12 Hours
 let botSummary = null;
 
 // ============================================================
-// ANALYTICS  (localStorage, silent fail)
+// Session Persistence Logic (12-hour duration)
 // ============================================================
-const ANALYTICS_KEY = 'akhilesh_ai_analytics';
-
-function trackAnalytics(intent, domain, rawQuery) {
+function saveChatState() {
   try {
-    const data = JSON.parse(localStorage.getItem(ANALYTICS_KEY) ||
-      '{"sessions":0,"totalQueries":0,"intents":{},"unknowns":[],"recruiterSignals":0}');
-    data.totalQueries = (data.totalQueries || 0) + 1;
-    data.lastSeen = new Date().toISOString();
-    if (!intent || intent === 'unknown') {
-      data.unknowns = (data.unknowns || []).slice(-30);
-      data.unknowns.push((rawQuery || '').slice(0, 80));
-    } else {
-      data.intents[intent] = (data.intents[intent] || 0) + 1;
+    const state = {
+      history: chatContext.history,
+      lastIntent: chatContext.lastIntent,
+      lastDomain: chatContext.lastDomain,
+      depth: chatContext.depth,
+      userMode: chatContext.userMode,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) { console.warn('[PERSISTENCE] Save failed', e); }
+}
+
+function loadChatState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const state = JSON.parse(raw);
+
+    // Check 12-hour window
+    if (Date.now() - state.timestamp > PERSISTENCE_WINDOW) {
+      console.log('[PERSISTENCE] Session expired (>12h). Clearing.');
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
     }
-    if (chatContext.userMode === 'recruiter') data.recruiterSignals = (data.recruiterSignals || 0) + 1;
-    localStorage.setItem(ANALYTICS_KEY, JSON.stringify(data));
-  } catch (e) { /* silent */ }
+    return state;
+  } catch (e) { return null; }
+}
+
+function clearChat() {
+  localStorage.removeItem(STORAGE_KEY);
+  chatContext.history = [];
+  chatContext.lastIntent = null;
+  chatContext.depth = 0;
+
+  const body = document.getElementById('chatBody');
+  if (body) {
+    const initialMsg = document.getElementById('initialBotMessage');
+    body.innerHTML = '';
+    if (initialMsg) body.appendChild(initialMsg);
+  }
+
+  // Re-add scroll tracker
+  initScrollTracker();
+
+  // Restore default suggestion chips on initialization
+  renderInitialChips();
+}
+
+function renderInitialChips() {
+  const list = [
+    { text: "👤 About Akhilesh", intent: "identity" },
+    { text: "💼 Experience", intent: "experience_summary" },
+    { text: "🛠️ Skills", intent: "skills_summary" },
+    { text: "🚀 Projects", intent: "projects_summary" },
+    { text: "🎓 Education", intent: "education" },
+    { text: "📜 Certifications", intent: "certifications" },
+    { text: "🏆 Awards", intent: "awards" },
+    { text: "📚 Publications", intent: "publications_summary" },
+    { text: "✍️ Recommendations", intent: "recommendations_summary" },
+    { text: "🌐 Languages", intent: "languages_summary" },
+    { text: "✉️ Contact", intent: "contact" },
+    { text: "🎯 Why Hire him?", intent: "why_hire" },
+    { text: "📁 Download Resume", intent: "resume_download" },
+    { text: "😂 Tell a Joke", intent: "jokes" },
+    { text: "🧩 Give a Riddle", intent: "riddles" }
+  ];
+  renderQuickReplies(list, chatContext, true);
 }
 
 // ============================================================
@@ -85,9 +142,30 @@ const CARD_INTENTS = new Set([
 
 function shouldRenderCard(response) {
   if (!response || !response.intent) return false;
-  if (response.intent === 'why_hire') return 'hire_him';
-  if (CARD_INTENTS.has(response.intent)) return 'info';
+  if (response.intent === 'why_hire' || response.intent === 'hire_him') return 'hire_him';
+  if (response.intent === 'resume_download') return 'pdf_resume';
+  if (CARD_INTENTS.has(response.intent) || response.isDetailed) return 'info';
   return false;
+}
+
+function buildPDFCard() {
+  const card = document.createElement('div');
+  card.className = 'pdf-card mt-2 p-3 rounded shadow-sm border border-primary';
+  card.style.backgroundColor = 'rgba(10, 25, 41, 0.9)';
+  card.style.color = '#fff';
+  card.innerHTML = `
+    <div class="d-flex align-items-center mb-2">
+      <div class="me-2 text-primary fs-4">📄</div>
+      <div class="fw-bold">Resume Preview</div>
+    </div>
+    <div class="clear-confirm-popover" style="height: 350px; overflow: hidden; border-radius: 4px; background: #333; margin-bottom: 10px;">
+      <iframe src="/view-asset/Akhilesh_DevOps_Platform_Resume.pdf#toolbar=0" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+    <div class="text-center">
+      <a href="/view-asset/Akhilesh_DevOps_Platform_Resume.pdf" target="_blank" class="btn btn-sm btn-primary">Download full PDF</a>
+    </div>
+  `;
+  return card;
 }
 
 function buildInfoCard(response) {
@@ -105,7 +183,6 @@ function buildInfoCard(response) {
 }
 
 function buildHireHimCard(response) {
-  // Strip any variation-template prefix that may have leaked (e.g. "Key highlights:")
   const cleanAnswer = (response.answer || '')
     .replace(/^Key highlights?:\s*/i, '')
     .replace(/^Regarding why hire[^,]*,\s*/i, '')
@@ -117,7 +194,6 @@ function buildHireHimCard(response) {
   el.innerHTML = `
       <div class="hire-card-header">
         <span style="font-size:1.25rem;flex-shrink:0">🎯</span>
-        <span class="hire-card-title">Why Hire Akhilesh?</span>
         <span class="hire-card-badge">🟢 Open to Opportunities</span>
       </div>
       <div class="hire-card-highlights">
@@ -138,19 +214,58 @@ function buildHireHimCard(response) {
 // ============================================================
 // SMART CHIPS
 // ============================================================
-function getSmartChips(list, ctx, max) {
-  if (!list || list.length === 0) return [];
+const CHIP_POOL = [
+  { text: "👤 About Akhilesh", intent: "identity" },
+  { text: "💼 Experience", intent: "experience_summary" },
+  { text: "🛠️ Skills", intent: "skills_summary" },
+  { text: "🚀 Projects", intent: "projects_summary" },
+  { text: "🎓 Education", intent: "education" },
+  { text: "📜 Certifications", intent: "certifications" },
+  { text: "🏆 Awards", intent: "awards" },
+  { text: "📚 Publications", intent: "publications_summary" },
+  { text: "✍️ Recommendations", intent: "recommendations_summary" },
+  { text: "🌐 Languages", intent: "languages_summary" },
+  { text: "✉️ Contact", intent: "contact" },
+  { text: "🎯 Why Hire him?", intent: "why_hire" },
+  { text: "📁 Download Resume", intent: "resume_download" },
+  { text: "🏗️ System Design", intent: "skills_system_design" },
+  { text: "☁️ Cloud Expertise", intent: "skills_cloud" },
+  { text: "🤖 AI & ML", intent: "skills_ai" },
+  { text: "📦 DevOps Work", intent: "skills_devops" },
+  { text: "🏠 Location", intent: "location" },
+  { text: "😂 Tell a Joke", intent: "jokes" },
+  { text: "🧩 Give a Riddle", intent: "riddles" }
+];
+
+function getSmartChips(list = [], ctx, max = 4) {
   const visited = ctx.visited || new Set();
-  const scored = list
-    .filter(c => c && c.text)
-    .map(c => ({ ...c, _pri: visited.has(c.intent) ? 0 : 1 }))
-    .sort((a, b) => b._pri - a._pri);
-  return scored.slice(0, max || 4);
+
+  const recommended = (list || [])
+    .filter(c => c !== null && c !== undefined)
+    .map(c => {
+      const text = (typeof c === 'object') ? (c.text || c.label) : c;
+      const intent = (typeof c === 'object') ? c.intent : null;
+      return { text, intent, _pri: (intent && visited.has(intent)) ? 0 : 2 };
+    });
+
+  const filler = [...CHIP_POOL]
+    .sort(() => Math.random() - 0.5)
+    .map(c => ({ ...c, _pri: visited.has(c.intent) ? 0 : 1 }));
+
+  const merged = [...recommended, ...filler];
+  const seenTexts = new Set();
+  const final = [];
+
+  for (const chip of merged) {
+    if (final.length >= max) break;
+    if (!seenTexts.has(chip.text)) {
+      seenTexts.add(chip.text);
+      final.push(chip);
+    }
+  }
+  return final.sort((a, b) => b._pri - a._pri);
 }
 
-// ============================================================
-// QUICK REPLIES
-// ============================================================
 function renderQuickReplies(list, ctx, showAll) {
   if (!list || list.length === 0) return;
   const body = document.getElementById('chatBody');
@@ -165,11 +280,13 @@ function renderQuickReplies(list, ctx, showAll) {
   qrDiv.className = 'quick-replies';
 
   chips.forEach(item => {
-    const label = (typeof item === 'object') ? item.text : item;
+    const label = (typeof item === 'object') ? (item.text || item.label) : item;
+    if (!label) return;
     const btn = document.createElement('button');
     btn.className = 'qr-btn';
     btn.textContent = label;
     btn.onclick = () => {
+      if (item.intent) chatContext.visited.add(item.intent);
       document.getElementById('chatInput').value = label;
       handleChatSend();
     };
@@ -188,30 +305,13 @@ async function loadBotData() {
   try {
     const res = await fetch('../data/summary.json');
     botSummary = await res.json();
-    // Increment session count in analytics
     try {
       const d = JSON.parse(localStorage.getItem(ANALYTICS_KEY) || '{"sessions":0}');
       d.sessions = (d.sessions || 0) + 1;
       localStorage.setItem(ANALYTICS_KEY, JSON.stringify(d));
     } catch (e) { }
-    // Show all initial domain chips (showAll = true)
-    renderQuickReplies([
-      { text: "👤 About Akhilesh", intent: "identity" },
-      { text: "💼 Experience", intent: "experience_summary" },
-      { text: "🛠️ Skills", intent: "skills_summary" },
-      { text: "🚀 Projects", intent: "projects_summary" },
-      { text: "🎓 Education", intent: "education" },
-      { text: "📜 Certifications", intent: "certifications" },
-      { text: "🏆 Awards", intent: "awards" },
-      { text: "📚 Publications", intent: "publications_summary" },
-      { text: "✍️ Recommendations", intent: "recommendations_summary" },
-      { text: "🌐 Languages", intent: "languages_summary" },
-      { text: "✉️ Contact", intent: "contact" },
-      { text: "🎯 Why Hire Akhilesh?", intent: "why_hire" }
-    ], {}, true);
   } catch (e) { console.error("Could not load bot data", e); }
 }
-loadBotData();
 
 // ============================================================
 // CHAT WINDOW CONTROLS
@@ -221,31 +321,179 @@ function toggleChat() {
   const isOpening = !win.classList.contains('active');
   if (isOpening && typeof UIManager !== 'undefined') UIManager.closeAll('chat');
   win.classList.toggle('active');
+
+  // Ensure we focus the input on open
+  if (isOpening) {
+    setTimeout(() => {
+      document.getElementById('chatInput')?.focus();
+    }, 400);
+  }
 }
+
 function toggleMaximize() {
-  document.getElementById('chatWindow').classList.toggle('maximized');
+  const win = document.getElementById('chatWindow');
+  win.classList.toggle('maximized');
+  const icon = document.getElementById('maximizeChatBtn')?.querySelector('i');
+  if (icon) {
+    icon.className = win.classList.contains('maximized') ? 'fas fa-compress-alt' : 'fas fa-expand-alt';
+  }
 }
 
 // ============================================================
 // MESSAGE RENDERING
 // ============================================================
-function addMessage(text, side, extra = {}) {
+function addMessage(text, type, roleId = null, skipHistory = false) {
   const body = document.getElementById('chatBody');
-  const msg = document.createElement('div');
-  msg.className = `message ${side}-message`;
-  let content = text;
-  if (chatContext.debugMode && extra.intent)
-    content += `<br><span style="font-size:0.63rem;color:#475569">[${extra.intent} d:${extra.depth || 0}]</span>`;
-  msg.innerHTML = content;
-  body.appendChild(msg);
+  if (!body) return;
+
+  const div = document.createElement('div');
+  div.className = `message ${type}-message`;
+
+  const sanitized = text.replace(/<(?!br|span|b|i|strong|em|a|img|svg)[^>]+>/g, '');
+  const contentSpan = document.createElement('span');
+  contentSpan.className = 'msg-content';
+  contentSpan.innerHTML = sanitized;
+  div.appendChild(contentSpan);
+
+  if (type === 'user') {
+    const editBtn = document.createElement('button');
+    editBtn.className = 'edit-msg-btn';
+    editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i>';
+    editBtn.onclick = () => editMessage(div, sanitized);
+    div.appendChild(editBtn);
+  }
+
+  body.appendChild(div);
+
+  if (!skipHistory && type !== 'system') {
+    chatContext.history.push({ text: sanitized, type, timestamp: Date.now() });
+    saveChatState();
+  }
+
   body.scrollTop = body.scrollHeight;
-  return msg;
+  checkScroll();
+}
+
+/**
+ * ChatGPT-style Message Edit
+ */
+async function editMessage(messageDiv, oldText) {
+  if (chatContext.isProcessing) return;
+  
+  const originalHTML = messageDiv.innerHTML;
+  const contentSpan = messageDiv.querySelector('.msg-content');
+  const editBtn = messageDiv.querySelector('.edit-msg-btn');
+  
+  if (!contentSpan) return;
+  
+  // Enter Edit Mode
+  messageDiv.classList.add('message-edit-mode');
+  contentSpan.style.display = 'none';
+  if (editBtn) editBtn.style.display = 'none';
+  
+  const textarea = document.createElement('textarea');
+  textarea.className = 'edit-textarea';
+  textarea.value = contentSpan.innerText;
+  
+  const actions = document.createElement('div');
+  actions.className = 'edit-actions';
+  
+  const confirmBtn = document.createElement('button');
+  confirmBtn.className = 'edit-action-btn confirm';
+  confirmBtn.innerHTML = '<i class="fas fa-check"></i>';
+  confirmBtn.title = "Save and re-send";
+  
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'edit-action-btn cancel';
+  cancelBtn.innerHTML = '<i class="fas fa-times"></i>';
+  cancelBtn.title = "Cancel";
+  
+  actions.appendChild(cancelBtn);
+  actions.appendChild(confirmBtn);
+  
+  messageDiv.appendChild(textarea);
+  messageDiv.appendChild(actions);
+  
+  textarea.focus();
+  textarea.style.height = textarea.scrollHeight + 'px';
+  textarea.oninput = () => {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  };
+  
+  // Cancel Action
+  cancelBtn.onclick = (e) => {
+    e.stopPropagation();
+    messageDiv.classList.remove('message-edit-mode');
+    textarea.remove();
+    actions.remove();
+    contentSpan.style.display = '';
+    if (editBtn) editBtn.style.display = '';
+  };
+  
+  // Confirm Action
+  confirmBtn.onclick = async (e) => {
+    e.stopPropagation();
+    const currentText = contentSpan.innerText.trim();
+    const newText = textarea.value.trim();
+    
+    if (!newText || newText === currentText) {
+      cancelBtn.onclick(e);
+      return;
+    }
+    
+    // 1. Truncate History
+    // Search for the current text in history
+    const historyIndex = chatContext.history.findIndex(h => h.text === currentText);
+    if (historyIndex !== -1) {
+      chatContext.history = chatContext.history.slice(0, historyIndex);
+      // Remove subsequent UI elements
+      while (messageDiv.nextSibling) {
+        messageDiv.nextSibling.remove();
+      }
+      messageDiv.remove();
+      
+      // 2. Re-send
+      handleChatSend(newText);
+    }
+  };
+}
+
+/**
+ * Scroll Tracker
+ */
+function initScrollTracker() {
+  const body = document.getElementById('chatBody');
+  const btn = document.getElementById('scrollToBottomBtn');
+  if (!body || !btn) return;
+
+  body.onscroll = () => checkScroll();
+  btn.onclick = () => {
+    body.scrollTo({ top: body.scrollHeight, behavior: 'smooth' });
+  };
+}
+
+function checkScroll() {
+  const body = document.getElementById('chatBody');
+  const btn = document.getElementById('scrollToBottomBtn');
+  if (!body || !btn) return;
+
+  const isAtBottom = body.scrollHeight - body.scrollTop - body.clientHeight < 100;
+  if (isAtBottom) {
+    btn.classList.remove('visible');
+  } else {
+    btn.classList.add('visible');
+  }
 }
 
 async function streamMessage(text, side, extra = {}) {
   const body = document.getElementById('chatBody');
-
-  // Card dispatch for Hire Him
+  if (side === 'bot' && extra.cardType === 'pdf_resume') {
+    const card = buildPDFCard();
+    body.appendChild(card);
+    body.scrollTop = body.scrollHeight;
+    return;
+  }
   if (side === 'bot' && extra.cardType === 'hire_him') {
     const card = buildHireHimCard(extra);
     const cardBodyEl = card.querySelector('.hire-card-body');
@@ -270,17 +518,13 @@ async function streamMessage(text, side, extra = {}) {
     body.scrollTop = body.scrollHeight;
     return card;
   }
-
-  // Info Card dispatch
   if (side === 'bot' && extra.cardType === 'info') {
-    // Build card structure, then STREAM text into card body (Copilot-like feel)
     const card = buildInfoCard(extra);
     const cardBodyEl = card.querySelector('.info-card-body');
     const fullText = cardBodyEl ? (cardBodyEl.textContent || cardBodyEl.innerText || '') : '';
-    if (cardBodyEl) cardBodyEl.textContent = ''; // clear; will stream in
+    if (cardBodyEl) cardBodyEl.textContent = '';
     card.style.opacity = '0';
     body.appendChild(card);
-    // Fade card in first, then stream the text
     await new Promise(r => setTimeout(r, 60));
     card.style.transition = 'opacity 0.2s ease';
     card.style.opacity = '1';
@@ -298,34 +542,39 @@ async function streamMessage(text, side, extra = {}) {
     body.scrollTop = body.scrollHeight;
     return card;
   }
-
-  // Plain text streaming
   const msg = document.createElement('div');
   msg.className = `message ${side}-message`;
+  
+  const contentSpan = document.createElement('span');
+  contentSpan.className = 'msg-content';
+  msg.appendChild(contentSpan);
+  
   body.appendChild(msg);
   body.scrollTop = body.scrollHeight;
-
   const hasHtml = /<[a-z][\s\S]*>/i.test(text);
   let currentHtml = '';
   if (hasHtml) {
     for (let line of text.split('\n')) {
       currentHtml += line + '\n';
-      msg.innerHTML = currentHtml;
+      contentSpan.innerHTML = currentHtml;
       body.scrollTop = body.scrollHeight;
       await new Promise(r => setTimeout(r, 70));
     }
   } else {
     for (let token of text.split(/(\s+)/)) {
       currentHtml += token;
-      msg.innerHTML = currentHtml;
+      contentSpan.innerHTML = currentHtml;
       body.scrollTop = body.scrollHeight;
       await new Promise(r => setTimeout(r, 50));
     }
   }
-
-  if (chatContext.debugMode && extra.intent)
-    msg.innerHTML += `<br><span style="font-size:0.63rem;color:#475569">[${extra.intent} d:${chatContext.depth}]</span>`;
-
+  if (chatContext.debugMode && extra.intent) contentSpan.innerHTML += `<br><span style="font-size:0.63rem;color:#475569">[${extra.intent} d:${chatContext.depth}]</span>`;
+  
+  if (!extra.skipHistory) {
+    chatContext.history.push({ text, type: side, timestamp: Date.now() });
+    saveChatState();
+  }
+  
   body.scrollTop = body.scrollHeight;
   return msg;
 }
@@ -334,18 +583,14 @@ async function streamMessage(text, side, extra = {}) {
 // RESPONSE RESOLUTION
 // ============================================================
 function findResponse(query) {
-  if (!botSummary || typeof ChatbotEngine === 'undefined')
-    return { answer: "Bot is still loading…", isFallback: true };
-
+  if (!botSummary || typeof ChatbotEngine === 'undefined') return { answer: "Bot is still loading…", isFallback: true };
   const result = ChatbotEngine.findResponse(query, botSummary, chatContext);
+  if (result.answer && typeof ChatbotEngine.sanitize === 'function') result.answer = ChatbotEngine.sanitize(result.answer);
   if (result.updatedContext) {
     chatContext = { ...chatContext, ...result.updatedContext };
-    // Preserve non-serializable state
-    if (!(chatContext.visited instanceof Set)) chatContext.visited = new Set();
     if (result.intent) chatContext.visited.add(result.intent);
-    chatContext.history = chatContext.history || [];
-    chatContext.history.push(result.intent || 'unknown');
-    if (chatContext.history.length > 15) chatContext.history.shift();
+    if (result.intent) chatContext.lastIntent = result.intent;
+    if (result.domain) chatContext.lastDomain = result.domain;
   }
   return result;
 }
@@ -353,99 +598,193 @@ function findResponse(query) {
 // ============================================================
 // MAIN SEND HANDLER
 // ============================================================
-async function handleChatSend() {
+async function handleChatSend(overrideText = null) {
   const input = document.getElementById('chatInput');
-  const text = input.value.trim();
+  const text = overrideText || (input ? input.value.trim() : "");
   if (!text) return;
 
-  // Hidden developer commands
-  if (text === '/debug') {
-    chatContext.debugMode = !chatContext.debugMode;
-    addMessage(`Debug mode ${chatContext.debugMode ? 'ON 🔍' : 'OFF'}`, 'bot');
-    input.value = '';
-    return;
-  }
-  if (text === '/analytics') {
-    try {
-      const d = JSON.parse(localStorage.getItem(ANALYTICS_KEY) || '{}');
-      const top = Object.entries(d.intents || {})
-        .sort((a, b) => b[1] - a[1]).slice(0, 5)
-        .map(([k, v]) => `  ${k}: ${v}`).join('\n') || '  (none yet)';
-      addMessage(`📊 Session Analytics\nTotal Queries: ${d.totalQueries || 0}\nSessions: ${d.sessions || 0}\nRecruiter Signals: ${d.recruiterSignals || 0}\nTop Intents:\n${top}`, 'bot');
-    } catch (e) { addMessage('No analytics data yet.', 'bot'); }
-    input.value = '';
+  // 🛑 STOP BUTTON ACCESSED DURING PROCESSING
+  if (chatContext.isProcessing) {
+    if (chatContext.abortController) {
+      chatContext.abortController.abort();
+      chatContext.isProcessing = false;
+      document.getElementById('typingIndicatorLLM')?.remove();
+      toggleSendButton(false);
+      addMessage("⚠️ Generation stopped by user.", "system");
+    }
     return;
   }
 
-  // Detect and apply user mode on every message
-  if (typeof ChatbotEngine.detectUserMode === 'function') {
-    const detectedMode = ChatbotEngine.detectUserMode(text);
-    if (detectedMode) applyUserMode(detectedMode);
+  // COMMAND-LINE BYPASS (/debug, /ai)
+  if (text.startsWith('/') && !overrideText) {
+    if (text === '/debug') {
+      chatContext.debugMode = !chatContext.debugMode;
+      addMessage(`Debug mode ${chatContext.debugMode ? 'ON 🔍' : 'OFF'}`, 'bot');
+      input.value = ''; return;
+    }
   }
 
-  // Check for multi-intent (show advisory banner, still resolve the best single intent)
-  let multiIntents = null;
-  if (typeof ChatbotEngine.detectMultiIntent === 'function' && botSummary) {
-    multiIntents = ChatbotEngine.detectMultiIntent(text, botSummary);
-  }
+  // START PROCESSING
+  chatContext.isProcessing = true;
+  toggleSendButton(true);
+  chatContext.abortController = new AbortController();
+  const { signal } = chatContext.abortController;
 
-  addMessage(text, 'user');
-  input.value = '';
+  try {
+    addMessage(text, 'user');
+    if (input) input.value = '';
 
-  // CRITICAL: Clear initial domain nav chips (and any leftover chips) before typing indicator
-  // Without this, the chip grid blocks the card and scroll can't reach it
-  const body = document.getElementById('chatBody');
-  body.querySelectorAll('.quick-replies-container').forEach(el => el.remove());
-
-  // Typing indicator
-  const typing = document.createElement('div');
-  typing.className = 'typing-indicator';
-  typing.id = 'typingIndicator';
-  typing.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-  body.appendChild(typing);
-  body.scrollTop = body.scrollHeight;
-
-  // Slightly faster in recruiter mode
-  const baseDelay = chatContext.userMode === 'recruiter' ? 380 : 580;
-  await new Promise(r => setTimeout(r, baseDelay + Math.random() * 250));
-  document.getElementById('typingIndicator')?.remove();
-
-  // Resolve response
-  const response = findResponse(text);
-
-  // Track analytics
-  trackAnalytics(response.intent, response.domain, text);
-
-  // If multi-intent detected, show informational banner first
-  if (multiIntents && multiIntents.length === 2) {
-    const banner = document.createElement('div');
-    banner.className = 'multi-intent-banner';
-    banner.textContent = `🔀 Multiple topics detected — showing the best match first. Ask separately for more detail on each.`;
-    body.appendChild(banner);
+    // Add Thinking Indicator
+    const body = document.getElementById('chatBody');
+    const typingLLM = document.createElement('div');
+    typingLLM.className = 'typing-indicator llm-thinking';
+    typingLLM.id = 'typingIndicatorLLM';
+    typingLLM.innerHTML = `<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span style="font-size:0.75rem;margin-left:8px;color:rgba(255,255,255,0.7)">Thinking...</span>`;
+    body.appendChild(typingLLM);
     body.scrollTop = body.scrollHeight;
-  }
 
-  // Render response (card or plain)
-  const cardType = shouldRenderCard(response);
-  await streamMessage(response.answer, 'bot', { ...response, cardType, depth: chatContext.depth });
+    const startTime = Date.now();
+    try {
+      const llmRes = await fetch('/api/chat/llm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: text, history: chatContext.history }),
+        signal
+      });
 
-  // Smart chips — max 4, filter visited
-  // Suppress chips for hire_him card (CTAs are already in the card)
-  if (cardType !== 'hire_him') {
-    const chips = (response.follow_up && response.follow_up.length > 0)
-      ? response.follow_up
-      : (response.suggestions || []);
-    if (chips.length > 0) renderQuickReplies(chips, chatContext, false);
+      // UX Delay (2-4s)
+      const minDelay = 2000 + Math.random() * 2000;
+      const elapsed = Date.now() - startTime;
+      if (elapsed < minDelay) await new Promise(r => setTimeout(r, minDelay - elapsed));
+
+      typingLLM.remove();
+      if (llmRes.ok) {
+        const data = await llmRes.json();
+        const answer = data.answer || "I'm not sure how to answer that.";
+        
+        // Execute narrative response rendering
+        const botMsg = await streamMessage(answer, 'bot', { 
+            intent: data.intent, 
+            skipHistory: false // We handle history inside streamMessage now
+        });
+
+        // --- RESTORE SMART CHIPS ---
+        let chips = data.hints || [];
+        if (typeof ChatbotEngine !== 'undefined' && botSummary) {
+          const aiChips = ChatbotEngine.generateFollowUpChips ? ChatbotEngine.generateFollowUpChips(chatContext.lastDomain, chatContext.lastIntent, chatContext) : [];
+          chips = [...new Set([...chips, ...aiChips])].slice(0, 4);
+        }
+        if (chips.length > 0) renderQuickReplies(chips, chatContext);
+
+        if (data.updatedContext) {
+          chatContext.lastIntent = data.updatedContext.lastIntent;
+          chatContext.depth = data.updatedContext.depth;
+        }
+      }
+    } catch (e) {
+      if (e.name === 'AbortError') console.log('[CHAT] Aborted');
+      else addMessage("Error connecting to brain.", "bot");
+    }
+  } finally {
+    chatContext.isProcessing = false;
+    chatContext.abortController = null;
+    toggleSendButton(false);
+    saveChatState();
   }
 }
 
-// ============================================================
-// EVENT LISTENERS
-// ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('chatToggle').addEventListener('click', toggleChat);
-  document.getElementById('closeChatBtn').addEventListener('click', toggleChat);
-  document.getElementById('maximizeChatBtn').addEventListener('click', toggleMaximize);
-  document.getElementById('sendChatBtn').addEventListener('click', handleChatSend);
-  document.getElementById('chatInput').addEventListener('keypress', e => { if (e.key === 'Enter') handleChatSend(); });
+function toggleSendButton(isProcessing) {
+  const btn = document.getElementById('sendChatBtn');
+  if (!btn) return;
+  const sendIcon = btn.querySelector('.send-icon');
+  const stopIcon = btn.querySelector('.stop-icon');
+
+  if (isProcessing) {
+    if (sendIcon) sendIcon.style.display = 'none';
+    if (stopIcon) stopIcon.style.display = 'block';
+  } else {
+    if (sendIcon) sendIcon.style.display = 'block';
+    if (stopIcon) stopIcon.style.display = 'none';
+  }
+}
+
+function renderTracePanel(trace) {
+  const body = document.getElementById('chatBody');
+  const panel = document.createElement('div');
+  panel.className = 'trace-panel active mt-2 p-3 rounded shadow-sm border border-secondary';
+  panel.style.backgroundColor = 'rgba(20, 20, 30, 0.95)';
+  panel.style.color = '#00ffcc';
+  panel.style.fontFamily = 'monospace';
+  panel.style.fontSize = '11px';
+  panel.innerHTML = `
+    <div class="fw-bold mb-2 border-bottom border-secondary pb-1">🔍 DIAGNOSTIC TRACE</div>
+    <div><b>Query:</b> "${trace.query}"</div>
+    <div><b>Intent:</b> ${trace.intent}</div>
+    <div><b>Path:</b> ${trace.path}</div>
+  `;
+  body.appendChild(panel);
+  body.scrollTop = body.scrollHeight;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const toggle = document.getElementById('chatToggle');
+  const close = document.getElementById('closeChatBtn');
+  const clear = document.getElementById('clearChatBtn');
+  const send = document.getElementById('sendChatBtn');
+  const input = document.getElementById('chatInput');
+  const maximize = document.getElementById('maximizeChatBtn');
+
+  // Hydration
+  const savedState = loadChatState();
+  if (savedState) {
+    chatContext.history = [];
+    chatContext.lastIntent = savedState.lastIntent;
+    chatContext.lastDomain = savedState.lastDomain;
+    chatContext.depth = savedState.depth;
+    chatContext.userMode = savedState.userMode || 'casual';
+    savedState.history.forEach(msg => {
+      // Re-render without adding to new history (skipHistory=true)
+      addMessage(msg.text, msg.type, null, true);
+    });
+  } else {
+    // 🛑 INITIAL CHIPS IF NO HISTORY
+    renderInitialChips();
+  }
+
+  initScrollTracker();
+
+  if (toggle) toggle.onclick = toggleChat;
+  if (close) close.onclick = toggleChat;
+  if (maximize) maximize.onclick = toggleMaximize;
+
+  // --- MODERN CLEAR CONFIRMATION ---
+  const popover = document.getElementById('clearConfirmPopover');
+  const confirmBtn = document.getElementById('confirmClearBtn');
+
+  if (clear && popover) {
+    clear.onclick = (e) => {
+      e.stopPropagation();
+      popover.classList.toggle('active');
+    };
+    // Close popover if clicking outside
+    document.addEventListener('click', () => popover.classList.remove('active'));
+    popover.onclick = (e) => e.stopPropagation();
+  }
+
+  if (confirmBtn) {
+    confirmBtn.onclick = () => {
+      clearChat();
+      popover.classList.remove('active');
+    };
+  }
+
+  if (send) send.onclick = () => handleChatSend();
+  if (input) {
+    input.onkeypress = (e) => {
+      if (e.key === 'Enter') handleChatSend();
+    };
+  }
+
+  // 3. Knowledge Load (Restored)
+  await loadBotData();
 });

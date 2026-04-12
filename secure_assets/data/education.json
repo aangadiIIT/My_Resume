@@ -11,7 +11,7 @@
       "location": "Chicago, USA",
       "grade": {
         "type": "GPA",
-        "value": "3.7"
+        "value": "3.7/4.0"
       },
       "description_raw": "Master of Science in Information Technology and Management with strong focus on software development, databases, and system design.",
       "skills_acquired": [
@@ -49,7 +49,7 @@
       "location": "Dharwad, Karnataka, India",
       "grade": {
         "type": "CGPA",
-        "value": "8.52"
+        "value": "8.52/10.0"
       },
       "description_raw": "Bachelor’s degree in Computer Science with focus on programming, databases, and core computer science fundamentals.",
       "skills_acquired": [

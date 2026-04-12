@@ -1,5 +1,5 @@
 /**
- * ML Intent Matcher - Staff+ Hybrid Component
+ * Professional-grade ML Intent Matcher - Hybrid Component
  * Uses Character Trigrams + Cosine Similarity for high typo-tolerance.
  */
 (function(root, factory) {

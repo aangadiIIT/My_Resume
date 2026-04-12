@@ -1,5 +1,5 @@
 /**
- * UIManager (Staff+ v1)
+ * Professional-grade UI Event Manager
  * Central Hub for Floating UI State & Mutual Exclusion
  */
 const UIManager = {
@@ -26,7 +26,7 @@ const UIManager = {
     },
 
     /**
-     * Closes all floating components except the one specified
+     * Deactivates all interactive components except the specified instance
      * @param {string} except - The key from this.components to skip
      */
     closeAll(except = null) {
@@ -67,7 +67,7 @@ const UIManager = {
             if (!isToggle && !isInsideComponent) {
                 this.closeAll();
             }
-        }, true); // Use capture phase to ensure it runs before specific listeners if needed
+        }, false); // Use bubble phase to allow specific toggle listeners to process first if needed
     }
 };
 

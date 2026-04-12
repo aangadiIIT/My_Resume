@@ -8,7 +8,6 @@ const MLIntentMatcher = require('../public/scripts/ml-intent-matcher');
 const dataDir = path.join(__dirname, '..', 'secure_assets', 'data');
 const outputDir = path.join(__dirname, '..', 'public', 'data');
 const outputFile = path.join(outputDir, 'summary.json');
-const statsFile = path.join(outputDir, 'stats.json');
 const testSuitePath = path.join(__dirname, '..', 'chatbot_test_suite_cleaned.json');
 
 function loadAllData() {
@@ -51,11 +50,11 @@ function generateVariations(baseData, intent) {
         variations.push(`One of his notable works is: ${cleanAnswer}`);
         variations.push(`Check out this project detail: ${cleanAnswer}`);
     } else {
-         // Generic variations
-         const lowerStart = cleanAnswer.replace(/^He\b/, 'he').replace(/^His\b/, 'his');
-         variations.push(answer);
-         variations.push(`Sure, here is the information: ${lowerStart}`);
-         variations.push(`Regarding ${intent.replace(/_/g, ' ')}, ${lowerStart}`);
+        // Generic variations
+        const lowerStart = cleanAnswer.replace(/^He\b/, 'he').replace(/^His\b/, 'his');
+        variations.push(answer);
+        variations.push(`Sure, here is the information: ${lowerStart}`);
+        variations.push(`Regarding ${intent.replace(/_/g, ' ')}, ${lowerStart}`);
     }
 
     return variations;
@@ -63,7 +62,7 @@ function generateVariations(baseData, intent) {
 
 function convertToReadable(details, domain) {
     if (!details) return null;
-    
+
     // Recursive formatter for nested objects - HUMAN FRIENDLY
     const formatValue = (v) => {
         if (v === null || v === undefined) return '';
@@ -81,7 +80,7 @@ function convertToReadable(details, domain) {
     // Handle Arrays (Education, Certifications, etc.)
     if (Array.isArray(details)) {
         return details.map(item => {
-            if (domain === 'education') return `🎓 ${item.degree}\n${item.institution} (${item.duration?.start || ''} - ${item.duration?.end || ''})\nGrade: ${item.gpa || 'N/A'}`;
+            if (domain === 'education') return `🎓 ${item.degree}\n${item.institution} (${item.duration?.start || ''} - ${item.duration?.end || ''})\nGrade: ${item.grade?.value || item.gpa || 'N/A'}`;
             if (domain === 'certifications') return `📜 ${item.name}\nIssued by ${item.issuer} in ${item.issue_date}`;
             if (domain === 'awards') return `🏆 ${item.title}\nRecognized by ${item.issuer} (${item.date})`;
             if (domain === 'projects') return `🚀 ${item.title}\n${item.organization}\n${item.description_raw?.slice(0, 200)}...`;
@@ -99,12 +98,12 @@ function convertToReadable(details, domain) {
         }
 
         const keys = Object.keys(details).filter(k => !['description_raw', 'id', 'intent', 'about_raw', 'about_structured', 'core_domains', 'icon', 'link', 'summary'].includes(k));
-        
+
         let output = "";
         output += keys.map(k => {
             const val = details[k];
             const label = k.charAt(0).toUpperCase() + k.slice(1).replace(/_/g, ' ');
-            
+
             if (typeof val === 'object' && val !== null) {
                 if (k === 'duration') return `🗓️ Period: ${val.start} to ${val.end}`;
                 if (k === 'skills_used') return `🛠️ Skills: ${val.join(', ')}`;
@@ -115,7 +114,7 @@ function convertToReadable(details, domain) {
             }
             return `🔹 ${label}: ${val}`;
         }).filter(s => s.length > 0).join('\n');
-        
+
         return output;
     }
 
@@ -127,7 +126,7 @@ function queryData(query, allData) {
     const parts = query.split(':');
     const [file, value, sub] = parts;
     const source = allData[file];
-    
+
     if (!source) {
         console.warn(`[STRICT] Data Source Missing: ${file}`);
         return null;
@@ -172,10 +171,11 @@ function queryData(query, allData) {
             if (companyRoles.length > 0) {
                 const entry = companyRoles[0]; // Latest
                 const period = entry.period || (entry.duration ? `${entry.duration.start} - ${entry.duration.end}` : '');
-                result = { 
-                    answer: `He has worked as a ${entry.role} at ${entry.company} (${period}).`, 
-                    deeper_answer: `He has 6+ years of experience including roles at SAP and Juniper Networks.`, 
-                    details: companyRoles // ALL roles for sub-resolution
+                const roles = companyRoles.map(r => r.role).join(' → ');
+                result = {
+                    answer: `He has worked at ${entry.company} in various roles, moving from ${roles} (${period}).`,
+                    deeper_answer: `His most recent role at ${entry.company} was ${entry.role}. He has 6+ years of total experience.`,
+                    details: companyRoles
                 };
             }
         }
@@ -212,17 +212,25 @@ function queryData(query, allData) {
                 // console.log(`[DEBUG] NO specific cert found for ${v}. Original count: ${list.length}`);
             }
         }
-        
+
         if (list && list.length > 0) {
-            if (file === 'education') result = { answer: `He holds a ${list[0].degree} in ${list[0].field_of_study} from ${list[0].institution}.`, deeper_answer: list[0].description_raw, details: list };
+            if (file === 'education') {
+                const edu = list[0];
+                const year = edu.duration?.end || edu.duration?.start || '';
+                result = { 
+                    answer: `He completed his ${edu.degree} in ${edu.field_of_study} from ${edu.institution} in ${year}.`, 
+                    deeper_answer: edu.description_raw, 
+                    details: list 
+                };
+            }
             else if (file === 'certifications') {
                 const count = source.certifications_summary.total_certifications;
                 const top3 = list.slice(0, 3).map(c => c.name);
                 const highlight = list.length === 1 ? list[0].name : top3.join(', ');
-                result = { 
+                result = {
                     answer: value === 'certifications' ? `He holds ${count} professional certifications, including: ${highlight}.` : `He has a certification in ${highlight} from ${list[0]?.issuer || 'a professional body'}.`,
-                    deeper_answer: `His certification focus includes ${source.certifications_summary.recent_focus_areas.join(', ')}.`, 
-                    details: list 
+                    deeper_answer: `His certification focus includes ${source.certifications_summary.recent_focus_areas.join(', ')}.`,
+                    details: list
                 };
             }
             else if (file === 'awards') result = { answer: `He has received ${source.awards_summary.total_awards} awards, including recognition for ${source.awards_summary.core_strengths_recognized.slice(0, 3).join(' and ')}.`, deeper_answer: `Recognition milestones: ${source.awards_summary.core_strengths_recognized.join(', ')}.`, details: list };
@@ -238,10 +246,10 @@ function queryData(query, allData) {
         if (list && list.length > 0) {
             const pub = list[0];
             const date = pub.publication_date || pub.date || 'unknown';
-            result = { 
-                answer: `Akhilesh has published ${source.publications_summary.total_publications} research paper: "${pub.title}".`, 
-                deeper_answer: `Published in ${pub.journal} (${date}). ${pub.publication_type} detailing ${pub.research_domain.join(' and ')}.`, 
-                details: list 
+            result = {
+                answer: `Akhilesh has published ${source.publications_summary.total_publications} research paper: "${pub.title}".`,
+                deeper_answer: `Published in ${pub.journal} (${date}). ${pub.publication_type} detailing ${pub.research_domain.join(' and ')}.`,
+                details: list
             };
         }
     } else if (file === 'recommendations') {
@@ -274,7 +282,7 @@ function queryData(query, allData) {
 function buildEntityRegistry(allData) {
     const registry = {};
     const domains = ['publications', 'certifications', 'awards', 'projects'];
-    
+
     domains.forEach(domain => {
         const source = allData[domain];
         if (source && source[domain]) {
@@ -282,10 +290,10 @@ function buildEntityRegistry(allData) {
                 const title = (item.title || item.name || '').toLowerCase().trim();
                 if (title) {
                     if (!registry[title]) {
-                        registry[title] = { 
+                        registry[title] = {
                             intent: domain === 'projects' ? 'projects_summary' : (domain === 'publications' ? 'publications_summary' : domain),
                             indices: [index],
-                            type: domain 
+                            type: domain
                         };
                     } else {
                         // Multi-Match for duplicates (Iteration 16)
@@ -301,19 +309,19 @@ function buildEntityRegistry(allData) {
 
 function generateSummary() {
     console.log(`\n[STRICT] Generating 100% DATA-DRIVEN Knowledge Base...`);
-    
+
     const allData = loadAllData();
-    const summary = { 
-        mappings: [], 
-        all_data: allData, 
+    const summary = {
+        mappings: [],
+        all_data: allData,
         entity_registry: buildEntityRegistry(allData),
-        timestamp: new Date().toISOString(), 
+        timestamp: new Date().toISOString(),
         entropy_map: {},
-        phrase_anchors: {}, 
-        technical_anchors: {} 
+        phrase_anchors: {},
+        technical_anchors: {}
     };
     const newTestSuite = [];
-    
+
     // 1. Calculate keyword frequencies across all intents
     const globalWordCounts = {};
     Object.entries(registry.intents).forEach(([intent, meta]) => {
@@ -342,7 +350,7 @@ function generateSummary() {
             if (words.length >= 2) {
                 const phrase = words.join(' ');
                 // Only anchor if it contains at least one rare word (weight > 400)
-                const hasSpecificWord = words.some(w => keywordWeights[w] > 400); 
+                const hasSpecificWord = words.some(w => keywordWeights[w] > 400);
                 if (hasSpecificWord) {
                     if (!phraseAnchors[phrase]) phraseAnchors[phrase] = [];
                     phraseAnchors[phrase].push(intent);
@@ -364,7 +372,7 @@ function generateSummary() {
         const answers = Array.isArray(result.answer) ? result.answer : generateVariations(result, intent);
 
         const mapping = {
-            id: `staff_${crypto.createHash('md5').update(intent).digest('hex').slice(0,8)}`,
+            id: `staff_${crypto.createHash('md5').update(intent).digest('hex').slice(0, 8)}`,
             intent: intent,
             domain: meta.domain,
             priority: meta.priority,

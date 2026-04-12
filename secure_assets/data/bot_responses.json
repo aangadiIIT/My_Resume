@@ -138,7 +138,7 @@
     },
     "feedback": {
       "answer": [
-        "You can use the contact form available on this website to send a message or feedback. 🔗 View Contact Page"
+        "You can use the contact form available on this website to send a message or feedback. <a href=\"/contact-me\" class=\"chat-link\">🔗 View Contact Page</a>"
       ],
       "deeper_answer": "Feedback is very important for Akhilesh's continuous improvement.",
       "suggestions": [
@@ -148,7 +148,7 @@
     },
     "persona_private": {
       "answer": [
-        "Akhilesh values professional focus in this portfolio. For personal inquiries like age or offline details, LinkedIn is the best place to connect!",
+        "Akhilesh values professional focus in this portfolio. For personal inquiries, LinkedIn is the best place to connect!",
         "This assistant is designed to explore his professional career, skills, and projects. Personal details are kept private."
       ],
       "deeper_answer": "Maintaining a professional persona is key to his brand. He is currently focused on Cloud Platform Engineering and DevOps at SAP.",
@@ -156,6 +156,28 @@
         "View his experience",
         "See his skills",
         "LinkedIn"
+      ]
+    },
+    "bot_identity": {
+      "answer": [
+        "I am Akhilesh's AI Portfolio Assistant. I'm a knowledge engine designed to help you explore his career, projects, and skills with 100% data-driven accuracy."
+      ],
+      "deeper_answer": "I'm built using a hybrid deterministic-AI engine to ensure everything I say is anchored in Akhilesh's real professional data.",
+      "suggestions": [
+        "How can you help?",
+        "Who is Akhilesh?",
+        "Show his skills"
+      ]
+    },
+    "bot_help": {
+      "answer": [
+        "I can walk you through his work at SAP and Juniper, show you his Cloud & DevOps projects, list his technical certifications, or even tell you a tech joke! What would you like to explore first?"
+      ],
+      "deeper_answer": "You can ask me about his 'Experience', 'Technical Skills', 'Academic Background', or 'Why hire him?'. I'm here to provide quick, accurate answers for recruiters.",
+      "suggestions": [
+        "Show SAP work",
+        "Download Resume",
+        "Tell me a joke"
       ]
     },
     "hire_him_mode": {
