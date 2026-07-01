@@ -10,6 +10,7 @@
  *   3. Run test:ui:headless (Playwright real-browser checks)
  *   4. Read sanity_report.json and detailed_audit_report.json
  *   5. Emit pass/fail verdict with engine mix breakdown
+ *   6. Exit non-zero if ANY suite fails — gates CI/CD deployment
  *
  * Dependencies:
  *   - tests/sanity.js        — sanity sweep (spawned as child process)
@@ -35,12 +36,17 @@ async function runMasterTest() {
         { name: "Playwright UI Health", cmd: "npm run test:ui:headless" }
     ];
 
+    let overallFailed = false;
+
     for (const suite of suites) {
         console.log(`\n🏃 Running: ${suite.name}...`);
         try {
             execSync(suite.cmd, { stdio: 'inherit' });
         } catch (err) {
-            console.error(`⚠️  [${suite.name}] Warning: One or more tests failed in this tier.`);
+            console.error(`\n❌ [${suite.name}] FAILED — stopping pipeline.`);
+            overallFailed = true;
+            // Fail fast: do not run subsequent suites after a failure
+            break;
         }
     }
 
@@ -50,7 +56,7 @@ async function runMasterTest() {
     // --- DATA AGGREGATION ---
     let sanity = { siteHealth: { passed: 0, total: 0 }, chatbot: { passed: 0, total: 0 }, globalStatus: 'N/A' };
     let audit = { passed: 0, total: 0, onlineLed: 0, offlineLed: 0, engineLed: 0, personaErrors: 0 };
-    
+
     try {
         const sanityRaw = fs.readFileSync(path.join(__dirname, 'sanity_report.json'), 'utf8');
         sanity = JSON.parse(sanityRaw);
@@ -61,26 +67,22 @@ async function runMasterTest() {
         audit = JSON.parse(auditRaw);
     } catch (e) {}
 
-    // Dynamic Selection: Use Sanity as the primary dashboard source
-    // Audit data is now strictly for regression/stress reporting and shown as a supplemental fidelity metric
     const reportingBot = (sanity.chatbot || audit);
-    
-    // Check if audit is stale (> 5 mins old)
     const auditStale = audit.timestamp ? (Date.now() - new Date(audit.timestamp).getTime() > 300000) : true;
 
     // --- FINAL EXECUTIVE SUMMARY ---
     console.log("\n\n" + "=".repeat(60));
     console.log("🏆 [EXECUTIVE SUMMARY] Portfolio Intelligence & Health Seal");
     console.log("=".repeat(60));
-    
+
     console.log(`⏱  Total Execution Time : ${duration}s`);
     console.log(`🌐 System Tier Status    : ${sanity.globalStatus || 'N/A'}`);
-    
+
     console.log("\n📊 [INTELLIGENCE FIDELITY]");
     const botAccuracy = ((reportingBot.passed / reportingBot.total) * 100 || 0).toFixed(2);
     console.log(`🤖 Core Bot Accuracy     : ${botAccuracy}% ${auditStale ? "(STALE AUDIT)" : "(FRESH AUDIT)"}`);
     console.log(`🛡️  Persona Integrity    : ${reportingBot.personaErrors === 0 ? "100% (No Leaks)" : `${reportingBot.personaErrors} Errors Found`}`);
-    
+
     console.log("\n🤖 [ENGINE MIX]");
     console.log(`🛰️  Online (Gemini)      : ${reportingBot.onlineLed || 0}`);
     console.log(`🏢 Offline (Llama)       : ${reportingBot.offlineLed || 0}`);
@@ -89,9 +91,18 @@ async function runMasterTest() {
     console.log("\n🏥 [QUALITY SEALS]");
     console.log(`✅ Sanity Pass Rate      : ${sanity.siteHealth?.passed || 0}/${sanity.siteHealth?.total || 0}`);
     console.log(`✅ Intent Mastery        : ${reportingBot.passed}/${reportingBot.total}`);
-    console.log(`✅ Real-Browser Audit    : PASSED (Playwright Integrity Clean)`);
-    
+    if (!overallFailed) {
+        console.log(`✅ Real-Browser Audit    : PASSED (Playwright Integrity Clean)`);
+    }
+
     console.log("=".repeat(60));
+
+    if (overallFailed) {
+        console.log("💥 Final Verdict: PIPELINE FAILED — DEPLOYMENT BLOCKED");
+        console.log("=".repeat(60) + "\n");
+        process.exit(1);
+    }
+
     console.log("💎 Final Verdict: READY FOR RECRUITER ENGAGEMENT");
     console.log("=".repeat(60) + "\n");
 }

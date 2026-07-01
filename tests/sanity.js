@@ -119,8 +119,10 @@ async function runSanity() {
   console.log("\n--- 🤖 CHATBOT DOMAINS (Intent Sweep) ---");
   for (const test of CHAT_SWEEP) {
     try {
-      // Minimal pacing — all CHAT_SWEEP queries are deterministic fast-paths; no Gemini burst risk
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // Pacing between queries — some queries route to Llama (2-4s inference).
+      // 1500ms ensures Llama finishes before the next SSE stream opens, preventing
+      // timeout errors caused by the model being busy with a previous request.
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       const res = await request(app)
         .post('/api/chat/llm')

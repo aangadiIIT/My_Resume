@@ -73,9 +73,9 @@ async function* runAIPipeline({ query, history, summary, summaryByIntent, signal
 
   // Step 2 — Gemini streaming
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.length > 20) {
+    let fullAnswer = '';
+    let tokensSent = 0;  // declared outside try so catch can read it
     try {
-      let fullAnswer = '';
-      let tokensSent = 0;
       for await (const token of generateOnlineResponseStream(query, history, candidates)) {
         if (signal.aborted) break;
         fullAnswer += token;
@@ -100,12 +100,15 @@ async function* runAIPipeline({ query, history, summary, summaryByIntent, signal
       return;
     } catch (geminiErr) {
       console.warn('[PIPELINE] Gemini stream failed:', geminiErr.message);
-      if (typeof tokensSent !== 'undefined' && tokensSent > 0) {
+      if (tokensSent > 0) {
+        // Tokens already sent to client — close the stream cleanly rather than
+        // falling through to Llama which would produce a duplicate response bubble
         clearTimeout(sseTimeout);
         yield { type: 'token', content: ' … [response interrupted]' };
         yield { type: 'done', intent: engineResult.trace?.intent || 'llm_fallback', engine: 'online', hints: officialHints };
         return;
       }
+      // Zero tokens sent — safe to fall through to Llama
     }
   }
 
