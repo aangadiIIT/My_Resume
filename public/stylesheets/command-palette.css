@@ -1,3 +1,11 @@
+/**
+ * Akhilesh Angadi Portfolio — Command Palette Stylesheet
+ *
+ * Backdrop, modal frame, input, result items, and keyboard shortcut footer
+ * for the Ctrl+K global command palette.
+ *
+ * Author: Akhilesh Angadi
+ */
 /* Command Palette Modal */
 .cmd-palette-backdrop {
   position: fixed;

@@ -1,0 +1,197 @@
+/**
+ * Akhilesh Angadi Portfolio — Component Design System
+ *
+ * All extracted inline styles from views + reusable UI component classes.
+ * Imported in head.ejs after style.css.
+ *
+ * Components defined here:
+ *   Skill Pills, Icon Badge, Availability Badge, Metric Card,
+ *   Empty State, Error State, Skeleton Loader, Funnel CTA,
+ *   Page helpers (typed headline, company badge, award image, recruiter photo)
+ */
+
+/* ── Skill Pills ─────────────────────────────────────────────────────────── */
+.skill-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--glass-border);
+  background: var(--shape-1);
+  color: var(--text-primary);
+  margin: 3px 2px;
+}
+.skill-pill--expert {
+  background: rgba(99, 102, 241, .15);
+  border-color: rgba(99, 102, 241, .4);
+  color: var(--accent-primary);
+}
+.skill-pill--advanced {
+  background: rgba(34, 211, 238, .10);
+  border-color: rgba(34, 211, 238, .35);
+}
+.skill-pill--missing {
+  background: rgba(239, 68, 68, .08);
+  border-color: rgba(239, 68, 68, .3);
+  color: #ef4444;
+  text-decoration: line-through;
+  opacity: .75;
+}
+.skill-pill--match {
+  background: rgba(52, 211, 153, .12);
+  border-color: rgba(52, 211, 153, .4);
+  color: #34d399;
+}
+.skill-pill--focus {
+  background: rgba(var(--accent-rgb), .15);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+/* ── Icon Badge ──────────────────────────────────────────────────────────── */
+.icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.icon-badge--sm  { width: 36px; height: 36px; font-size: 0.9rem; }
+.icon-badge--md  { width: 48px; height: 48px; font-size: 1.1rem; }
+.icon-badge--lg  { width: 64px; height: 64px; font-size: 1.4rem; }
+.icon-badge--accent { background: rgba(var(--accent-rgb), .12); color: var(--accent-primary); }
+.icon-badge--muted  { background: var(--shape-1); color: var(--text-secondary); }
+
+/* ── aiPulse keyframe — used by availability badge dots across all pages ─── */
+@keyframes aiPulse {
+  0%, 100% { transform: scale(1); opacity: .8; }
+  50% { transform: scale(1.4); opacity: .4; }
+}
+
+/* ── Availability Badge ──────────────────────────────────────────────────── */
+.availability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: rgba(52, 211, 153, .12);
+  border: 1px solid rgba(52, 211, 153, .4);
+  color: #34d399;
+}
+.availability-badge .pulsing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 6px #34d399;
+  animation: aiPulse 1.8s infinite;
+}
+
+/* ── Metric Card ─────────────────────────────────────────────────────────── */
+.metric-card          { text-align: center; padding: 1.5rem 1rem; }
+.metric-card__value   { font-size: 2rem; font-weight: 800; color: var(--accent-primary); line-height: 1; }
+.metric-card__label   {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+/* ── Empty State ─────────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+.empty-state__icon    { font-size: 2.5rem; margin-bottom: 1rem; opacity: .4; }
+.empty-state__title   { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: .5rem; }
+.empty-state__message { font-size: 0.9rem; max-width: 320px; }
+
+/* ── Error State ─────────────────────────────────────────────────────────── */
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, .06);
+  border: 1px solid rgba(239, 68, 68, .2);
+}
+.error-state__icon    { font-size: 2rem; color: #ef4444; margin-bottom: .75rem; }
+.error-state__title   { font-size: 1rem; font-weight: 600; color: #ef4444; margin-bottom: .4rem; }
+.error-state__message { font-size: 0.85rem; color: var(--text-secondary); }
+
+/* ── Skeleton Loader ─────────────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--shape-1) 25%, var(--shape-2) 50%, var(--shape-1) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-text        { height: 1em; margin: .3em 0; }
+.skeleton-text--lg    { height: 1.5em; }
+.skeleton-text--sm    { height: .75em; }
+.skeleton-card        { height: 200px; border-radius: var(--card-radius, 12px); }
+.skeleton-avatar      { width: 48px; height: 48px; border-radius: 50%; }
+
+/* ── Funnel CTA ──────────────────────────────────────────────────────────── */
+.funnel-cta           { padding: 2rem 1.5rem; text-align: center; }
+.funnel-cta__heading  { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary); }
+
+/* ── Page helpers (extracted from inline view styles) ────────────────────── */
+.typed-headline    { min-height: 40px; color: var(--accent-hover); }
+.company-badge     { padding: .5rem 1.25rem !important; background: var(--shape-1); }
+.award-image       { max-height: 200px; cursor: pointer; object-fit: cover; }
+.recruiter-photo   { width: 160px; height: 160px; object-fit: cover; border-radius: 50%; }
+.progress-bar-lang { height: 6px; background: rgba(0, 0, 0, .05); }
+.rec-quote         { border-left: 3px solid var(--accent-primary); padding-left: 1rem; font-style: italic; color: var(--text-secondary); }
+
+/* ── Skip to content link ────────────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 10px;
+  z-index: 99999;
+  padding: 8px 16px;
+  background: var(--accent-primary);
+  color: #fff;
+  border-radius: 0 0 6px 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top .2s;
+}
+.skip-link:focus { top: 0; color: #fff; }
+
+/* ── Accessibility: prefers-reduced-motion ───────────────────────────────── */
+/* Reduce motion for decorative animations but preserve functional transitions
+   (popups, modals) so users can still interact with the UI. */
+@media (prefers-reduced-motion: reduce) {
+  /* Kill decorative background animations */
+  .bg-shape,
+  .skeleton::after,
+  .fab-pulse,
+  .metrics-pulse,
+  .pulsing-dot,
+  [data-aos] {
+    animation: none !important;
+    transition: none !important;
+  }
+  /* Reduce scroll behaviour */
+  html { scroll-behavior: auto !important; }
+}

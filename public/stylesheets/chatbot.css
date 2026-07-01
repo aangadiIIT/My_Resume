@@ -1,3 +1,22 @@
+/**
+ * Akhilesh Angadi Portfolio — Chatbot Stylesheet
+ *
+ * All visual styles for the floating chat widget: panel states, message
+ * bubbles, structured cards, engine badges, copy button, and typing indicator.
+ *
+ * Sections:
+ *   - Chat widget positioning and open/maximise states
+ *   - Header, user-mode badges, and pulsing status indicator
+ *   - Message bubbles (bot and user)
+ *   - Quick-reply chips
+ *   - Info cards (skills, experience, recruiter)
+ *   - Engine source badges (instant / AI / local)
+ *   - Copy button and hover reveal
+ *   - Typing indicator animation
+ *   - Scroll-to-bottom button
+ *
+ * Author: Akhilesh Angadi
+ */
 .chatbot-widget {
   position: fixed;
   bottom: 25px;
@@ -279,6 +298,7 @@
   align-self: flex-start;
   border-bottom-left-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
 }
 
 .user-message {
@@ -580,6 +600,7 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-bottom-left-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 /* === SCROLL BOTTOM BUTTON === */
@@ -745,4 +766,77 @@
   0% { transform: scale(0.9); opacity: 0.6; }
   50% { transform: scale(1.1); opacity: 1; opacity: 1; box-shadow: 0 0 12px #60a5fa; }
   100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+/* --- Engine Source Badges --- */
+.engine-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+  opacity: 0.85;
+}
+
+.badge-instant {
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  color: #34d399;
+}
+
+.badge-ai {
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #a78bfa;
+}
+
+.badge-local {
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+}
+
+/* --- Copy Button --- */
+.copy-btn {
+  position: absolute;
+  bottom: 5px;
+  right: 6px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  padding: 2px 5px;
+  font-size: 0.72rem;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s, background 0.2s;
+  line-height: 1;
+}
+
+.bot-message:hover .copy-btn {
+  opacity: 1;
+}
+
+.copy-btn:hover {
+  color: var(--accent-primary, #60a5fa);
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 1;
+}
+
+.copy-btn.copied {
+  color: #34d399;
+  opacity: 1;
+}
+
+/* Mobile: constrain chat window to viewport width */
+@media (max-width: 480px) {
+  .chat-window {
+    width: calc(100vw - 20px);
+    right: 10px;
+    left: 10px;
+  }
 }

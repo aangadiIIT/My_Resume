@@ -1,11 +1,29 @@
 #!/usr/bin/env node
+/**
+ * Akhilesh Angadi Portfolio — HTTP Server Bootstrap
+ *
+ * Normalises the port, creates the HTTP server from app.js, and attaches
+ * error and listening lifecycle handlers.
+ *
+ * Responsibilities:
+ *   1. Read PORT from environment (defaults to 3000)
+ *   2. Attach EACCES / EADDRINUSE error handlers
+ *   3. Log the bound address on successful listen
+ *
+ * Usage:
+ *   node bin/www   (or via npm start → node scripts/update-summary.js && node bin/www)
+ *
+ * Author: Akhilesh Angadi
+ */
 
 /**
  * Module dependencies.
  */
 
-var app = require('../app');
-var http = require('http');
+var app    = require('../app');
+var http   = require('http');
+var statsStore  = require('../services/stats-store');
+var resumeData  = require('../services/resume-data');
 
 /**
  * Get port from environment and store in Express.
@@ -14,19 +32,34 @@ var http = require('http');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
+// Declare server at module scope so onListening() can reference it
 var server = http.createServer(app);
 
 /**
- * Listen on provided port, on all network interfaces.
+ * Eager-load data, then start listening.
+ * Pre-loading resume data eliminates cold-start latency on first request.
  */
+Promise.all([
+  statsStore.loadStats(),
+  resumeData.initialize(),
+]).catch(err => {
+  console.error('Startup data load error (continuing):', err.message);
+}).then(() => {
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+  // Graceful shutdown — drain active connections before exit
+  process.on('SIGTERM', () => {
+    console.log('[SERVER] SIGTERM received — shutting down gracefully...');
+    server.close(() => {
+      console.log('[SERVER] All connections closed. Exiting.');
+      process.exit(0);
+    });
+    // Force exit after 30s if connections don't drain
+    setTimeout(() => process.exit(1), 30_000);
+  });
+});
 
 /**
  * Normalize a port into a number, string, or false.

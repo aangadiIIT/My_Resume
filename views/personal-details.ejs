@@ -8,7 +8,7 @@
 <body>
   <%- include('partials/header') %>
 
-    <div class="container py-5 my-4">
+    <div id="main-content" class="container py-5 my-4">
       <div class="text-center mb-5" data-aos="fade-down">
         <h1 class="section-title">About Me</h1>
         <p class="lead text-muted max-w-2xl mx-auto">Get to know the person behind the code.</p>
@@ -20,7 +20,7 @@
           <div class="glass-card h-100 p-5">
             <h3 class="h4 border-bottom pb-3 mb-4 fw-bold text-accent"><i class="fas fa-user-circle me-2"></i> Who I Am
             </h3>
-            <p class="text-muted mb-4 fs-6" style="line-height: 1.8; white-space: pre-line;">
+            <p class="text-muted mb-4 fs-6" style="line-height: 1.8; white-space: normal; word-break: break-word;">
               <%= data.profile.profile.about_raw %>
             </p>
           </div>

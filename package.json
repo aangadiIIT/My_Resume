@@ -1,10 +1,32 @@
 {
   "name": "my-resume",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "AI-powered cloud engineer portfolio with deterministic + hybrid Gemini/Llama intelligence and recruiter-focused tooling.",
+  "author": "Akhilesh Angadi <angadi.akhilesh@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "portfolio",
+    "resume",
+    "chatbot",
+    "llm",
+    "express",
+    "azure",
+    "devops",
+    "cloud"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Akhilesh-Angadi/My_Resume"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "private": true,
   "scripts": {
     "start": "node scripts/update-summary.js && node ./bin/www",
+    "test:unit": "node tests/unit-engine.js",
     "test:sanity": "node tests/sanity.js",
+    "test:chatbot": "node tests/chatbot-response-test.js",
     "test:audit": "node tests/core-bot-audit.js",
     "test:ui": "npx playwright test --headed",
     "test:ui:headless": "npx playwright test",
@@ -16,16 +38,17 @@
     "@huggingface/transformers": "^4.0.1",
     "compression": "^1.8.1",
     "dotenv": "^17.4.1",
-    "ejs": "^3.1.9",
-    "express": "^4.18.2",
-    "helmet": "^7.1.0",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.4.1",
+    "helmet": "^8.2.0",
     "http-errors": "~2.0.0",
-    "morgan": "~1.10.0",
-    "onnxruntime-node": "^1.24.3"
+    "morgan": "^1.10.0",
+    "onnxruntime-node": "^1.27.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
-    "jsdom": "^24.1.3",
+    "jsdom": "^29.1.1",
     "playwright": "^1.59.1",
     "supertest": "^7.2.2"
   }

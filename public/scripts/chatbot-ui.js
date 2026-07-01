@@ -1,6 +1,31 @@
+/**
+ * Akhilesh Angadi Portfolio — Chatbot UI Layer
+ *
+ * Manages all chatbot UI interactions: message rendering, SSE stream handling,
+ * session persistence, card upgrades, copy buttons, and engine source badges.
+ *
+ * Responsibilities:
+ *   1. Open/close/maximise the chat window and persist state to localStorage
+ *   2. Send queries to /api/chat/llm and consume the SSE stream token by token
+ *   3. Upgrade streamed responses to glassmorphic cards for structured intents
+ *   4. Render quick-reply chips, engine badges, and copy buttons on bot messages
+ *   5. Auto-open the chat with a contextual greeting for ?ref=linkedin visitors
+ *
+ * Dependencies:
+ *   - chatbot-engine.js  — ChatbotEngine global (sanitise, enforceThirdPerson, etc.)
+ *   - /api/chat/llm      — SSE stream endpoint (POST)
+ *   - /data/summary.json — knowledge base loaded on DOMContentLoaded
+ *
+ * Usage:
+ *   Loaded as <script src="/scripts/chatbot-ui.js"> on every page via footer.ejs.
+ *
+ * Author: Akhilesh Angadi
+ */
 // ============================================================
 // STATE
 // ============================================================
+const CHAT_HISTORY_MAX = 50; // cap history to prevent localStorage quota breach
+
 let chatContext = {
   lastIntent: null,
   lastDomain: null,
@@ -15,8 +40,25 @@ let chatContext = {
   abortController: null // 🛑 For ChatGPT-style "Stop"
 };
 const STORAGE_KEY = 'akhilesh_chat_state';
+const ANALYTICS_KEY = 'akhilesh_chat_analytics';
 const PERSISTENCE_WINDOW = 12 * 60 * 60 * 1000; // 12 Hours
 let botSummary = null;
+
+// Cached DOM elements — populated on DOMContentLoaded, avoids repeated getElementById per message
+const _dom = { body: null, input: null, window: null, send: null };
+
+// ============================================================
+// Helpers
+// ============================================================
+function scrollToBottom(el) {
+  if (el) el.scrollTop = el.scrollHeight;
+}
+
+function _sanitize(html) {
+  return (typeof ChatbotEngine !== 'undefined' && typeof ChatbotEngine.sanitize === 'function')
+    ? ChatbotEngine.sanitize(html)
+    : html;
+}
 
 // ============================================================
 // Session Persistence Logic (12-hour duration)
@@ -24,7 +66,7 @@ let botSummary = null;
 function saveChatState() {
   try {
     const state = {
-      history: chatContext.history,
+      history: chatContext.history.slice(-CHAT_HISTORY_MAX), // cap before storing
       lastIntent: chatContext.lastIntent,
       lastDomain: chatContext.lastDomain,
       depth: chatContext.depth,
@@ -159,10 +201,10 @@ function buildPDFCard() {
       <div class="fw-bold">Resume Preview</div>
     </div>
     <div class="clear-confirm-popover" style="height: 350px; overflow: hidden; border-radius: 4px; background: #333; margin-bottom: 10px;">
-      <iframe src="/view-asset/Akhilesh_DevOps_Platform_Resume.pdf#toolbar=0" style="width: 100%; height: 100%; border: none;"></iframe>
+      <iframe src="/view-asset/documents/Resume.pdf#toolbar=0" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
     <div class="text-center">
-      <a href="/view-asset/Akhilesh_DevOps_Platform_Resume.pdf" target="_blank" class="btn btn-sm btn-primary">Download full PDF</a>
+      <a href="/view-asset/documents/Resume.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">Download full PDF</a>
     </div>
   `;
   return card;
@@ -203,8 +245,8 @@ function buildHireHimCard(response) {
         <a href="/recommendations" class="highlight-item"><span class="hi-icon">🤝</span><span>Highly Recommended</span></a>
       </div>
       <div class="hire-card-cta">
-        <a href="/view-asset/documents/resume.pdf" target="_blank" class="cta-btn cta-primary">📄 View Resume</a>
-        <a href="https://linkedin.com/in/akhilesh-angadi" target="_blank" class="cta-btn cta-secondary">🔗 LinkedIn</a>
+        <a href="/view-asset/documents/Resume.pdf" target="_blank" rel="noopener noreferrer" class="cta-btn cta-primary">📄 View Resume</a>
+        <a href="https://linkedin.com/in/akhilesh-angadi" target="_blank" rel="noopener noreferrer" class="cta-btn cta-secondary">🔗 LinkedIn</a>
         <a href="/contact-me" class="cta-btn cta-secondary">📬 Contact</a>
       </div>
       <div class="hire-card-body">${cleanAnswer}</div>`;
@@ -295,7 +337,7 @@ function renderQuickReplies(list, ctx, showAll) {
 
   container.appendChild(qrDiv);
   body.appendChild(container);
-  setTimeout(() => { container.style.opacity = '1'; body.scrollTop = body.scrollHeight; }, 80);
+  setTimeout(() => { container.style.opacity = '1'; scrollToBottom(body); }, 80);
 }
 
 // ============================================================
@@ -303,7 +345,7 @@ function renderQuickReplies(list, ctx, showAll) {
 // ============================================================
 async function loadBotData() {
   try {
-    const res = await fetch('../data/summary.json');
+    const res = await fetch('/data/summary.json');
     botSummary = await res.json();
     try {
       const d = JSON.parse(localStorage.getItem(ANALYTICS_KEY) || '{"sessions":0}');
@@ -370,7 +412,7 @@ function addMessage(text, type, roleId = null, skipHistory = false) {
     saveChatState();
   }
 
-  body.scrollTop = body.scrollHeight;
+  scrollToBottom(body);
   checkScroll();
 }
 
@@ -491,80 +533,99 @@ async function streamMessage(text, side, extra = {}) {
   if (side === 'bot' && extra.cardType === 'pdf_resume') {
     const card = buildPDFCard();
     body.appendChild(card);
-    body.scrollTop = body.scrollHeight;
+    scrollToBottom(body);
     return;
   }
   if (side === 'bot' && extra.cardType === 'hire_him') {
     const card = buildHireHimCard(extra);
     const cardBodyEl = card.querySelector('.hire-card-body');
-    const fullText = cardBodyEl ? (cardBodyEl.textContent || cardBodyEl.innerText || '') : '';
-    if (cardBodyEl) cardBodyEl.textContent = '';
+    const fullHtml = cardBodyEl ? (cardBodyEl.innerHTML || '') : '';
+    if (cardBodyEl) cardBodyEl.innerHTML = '';
     card.style.opacity = '0';
     body.appendChild(card);
     await new Promise(r => setTimeout(r, 60));
     card.style.transition = 'opacity 0.2s ease';
     card.style.opacity = '1';
-    body.scrollTop = body.scrollHeight;
-    if (cardBodyEl && fullText) {
-      const tokens = fullText.split(/(\s+)/);
+    scrollToBottom(body);
+    if (cardBodyEl && fullHtml) {
+      const tokens = fullHtml.split(/(\s+)/);
       let current = '';
       for (let token of tokens) {
         current += token;
-        cardBodyEl.textContent = current;
-        body.scrollTop = body.scrollHeight;
+        cardBodyEl.innerHTML = _sanitize(current);
+        scrollToBottom(body);
         await new Promise(r => setTimeout(r, 40));
       }
     }
-    body.scrollTop = body.scrollHeight;
+    scrollToBottom(body);
     return card;
   }
   if (side === 'bot' && extra.cardType === 'info') {
     const card = buildInfoCard(extra);
     const cardBodyEl = card.querySelector('.info-card-body');
-    const fullText = cardBodyEl ? (cardBodyEl.textContent || cardBodyEl.innerText || '') : '';
-    if (cardBodyEl) cardBodyEl.textContent = '';
+    const fullHtml = cardBodyEl ? (cardBodyEl.innerHTML || '') : '';
+    if (cardBodyEl) cardBodyEl.innerHTML = '';
     card.style.opacity = '0';
     body.appendChild(card);
     await new Promise(r => setTimeout(r, 60));
     card.style.transition = 'opacity 0.2s ease';
     card.style.opacity = '1';
-    body.scrollTop = body.scrollHeight;
-    if (cardBodyEl && fullText) {
-      const tokens = fullText.split(/(\s+)/);
+    scrollToBottom(body);
+    if (cardBodyEl && fullHtml) {
+      const tokens = fullHtml.split(/(\s+)/);
       let current = '';
       for (let token of tokens) {
         current += token;
-        cardBodyEl.textContent = current;
-        body.scrollTop = body.scrollHeight;
+        cardBodyEl.innerHTML = _sanitize(current);
+        scrollToBottom(body);
         await new Promise(r => setTimeout(r, 50));
       }
     }
-    body.scrollTop = body.scrollHeight;
+    scrollToBottom(body);
     return card;
   }
   const msg = document.createElement('div');
   msg.className = `message ${side}-message`;
-  
+
   const contentSpan = document.createElement('span');
   contentSpan.className = 'msg-content';
   msg.appendChild(contentSpan);
+
+  if (side === 'bot') {
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'copy-btn';
+    copyBtn.title = 'Copy message';
+    copyBtn.innerHTML = '<i class="far fa-copy"></i>';
+    copyBtn.onclick = () => {
+      const textToCopy = contentSpan.textContent || '';
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.innerHTML = '<i class="far fa-copy"></i>';
+          copyBtn.classList.remove('copied');
+        }, 1500);
+      }).catch(() => {});
+    };
+    msg.appendChild(copyBtn);
+  }
   
   body.appendChild(msg);
-  body.scrollTop = body.scrollHeight;
+  scrollToBottom(body);
   const hasHtml = /<[a-z][\s\S]*>/i.test(text);
   let currentHtml = '';
   if (hasHtml) {
     for (let line of text.split('\n')) {
       currentHtml += line + '\n';
-      contentSpan.innerHTML = currentHtml;
-      body.scrollTop = body.scrollHeight;
+      contentSpan.innerHTML = _sanitize(currentHtml);
+      scrollToBottom(body);
       await new Promise(r => setTimeout(r, 70));
     }
   } else {
     for (let token of text.split(/(\s+)/)) {
       currentHtml += token;
-      contentSpan.innerHTML = currentHtml;
-      body.scrollTop = body.scrollHeight;
+      contentSpan.innerHTML = _sanitize(currentHtml);
+      scrollToBottom(body);
       await new Promise(r => setTimeout(r, 50));
     }
   }
@@ -575,7 +636,7 @@ async function streamMessage(text, side, extra = {}) {
     saveChatState();
   }
   
-  body.scrollTop = body.scrollHeight;
+  scrollToBottom(body);
   return msg;
 }
 
@@ -595,15 +656,29 @@ function findResponse(query) {
   return result;
 }
 
+function appendEngineBadge(messageEl, engine) {
+  if (!messageEl || !engine) return;
+  const cfg = {
+    deterministic: { icon: '⚡', label: 'Instant', cls: 'badge-instant' },
+    online:        { icon: '🤖', label: 'AI',      cls: 'badge-ai'      },
+    offline:       { icon: '💾', label: 'Local AI', cls: 'badge-local'   }
+  }[engine];
+  if (!cfg) return;
+  const badge = document.createElement('span');
+  badge.className = `engine-badge ${cfg.cls}`;
+  badge.innerHTML = `${cfg.icon} ${cfg.label}`;
+  messageEl.appendChild(badge);
+}
+
 // ============================================================
-// MAIN SEND HANDLER
+// MAIN SEND HANDLER (SSE streaming)
 // ============================================================
 async function handleChatSend(overrideText = null) {
   const input = document.getElementById('chatInput');
   const text = overrideText || (input ? input.value.trim() : "");
   if (!text) return;
 
-  // 🛑 STOP BUTTON ACCESSED DURING PROCESSING
+  // Stop if already processing
   if (chatContext.isProcessing) {
     if (chatContext.abortController) {
       chatContext.abortController.abort();
@@ -624,7 +699,6 @@ async function handleChatSend(overrideText = null) {
     }
   }
 
-  // START PROCESSING
   chatContext.isProcessing = true;
   toggleSendButton(true);
   chatContext.abortController = new AbortController();
@@ -634,58 +708,159 @@ async function handleChatSend(overrideText = null) {
     addMessage(text, 'user');
     if (input) input.value = '';
 
-    // Add Thinking Indicator
     const body = document.getElementById('chatBody');
     const typingLLM = document.createElement('div');
     typingLLM.className = 'typing-indicator llm-thinking';
     typingLLM.id = 'typingIndicatorLLM';
     typingLLM.innerHTML = `<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span style="font-size:0.75rem;margin-left:8px;color:rgba(255,255,255,0.7)">Thinking...</span>`;
     body.appendChild(typingLLM);
-    body.scrollTop = body.scrollHeight;
+    scrollToBottom(body);
 
-    const startTime = Date.now();
     try {
-      const llmRes = await fetch('/api/chat/llm', {
+      const response = await fetch('/api/chat/llm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: text, history: chatContext.history }),
         signal
       });
 
-      // UX Delay (2-4s)
-      const minDelay = 2000 + Math.random() * 2000;
-      const elapsed = Date.now() - startTime;
-      if (elapsed < minDelay) await new Promise(r => setTimeout(r, minDelay - elapsed));
+      if (!response.ok || !response.body) {
+        typingLLM.remove();
+        // Try to surface a meaningful error (e.g. rate-limit message) before falling back to generic
+        let errorMsg = "Error connecting to brain.";
+        try {
+          const errData = await response.clone().json();
+          if (errData && errData.error) errorMsg = errData.error;
+        } catch (_) {}
+        if (response.status === 429) errorMsg = "Too many messages — please wait a moment before trying again.";
+        addMessage(errorMsg, "bot");
+        return;
+      }
 
-      typingLLM.remove();
-      if (llmRes.ok) {
-        const data = await llmRes.json();
-        const answer = data.answer || "I'm not sure how to answer that.";
-        
-        // Execute narrative response rendering
-        const botMsg = await streamMessage(answer, 'bot', { 
-            intent: data.intent, 
-            skipHistory: false // We handle history inside streamMessage now
-        });
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let streamMsgEl = null;
+      let streamContentEl = null;
+      let fullStreamAnswer = '';
+      let donePayload = null;
 
-        // --- RESTORE SMART CHIPS ---
-        let chips = data.hints || [];
-        if (typeof ChatbotEngine !== 'undefined' && botSummary) {
-          const aiChips = ChatbotEngine.generateFollowUpChips ? ChatbotEngine.generateFollowUpChips(chatContext.lastDomain, chatContext.lastIntent, chatContext) : [];
-          chips = [...new Set([...chips, ...aiChips])].slice(0, 4);
-        }
-        if (chips.length > 0) renderQuickReplies(chips, chatContext);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-        if (data.updatedContext) {
-          chatContext.lastIntent = data.updatedContext.lastIntent;
-          chatContext.depth = data.updatedContext.depth;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop(); // keep incomplete line
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const raw = line.slice(6).trim();
+          if (!raw) continue;
+
+          let event;
+          try { event = JSON.parse(raw); } catch { continue; }
+
+          if (event.type === 'token') {
+            // First token: remove thinking indicator, create streaming bubble
+            if (!streamMsgEl) {
+              typingLLM.remove();
+              streamMsgEl = document.createElement('div');
+              streamMsgEl.className = 'message bot-message';
+              streamContentEl = document.createElement('span');
+              streamContentEl.className = 'msg-content';
+              streamMsgEl.appendChild(streamContentEl);
+              body.appendChild(streamMsgEl);
+            }
+            fullStreamAnswer += event.content;
+            if (streamContentEl) {
+              streamContentEl.innerHTML = _sanitize(fullStreamAnswer);
+            }
+            scrollToBottom(body);
+
+          } else if (event.type === 'answer') {
+            // Deterministic fast-path or offline fallback: got full answer at once
+            typingLLM.remove();
+            donePayload = event;
+            const cardType = shouldRenderCard(event);
+            if (cardType) {
+              await streamMessage(event.answer, 'bot', { ...event, cardType, skipHistory: true });
+            } else {
+              await streamMessage(event.answer, 'bot', { intent: event.intent, engine: event.engine, skipHistory: true });
+            }
+
+          } else if (event.type === 'done') {
+            donePayload = donePayload || event;
+
+            // Finalize streamed content
+            if (streamMsgEl && streamContentEl && fullStreamAnswer) {
+              // Strip any suggestion suffix the model appended inside the stream
+              let cleanAnswer = fullStreamAnswer;
+              const suggestionMatch = cleanAnswer.match(/(?:\[?SUGGESTIONS\]?|Suggestions:|Follow-up questions:|Ask me about:)\s*(.*)/is);
+              if (suggestionMatch) cleanAnswer = cleanAnswer.split(suggestionMatch[0])[0].trim();
+
+              const cardType = shouldRenderCard(event);
+              if (cardType) {
+                // Upgrade plain streaming bubble to a glassmorphic card
+                streamMsgEl.remove();
+                await streamMessage(cleanAnswer, 'bot', { ...event, cardType, skipHistory: true });
+                chatContext.history.push({ text: cleanAnswer, type: 'bot', timestamp: Date.now() });
+                saveChatState();
+              } else {
+                const sanitized = typeof ChatbotEngine !== 'undefined'
+                  ? ChatbotEngine.sanitize(cleanAnswer)
+                  : cleanAnswer;
+                const enforced = typeof ChatbotEngine !== 'undefined'
+                  ? ChatbotEngine.enforceThirdPerson(sanitized, event.intent, '')
+                  : sanitized;
+                streamContentEl.innerHTML = enforced;
+                appendEngineBadge(streamMsgEl, event.engine);
+                chatContext.history.push({ text: enforced, type: 'bot', timestamp: Date.now() });
+                saveChatState();
+              }
+            } else if (donePayload && donePayload.type === 'answer') {
+              // Badge for the deterministic/offline message rendered above
+              const lastBotMsg = body.querySelector('.bot-message:last-of-type');
+              if (lastBotMsg && !lastBotMsg.querySelector('.engine-badge')) {
+                appendEngineBadge(lastBotMsg, event.engine);
+              }
+              // Save to history so Gemini has context on follow-up turns
+              if (donePayload.answer) {
+                chatContext.history.push({ text: donePayload.answer, type: 'bot', timestamp: Date.now() });
+                saveChatState();
+              }
+            }
+
+            // Render chips
+            let chips = event.hints || [];
+            if (typeof ChatbotEngine !== 'undefined' && botSummary) {
+              const aiChips = ChatbotEngine.generateFollowUpChips
+                ? ChatbotEngine.generateFollowUpChips(chatContext.lastDomain, chatContext.lastIntent, chatContext)
+                : [];
+              chips = [...new Set([...chips, ...aiChips])].slice(0, 4);
+            }
+            if (chips.length > 0) renderQuickReplies(chips, chatContext);
+
+            if (event.intent) {
+              chatContext.lastIntent = event.intent;
+              chatContext.visited.add(event.intent);
+            }
+
+            if (chatContext.debugMode && event.intent) {
+              const dbg = document.createElement('span');
+              dbg.style.cssText = 'font-size:0.63rem;color:#475569;display:block;margin-top:4px';
+              dbg.textContent = `[${event.intent} · ${event.engine}]`;
+              (streamMsgEl || body.querySelector('.bot-message:last-of-type'))?.appendChild(dbg);
+            }
+          }
         }
       }
     } catch (e) {
-      if (e.name === 'AbortError') console.log('[CHAT] Aborted');
-      else addMessage("Error connecting to brain.", "bot");
+      if (e.name === 'AbortError') console.log('[CHAT] Aborted by user');
+      else { document.getElementById('typingIndicatorLLM')?.remove(); addMessage("Error connecting to brain.", "bot"); }
     }
   } finally {
+    if (typeof reader !== 'undefined' && reader) reader.cancel().catch(() => {});
     chatContext.isProcessing = false;
     chatContext.abortController = null;
     toggleSendButton(false);
@@ -723,15 +898,21 @@ function renderTracePanel(trace) {
     <div><b>Path:</b> ${trace.path}</div>
   `;
   body.appendChild(panel);
-  body.scrollTop = body.scrollHeight;
+  scrollToBottom(body);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Cache frequently-used DOM elements once — avoids repeated getElementById per message
+  _dom.body   = document.getElementById('chatBody');
+  _dom.input  = document.getElementById('chatInput');
+  _dom.window = document.getElementById('chatWindow');
+  _dom.send   = document.getElementById('sendChatBtn');
+
   const toggle = document.getElementById('chatToggle');
   const close = document.getElementById('closeChatBtn');
   const clear = document.getElementById('clearChatBtn');
-  const send = document.getElementById('sendChatBtn');
-  const input = document.getElementById('chatInput');
+  const send = _dom.send;
+  const input = _dom.input;
   const maximize = document.getElementById('maximizeChatBtn');
 
   // Hydration
@@ -785,6 +966,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
   }
 
-  // 3. Knowledge Load (Restored)
+  // 3. Knowledge Load
   await loadBotData();
+
+  // LinkedIn referral: auto-open chatbot and send contextual greeting
+  const refSource = new URLSearchParams(window.location.search).get('ref');
+  if (refSource === 'linkedin') {
+    setTimeout(() => {
+      const win = document.getElementById('chatWindow');
+      if (win && !win.classList.contains('active')) {
+        toggleChat();
+        setTimeout(() => streamMessage(
+          "👋 Welcome! Looks like you came from LinkedIn. I'm Akhilesh's portfolio AI — ask me about his experience, skills, or availability for new roles.",
+          'bot',
+          { skipHistory: true }
+        ), 800);
+      }
+    }, 1500);
+  }
 });

@@ -1,3 +1,18 @@
+/**
+ * Akhilesh Angadi Portfolio — Hero Typed Animation
+ *
+ * Initialises the Typed.js text carousel on the hero section using strings
+ * passed from the server via the data-strings attribute on the script tag.
+ *
+ * Dependencies:
+ *   - Typed.js (CDN global)  — typewriter animation library
+ *
+ * Usage:
+ *   Loaded as <script id="index-script" data-strings="[...]" src="/scripts/app/index.js">
+ *   on views/index.ejs only.
+ *
+ * Author: Akhilesh Angadi
+ */
 document.addEventListener('DOMContentLoaded', () => {
     // Check if the script tag has a data-strings attribute
     const scriptTag = document.getElementById('index-script');

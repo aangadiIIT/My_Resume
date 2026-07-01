@@ -14,6 +14,7 @@ public/data/llm-context.txt
 # Tests/Reports
 tests/detailed_audit_report.json
 tests/sanity_report.json
+chatbot_test_suite_cleaned.json
 
 # System
 .DS_Store

@@ -1,3 +1,20 @@
+<%#
+  Akhilesh Angadi Portfolio — Navigation Header Partial
+
+  Renders the fixed top navbar with page links, "More" dropdown (certifications,
+  awards, recommendations, publications, contact, recruiter tools), availability
+  badge, and theme toggle. Included on every page via the main layout.
+
+  Data contract (locals expected):
+    - data.profile.profile.availability  — optional { status, label } for the Open badge
+    - pageTitle                          — matched against nav link labels to set active state
+    - nonce                              — CSP nonce (not used here; included for consistency)
+
+  Author: Akhilesh Angadi
+%>
+<!-- Skip to main content — keyboard / screen reader navigation -->
+<a href="#main-content" class="skip-link visually-hidden-focusable">Skip to main content</a>
+
 <!-- Background Animated Shapes (Global to the app) -->
 <div class="bg-shapes-container">
   <div class="bg-shape shape-1"></div>
@@ -21,24 +38,24 @@
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
       <ul class="navbar-nav align-items-center gap-2">
         <li class="nav-item">
-          <a class="nav-link <%= pageTitle === 'My Resume' ? 'active' : '' %>" href="/">Home</a>
+          <a class="nav-link <%= pageTitle === 'Akhilesh Angadi | Cloud & DevOps Engineer' ? 'active' : '' %>" href="/">Home</a>
         </li>
     <li class="nav-item">
-      <a class="nav-link <%= pageTitle === 'Personal Details' ? 'active' : '' %>" href="/personal-details">About</a>
+      <a class="nav-link <%= pageTitle === 'About | Akhilesh Angadi' ? 'active' : '' %>" href="/personal-details">About</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link <%= pageTitle === 'Work Experience' ? 'active' : '' %>" href="/experience">Experience</a>
+      <a class="nav-link <%= pageTitle === 'Work Experience | Akhilesh Angadi' ? 'active' : '' %>" href="/experience">Experience</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link <%= pageTitle === 'Projects & Works' ? 'active' : '' %>" href="/my-works">Projects</a>
+      <a class="nav-link <%= pageTitle === 'Projects | Akhilesh Angadi' ? 'active' : '' %>" href="/my-works">Projects</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link <%= pageTitle === 'Technical & Soft Skills' ? 'active' : '' %>" href="/my-skills">Skills</a>
+      <a class="nav-link <%= pageTitle === 'Skills | Akhilesh Angadi' ? 'active' : '' %>" href="/my-skills">Skills</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link <%= pageTitle === 'Education' ? 'active' : '' %>" href="/education">Education</a>
+      <a class="nav-link <%= pageTitle === 'Education | Akhilesh Angadi' ? 'active' : '' %>" href="/education">Education</a>
     </li>
-        <% const isMoreActive = ['Certifications', 'Honors & Awards', 'Professional Recommendations', 'Publications', 'Contact Me'].includes(pageTitle); %>
+        <% const isMoreActive = ['Certifications | Akhilesh Angadi', 'Awards & Honors | Akhilesh Angadi', 'Recommendations | Akhilesh Angadi', 'Publications | Akhilesh Angadi', 'Contact | Akhilesh Angadi', 'Recruiter Brief | Akhilesh Angadi', 'JD Match | Akhilesh Angadi'].includes(pageTitle); %>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle <%= isMoreActive ? 'active' : '' %>" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
@@ -52,11 +69,23 @@
         <li>
           <hr class="dropdown-divider bg-secondary opacity-25">
         </li>
+        <li><a class="dropdown-item rounded" href="/for-recruiters"><i class="fas fa-user-tie me-2 text-accent"></i>Recruiter Brief</a></li>
+        <li><a class="dropdown-item rounded" href="/jd-match"><i class="fas fa-search-plus me-2 text-accent"></i>JD Match</a></li>
+        <li>
+          <hr class="dropdown-divider bg-secondary opacity-25">
+        </li>
         <li><a class="dropdown-item rounded fw-bold text-accent" href="/contact-me"><i
               class="fas fa-envelope me-2"></i>Contact Me</a></li>
       </ul>
     </li>
-    <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
+    <li class="nav-item ms-lg-3 mt-3 mt-lg-0 d-none d-lg-flex align-items-center">
+      <% if(data.profile && data.profile.profile && data.profile.profile.availability && data.profile.profile.availability.status === 'open') { %>
+      <span class="me-2 d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill"
+        style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.35);color:#34d399;font-size:0.7rem;font-weight:700;letter-spacing:0.04em;">
+        <span style="width:6px;height:6px;border-radius:50%;background:#34d399;display:inline-block;flex-shrink:0;animation:aiPulse 1.8s infinite;"></span>
+        <%= data.profile.profile.availability.label %>
+      </span>
+      <% } %>
       <button id="theme-toggle" class="btn-theme-toggle" aria-label="Toggle Dark Mode">
         <i class="fas fa-moon"></i>
       </button>

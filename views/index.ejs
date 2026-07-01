@@ -1,3 +1,19 @@
+<%#
+  Akhilesh Angadi Portfolio — Home Page (Hero)
+
+  Landing page featuring the animated hero banner, profile summary, key superpowers,
+  career highlights, a recommendations preview, and the primary CTA funnel.
+
+  Data contract (locals expected):
+    - data.profile           — full profile JSON
+    - data.typedStrings      — array of strings for the Typed.js hero animation
+    - data.yrsExperience     — integer years of experience
+    - data.highlights        — array of career highlight objects
+    - pageTitle              — page title string
+    - nonce                  — CSP nonce for inline scripts
+
+  Author: Akhilesh Angadi
+%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +21,7 @@
   <%- include('partials/head') %>
 </head>
 
-  <style>
+  <style nonce="<%= nonce %>">
     /* Magnetic Buttons */
     .magnetic-btn {
       transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
@@ -14,7 +30,7 @@
   <%- include('partials/header') %>
 
     <!-- Hero Section -->
-    <div class="hero-section position-relative overflow-hidden d-flex align-items-center pt-5 mt-4 min-vh-75">
+    <div id="main-content" class="hero-section position-relative overflow-hidden d-flex align-items-center pt-5 mt-4 min-vh-75">
       <div class="container position-relative" style="z-index: 2;">
         <div class="row align-items-center flex-column-reverse flex-lg-row">
 
@@ -32,31 +48,55 @@
                 data.profile.profile.about_raw %>
             </p>
 
-            <% if(data.profile.profile.headline_structured && data.profile.profile.headline_structured.current_company)
-              { %>
-              <div
-                class="glass-card border-0 px-3 py-2 mb-4 rounded-pill fw-bold text-accent d-inline-flex align-items-center shadow-sm"
+            <div class="d-flex flex-wrap gap-2 align-items-center mb-4">
+              <% if(data.profile.profile.headline_structured && data.profile.profile.headline_structured.current_company) { %>
+              <div class="glass-card border-0 px-3 py-2 rounded-pill fw-bold text-accent d-inline-flex align-items-center shadow-sm"
                 style="padding: 0.5rem 1.25rem !important; background: var(--shape-1);">
                 <i class="fas fa-building me-2"></i>
                 Currently at <%= data.profile.profile.headline_structured.current_company %>
               </div>
               <% } %>
+              <% if(data.profile.profile.availability && data.profile.profile.availability.status === 'open') { %>
+              <div class="d-inline-flex align-items-center gap-2 mb-2"
+                style="background:linear-gradient(135deg,rgba(52,211,153,0.18),rgba(52,211,153,0.06));
+                       border:1.5px solid rgba(52,211,153,0.55);
+                       border-radius:50px;
+                       padding:0.45rem 1.1rem;
+                       box-shadow:0 0 20px rgba(52,211,153,0.3),inset 0 0 12px rgba(52,211,153,0.06);">
+                <span style="position:relative;display:inline-block;width:10px;height:10px;">
+                  <span style="position:absolute;inset:0;border-radius:50%;background:#34d399;animation:aiPulse 1.4s ease-in-out infinite;opacity:0.6;"></span>
+                  <span style="position:absolute;inset:1px;border-radius:50%;background:#34d399;box-shadow:0 0 6px #34d399;"></span>
+                </span>
+                <span style="font-weight:700;font-size:0.8rem;color:#34d399;letter-spacing:0.04em;font-family:'Outfit',sans-serif;">
+                  <%= data.profile.profile.availability.label %>
+                </span>
+              </div>
+              <% } %>
+            </div>
 
-                <div class="d-flex flex-wrap gap-3 mb-4 align-items-center">
-                  <a href="/experience" class="btn-primary-custom magnetic-btn" data-magnetic>
-                    <i class="fas fa-briefcase me-2"></i> View Experience
-                  </a>
-                  <a href="/my-works" class="btn-outline-custom magnetic-btn" data-magnetic>
-                    <i class="fas fa-code me-2"></i> View Projects
-                  </a>
-                  <a href="/contact-me" class="btn-outline-custom magnetic-btn" data-magnetic
-                    style="border-color: var(--text-tertiary); color: var(--text-secondary);">
-                    <i class="fas fa-envelope me-2"></i> Contact Me
-                  </a>
-                  <a href="/view-asset/documents/Resume.pdf"
-                    class="btn btn-link text-muted text-decoration-none fw-bold ms-2" download="Resume.pdf">
-                    <i class="fas fa-file-pdf me-1"></i> Download Resume
-                  </a>
+                <div class="mb-4">
+                  <!-- Primary CTAs — row 1 -->
+                  <div class="d-flex flex-wrap gap-3 align-items-center mb-2">
+                    <a href="/experience" class="btn-primary-custom magnetic-btn" data-magnetic>
+                      <i class="fas fa-briefcase me-2"></i> View Experience
+                    </a>
+                    <a href="/for-recruiters" class="btn-outline-custom text-decoration-none">
+                      <i class="fas fa-user-tie me-2"></i>Recruiter Brief
+                    </a>
+                  </div>
+                  <!-- Secondary CTAs — row 2 -->
+                  <div class="d-flex flex-wrap gap-3 align-items-center">
+                    <a href="/my-works" class="btn btn-link fw-bold text-decoration-none" style="color: var(--accent-hover);">
+                      <i class="fas fa-code me-1"></i> Projects
+                    </a>
+                    <a href="/contact-me" class="btn btn-link fw-bold text-decoration-none text-muted">
+                      <i class="fas fa-envelope me-1"></i> Contact
+                    </a>
+                    <a href="/view-asset/documents/Resume.pdf"
+                      class="btn btn-link text-muted text-decoration-none fw-bold" download="Resume.pdf">
+                      <i class="fas fa-file-pdf me-1"></i> Resume
+                    </a>
+                  </div>
                 </div>
 
                 <% if(data.profile.profile.tags && data.profile.profile.tags.length> 0) { %>
@@ -183,9 +223,9 @@
                                     %>."</p>
                               </div>
                               <% if(topAward.image_path) { %>
-                                <div class="flex-shrink-0">
+                                <div style="flex-shrink: 0; width: 80px; min-width: 80px; max-width: 80px; overflow: hidden;">
                                   <img src="<%= topAward.image_path %>" alt="Award" class="rounded shadow-sm border"
-                                    style="width: 80px; height: 60px; object-fit: cover;">
+                                    width="80" height="60" style="width: 80px; height: 60px; object-fit: cover; display: block; max-width: 80px;">
                                 </div>
                                 <% } %>
                             </div>
@@ -206,15 +246,36 @@
 
             <!-- Funnel Navigation CTA -->
             <div class="container mb-5 pb-5">
-              <div class="glass-card text-center p-5 shadow-lg mx-auto"
-                style="max-width: 800px; background: var(--accent-gradient);" data-aos="zoom-in">
-                <h3 class="h2 fw-bolder text-white mb-3">Ready to dive deeper?</h3>
-                <p class="text-white-50 lead mb-4">Discover the roles, responsibilities, and impact I've made throughout
-                  my career.</p>
-                <a href="/experience"
-                  class="btn btn-light rounded-pill px-5 py-3 fw-bolder text-primary fs-5 shadow-sm transition-transform hover-scale">
-                  Explore My Experience <i class="fas fa-arrow-right ms-2"></i>
-                </a>
+              <div class="row g-4 justify-content-center" data-aos="fade-up">
+                <!-- Main CTA -->
+                <div class="col-lg-8">
+                  <div class="glass-card text-center p-5 shadow-lg"
+                    style="background: var(--accent-gradient);">
+                    <h3 class="h2 fw-bolder mb-3" style="color:#ffffff;">Ready to dive deeper?</h3>
+                    <p class="lead mb-4" style="color:rgba(255,255,255,0.88);">Discover the roles, responsibilities, and impact I've made throughout
+                      my career.</p>
+                    <a href="/experience"
+                      class="btn btn-light rounded-pill px-5 py-3 fw-bolder text-primary fs-5 shadow-sm transition-transform hover-scale">
+                      Explore My Experience <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                  </div>
+                </div>
+                <!-- Recruiter CTA -->
+                <div class="col-lg-4">
+                  <a href="/for-recruiters" class="text-decoration-none d-block h-100">
+                    <div class="glass-card text-center p-4 shadow-lg h-100 d-flex flex-column justify-content-center hover-lift"
+                      style="border: 1.5px solid rgba(var(--bs-primary-rgb),0.3);">
+                      <div class="mb-3">
+                        <i class="fas fa-user-tie fa-2x" style="color:var(--accent-primary);"></i>
+                      </div>
+                      <h4 class="fw-bold mb-2" style="color:var(--text-primary);">Are you a Recruiter?</h4>
+                      <p class="text-muted small mb-3">Get a one-page summary of skills, highlights, and availability — built for hiring managers.</p>
+                      <span class="btn-primary-custom d-inline-block mx-auto px-4 py-2">
+                        <i class="fas fa-bolt me-1"></i> View Recruiter Brief
+                      </span>
+                    </div>
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -222,7 +283,7 @@
               <%- include('partials/pdf-viewer') %>
 
                 <!-- Micro-Interactions Script -->
-                <script>
+                <script nonce="<%= nonce %>">
                   document.addEventListener('DOMContentLoaded', () => {
 
                     // Magnetic Buttons

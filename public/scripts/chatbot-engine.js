@@ -1,5 +1,26 @@
 /**
- * Portfolio Chatbot Engine - Unified Module
+ * Akhilesh Angadi Portfolio — Chatbot Intent Engine (Tier 1: Deterministic)
+ *
+ * Client-side deterministic intent resolver. Classifies every user query into
+ * a known intent using multi-pass keyword matching, entity anchors, domain locks,
+ * and ML trigram fallback — all without any network calls.
+ *
+ * Responsibilities:
+ *   1. Normalise and tokenise the raw query string
+ *   2. Apply domain locks, entity anchors, and phrase-map lookups in priority order
+ *   3. Fall back to ML trigram similarity (MLIntentMatcher) for typo-tolerant matching
+ *   4. Assemble grounding candidates (facts) for Tier 2 / Tier 3 AI synthesis
+ *   5. Enforce third-person persona on all generated text
+ *
+ * Dependencies:
+ *   - ml-intent-matcher.js  — trigram-based similarity scoring
+ *   - summary (global)      — runtime knowledge base loaded from /data/summary.json
+ *
+ * Usage:
+ *   ChatbotEngine.findResponse(query, history, context)
+ *   Exposed as window.ChatbotEngine by chatbot-ui.js loader.
+ *
+ * Author: Akhilesh Angadi
  */
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -11,6 +32,42 @@
         root.ChatbotEngine = factory(root.MLIntentMatcher);
     }
 }(typeof self !== 'undefined' ? self : this, function (MLIntentMatcher) {
+
+    // ── Performance: module-level constants (compiled once, not per-call) ────
+
+    const DEBUG = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+
+    // Pre-compiled regexes — avoid re-compilation on every function call
+    const RE_RECRUITER_MODE  = /\b(hire|recruit|position|role|team|fit|looking for|candidate|evaluate|interview|opportunity|open to)\b/i;
+    const RE_EXPLORER_MODE   = /\b(curious|explore|deep dive|learn|tell me everything|explain fully|detailed|all about|deep)\b/i;
+    const RE_YEAR_MATCH      = /\b(20\d{2}(-\d{2})?)\b/;
+    const RE_NUANCED_QUERY   = /\b(how|why|compare|vs|opinion|fit|think|describe|explain)\b/i;
+    const RE_FOLLOWUP_WORDS  = /\b(more|explain|further|detail|elaborate|okay|yes|sure|next)\b/i;
+    const RE_SYMBOLIC        = /^[^\w\s]+$/;
+    const RE_BOLD_MARKDOWN   = /\*\*(.*?)\*\*/g;
+
+    // Pre-built lookup structures
+    const TECH_MAP = {
+        'k8s': 'kubernetes', 'tf': 'terraform', 'iac': 'infrastructure as code',
+        'ha': 'high availability', 'cicd': 'ci cd', 'ml': 'machine learning', 'genai': 'generative ai'
+    };
+
+    // Shared lists referenced in multiple functions — defined once here
+    const TECH_LIST     = ['docker','kubernetes','helm','terraform','jenkins','aws','azure','gcp','sap','java','python'];
+    const ROLE_KEYWORDS = ['sap','cloud','devops','platform','backend','architect','engineer','specialist','kubernetes','terraform'];
+
+    // Pre-built Sets for hot-path membership checks
+    const PURE_GREETINGS     = new Set(['hi','hey','hello','howdy','yo','greetings','sup','hiya','heya']);
+    const PURE_BYE_WORDS     = new Set(['bye','goodbye','cya','later','farewell','see you']);
+    const CAREER_KEYWORDS    = new Set(['experience','work','career','sap','juniper','skills','projects','education','certif','award','hire']);
+    const FOLLOWUP_TRIGGERS  = new Set(['more','explain','further','detail','elaborate','okay','yes','sure','next']);
+
+    // Utility: deep string search — replaces JSON.stringify() in filter loops
+    function containsString(obj, needle) {
+        if (typeof obj === 'string') return obj.toLowerCase().includes(needle);
+        if (typeof obj !== 'object' || !obj) return false;
+        return Object.values(obj).some(v => containsString(v, needle));
+    }
 
     function levenshtein(a, b) {
         if (!a || !b) return 100;
@@ -36,9 +93,8 @@
     // === USER MODE DETECTION ===
     function detectUserMode(query) {
         if (!query) return null;
-        const lq = query.toLowerCase();
-        if (/\b(hire|recruit|position|role|team|fit|looking for|candidate|evaluate|interview|opportunity|open to)\b/.test(lq)) return 'recruiter';
-        if (/\b(curious|explore|deep dive|learn|tell me everything|explain fully|detailed|all about|deep)\b/.test(lq)) return 'explorer';
+        if (RE_RECRUITER_MODE.test(query)) return 'recruiter';
+        if (RE_EXPLORER_MODE.test(query))  return 'explorer';
         return null;
     }
 
@@ -96,12 +152,9 @@
         "cicd": "projects_cicd",
         "work": "experience_summary",
         "show projects": "projects_summary",
-        // --- Deterministic Phrase Mapping (Audit Calibration) ---
+        // Deterministic phrase mapping — direct keyword → intent assignments
         "about work": "headline",
         "how to use": "bot_help",
-        "how to use this bot": "bot_help",
-        "bot functions": "bot_help",
-        "bot guide": "bot_help",
         "before sap": "experience_previous",
         "prior sap": "experience_previous",
         "previous sap": "experience_previous",
@@ -111,6 +164,24 @@
         "experience before sap": "experience_previous",
         "work before sap": "experience_previous",
         "career before sap": "experience_previous",
+        // --- SAP/Juniper + "project" Specificity (prevents fuzzy-anchor routing to projects_summary) ---
+        "sap project": "experience_sap",
+        "his sap project": "experience_sap",
+        "about sap project": "experience_sap",
+        "sap project in detail": "experience_sap",
+        "tell me about his sap project": "experience_sap",
+        "tell me about his sap project in detail": "experience_sap",
+        "tell me about sap project": "experience_sap",
+        "what sap project": "experience_sap",
+        "juniper project": "experience_juniper",
+        "his juniper project": "experience_juniper",
+        "about juniper project": "experience_juniper",
+        "juniper project in detail": "experience_juniper",
+        "tell me about his juniper project": "experience_juniper",
+        "tell me about juniper project": "experience_juniper",
+        "tell me about his iot project": "projects_iot",
+        "tell me about his iot project in detail": "projects_iot",
+        "iot project in detail": "projects_iot",
         "where he did his engineering": "education_bachelors",
         "where did he do his engineering": "education_bachelors",
         "engineering education": "education_bachelors",
@@ -139,7 +210,40 @@
         "trcae": "bot_help", "traec": "bot_help", "rtace": "bot_help", "tarce": "bot_help",
         "debug": "bot_help", "debug please": "bot_help", "show debug": "bot_help",
         "dbeug": "bot_help", "deubg": "bot_help", "debgu": "bot_help", "edbug": "bot_help",
-        "/trace": "bot_help", "/debug": "bot_help"
+        "/trace": "bot_help", "/debug": "bot_help",
+        // --- Juniper role queries (prevents headline/TECHNICAL_ANCHOR misrouting) ---
+        "his role at juniper": "experience_juniper",
+        "his role at juniper networks": "experience_juniper",
+        "role at juniper": "experience_juniper",
+        "juniper role": "experience_juniper",
+        "juniper networks role": "experience_juniper",
+        "what did he do at juniper": "experience_juniper",
+        "what did he do at juniper networks": "experience_juniper",
+        "juniper experience": "experience_juniper",
+        // --- LinkedIn / social (prevents identity misrouting) ---
+        "linkedin profile link": "linkedin",
+        "linkedin link": "linkedin",
+        "his linkedin": "linkedin",
+        "linkedin url": "linkedin",
+        "github link": "github",
+        "his github": "github",
+        // --- Location queries (prevents experience_sap misrouting) ---
+        "where is he located": "location",
+        "where is he currently located": "location",
+        "where does he live": "location",
+        "where is he based": "location",
+        "current location": "location",
+        "his location": "location",
+        "where he lives": "location",
+        // --- Availability (prevents experience_summary misrouting) ---
+        "is he available": "headline",
+        "is he available for work": "headline",
+        "is he open to work": "headline",
+        "is he looking for work": "headline",
+        "is he looking for opportunities": "headline",
+        "is he open to opportunities": "headline",
+        "availability": "headline",
+        "his availability": "headline"
     };
 
     const DOMAIN_KEYWORDS = {
@@ -156,67 +260,16 @@
         if (!text) return '';
         let lower = text.toLowerCase().trim();
 
-        // --- Predictive Nuance & Complexity Detection ---
-        // Forces AI synthesis for complex questions even if a deterministic match exists.
-        function isNuancedQuery(rawQuery) {
-            const lRaw = rawQuery.trim().toLowerCase();
-            const words = lRaw.split(/\s+/).length;
-            const nuanceKeywords = /\b(how|why|describe|explain|compare|versus|vs|suitability|opinion|think|fit|believe|tell me more about how|evaluate|pros|cons)\b/i;
-            
-            // 1. Long Questions (Exploratory)
-            if (words > 6 && lRaw.includes('?')) return true;
-            // 2. Nuance Keywords (Reasoning)
-            if (nuanceKeywords.test(lRaw)) return true;
-            // 3. Multi-part sentences
-            if (lRaw.includes(',') || lRaw.includes(' and ') || lRaw.includes(' because ')) return true;
-            
-            return false;
-        }
-
-        // --- Technical Shorthand & Domain Expansion ---
-        const TECH_MAP = {
-            'k8s': 'kubernetes',
-            'tf': 'terraform',
-            'iac': 'infrastructure as code',
-            'ha': 'high availability',
-            'cicd': 'ci cd',
-            'ml': 'machine learning',
-            'genai': 'generative ai'
-        };
-
         // Handle symbolic queries like ?? or ???
-        if (/^[^\w\s]+$/.test(lower)) return "symbolic_query";
+        if (RE_SYMBOLIC.test(lower)) return "symbolic_query";
         if (lower === 'another' || lower === 'another one' || lower === 'next' || lower === 'one more' || lower === 'more') {
             return "re_trigger_match";
-        }
-
-        const DOMAIN_FOLLOWUP_MAP = {
-            'experience': ['Show Skills', 'View Projects', 'Download Resume', 'Tech Stack'],
-            'skills': ['Cloud Projects', 'Certifications', 'Experience', 'Contact Info'],
-            'projects': ['Tech Stack', 'CI/CD details', 'Work History', 'Hire Him'],
-            'identity': ['Experience', 'Skills', 'Projects', 'Contact'],
-            'contact': ['Download Resume', 'LinkedIn', 'GitHub', 'Hire Him'],
-            'certifications': ['Skills', 'Cloud Projects', 'Experience', 'Contact'],
-            'small_talk': ['About Akhilesh', 'Experience', 'Skills', 'Projects'],
-            'analytics': ['Who is he?', 'Main Skills', 'Projects', 'Contact']
-        };
-
-        function generateFollowUpChips(domain, intent, context = {}) {
-            let chips = DOMAIN_FOLLOWUP_MAP[domain] || ['Experience', 'Skills', 'Projects', 'Contact'];
-            
-            // Recruiter Mode Overrides (Focus on conversion)
-            if (context.userMode === 'recruiter') {
-                chips = ['Download Resume', 'Contact Details', 'Hiring Fit', 'Main Skills'];
-            }
-            
-            // Shuffle and pick 4
-            return chips.sort(() => 0.5 - Math.random()).slice(0, 4);
         }
 
         return lower
             .replace(/[^\w\s]/g, '')
             .split(/\s+/)
-            .map(w => TECH_MAP[w] || w) // Expand shorthand
+            .map(w => TECH_MAP[w] || w) // Expand shorthand (uses module-level TECH_MAP)
             .filter(w => !STOP_WORDS.has(w) && w.length > 1)
             .join(' ');
     }
@@ -225,8 +278,15 @@
         if (!text) return '';
         if (typeof text !== 'string') text = String(text);
 
-        let cleaned = text
-            .replace(/[#*`]/g, '')   // Remove Markdown symbols
+        let cleaned = text;
+
+        // Convert **bold** markdown to HTML <b> tags before stripping bare asterisks
+        if (!cleaned.includes('<b>')) {
+            cleaned = cleaned.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        }
+
+        cleaned = cleaned
+            .replace(/[#*`]/g, '')   // Remove remaining Markdown symbols
             .replace(/\s+/g, ' ')    // Normalize whitespace
             .trim();
 
@@ -235,14 +295,9 @@
             cleaned = cleaned.replace(/\/view-asset\/([^\s)]+\.pdf)/g, '<a href="/view-asset/$1" target="_blank" class="chat-link">📄 Open Document</a>');
         }
 
-        // Convert Internal Page Links (Iteration 17)
+        // Convert Internal Page Links
         if (!cleaned.includes('href="/contact-me"')) {
             cleaned = cleaned.replace(/🔗 View Contact Page/g, '<a href="/contact-me" class="chat-link">🔗 View Contact Page</a>');
-        }
-
-        // Convert Markdown Bolding (Iteration 17)
-        if (!cleaned.includes('<b>')) {
-            cleaned = cleaned.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
         }
 
         // Convert LinkedIn URLs (Linkified only if raw)
@@ -257,8 +312,15 @@
     let _lastTrace = null;
 
     function findResponse(query, summary, context = {}) {
-        const raw = query.trim();
+        const raw = (query || '').trim();
         const lRaw = raw.toLowerCase();
+
+        // Guard: empty query
+        if (!raw) {
+            return { answer: "I didn't catch that — could you rephrase your question?", suggestions: ["Who is Akhilesh?", "What are his skills?", "How to contact him?"], follow_up: [], intent: 'small_talk', engine: 'deterministic' };
+        }
+        // Guard: query too long (> 2000 chars — truncate to prevent regex hangs)
+        const safeRaw = raw.length > 2000 ? raw.slice(0, 2000) : raw;
 
         if (lRaw === '/trace') {
             if (!_lastTrace) return { answer: "No trace data available.", suggestions: [], follow_up: [] };
@@ -268,14 +330,14 @@
             };
         }
 
-        const nInput = normalize(raw);
-        console.log(`[HARDENED ENGINE] Query: "${raw}" | Normalized: "${nInput}"`);
+        const nInput = normalize(safeRaw);
+        if (DEBUG) console.log(`[HARDENED ENGINE] Query: "${safeRaw}" | Normalized: "${nInput}"`);
 
         // --- Simultaneous Multi-Intent Discovery ---
         const multiIntents = typeof detectMultiIntent === 'function' ? detectMultiIntent(raw, summary) : null;
         if (multiIntents) {
             context.multiIntents = multiIntents;
-            console.log(`[ENGINE] Multi-Intent Detected: ${multiIntents.map(i => i.intent).join(', ')}`);
+            if (DEBUG) console.log(`[ENGINE] Multi-Intent Detected: ${multiIntents.map(i => i.intent).join(', ')}`);
         }
 
         const trace = {
@@ -298,7 +360,7 @@
         if (!hasCareerKeywords && (PURE_GREETINGS.has(nInput) || PURE_GREETINGS.has(firstWord))) {
             const greetMatch = summary.mappings.find(m => m.intent === 'small_talk');
             if (greetMatch) {
-                console.log(`[ENGINE] Pure Greeting Guard: Routing "${raw}" to small_talk`);
+                if (DEBUG) console.log(`[ENGINE] Pure Greeting Guard: Routing "${raw}" to small_talk`);
                 trace.path = 'GREETING_GUARD';
                 trace.intent = 'small_talk';
                 trace.confidence_bucket = 'HIGH';
@@ -312,7 +374,7 @@
         if (PURE_BYE_WORDS.has(nInput) || PURE_BYE_WORDS.has(firstWord)) {
             const byeMatch = summary.mappings.find(m => m.intent === 'bye');
             if (byeMatch) {
-                console.log(`[ENGINE] Pure Bye Guard: Routing "${raw}" to bye`);
+                if (DEBUG) console.log(`[ENGINE] Pure Bye Guard: Routing "${raw}" to bye`);
                 trace.path = 'BYE_GUARD';
                 trace.intent = 'bye';
                 trace.confidence_bucket = 'HIGH';
@@ -327,7 +389,7 @@
         if (fastPathMatch) {
             const match = summary.mappings.find(m => m.intent === fastPathMatch);
             if (match) {
-                console.log(`[ENGINE] Fast-Path Exact Match: ${fastPathMatch}`);
+                if (DEBUG) console.log(`[ENGINE] Fast-Path Exact Match: ${fastPathMatch}`);
                 trace.intent = fastPathMatch;
                 trace.path = 'FAST_PATH_EXACT';
                 trace.deterministic_score = 1000000;
@@ -346,7 +408,7 @@
         if (nInput === "re_trigger_match" && context.lastIntent) {
             const prevMatch = summary.mappings.find(m => m.intent === context.lastIntent);
             if (prevMatch) {
-                console.log(`[ENGINE] Re-Trigger detected. Repeating: ${context.lastIntent}`);
+                if (DEBUG) console.log(`[ENGINE] Re-Trigger detected. Repeating: ${context.lastIntent}`);
                 const finalResult = resolveResult(prevMatch, context, raw);
                 return { ...finalResult, candidates: [{ intent: prevMatch.intent, domain: prevMatch.domain, content: finalResult.answer, score: 9999 }] };
             }
@@ -356,7 +418,7 @@
         if (FOLLOWUP_TRIGGERS.has(nInput) && context.lastIntent) {
             const prevMatch = summary.mappings.find(m => m.intent === context.lastIntent);
             if (prevMatch) {
-                console.log(`[ENGINE] Contextual Follow-up detected for: ${context.lastIntent}`);
+                if (DEBUG) console.log(`[ENGINE] Contextual Follow-up detected for: ${context.lastIntent}`);
                 trace.path = 'CONTEXTUAL_FOLLOWUP';
                 trace.intent = context.lastIntent;
                 trace.confidence_bucket = 'HIGH';
@@ -384,18 +446,17 @@
         // If we just showed a list, check if user is pointing to a specific year/index
         if (context.lastMultiMatchIndices && context.lastIntent) {
             // Match standalone years (2025) or full dates (2025-09)
-            const yearMatch = raw.match(/\b(20\d{2}(-\d{2})?)\b/);
+            const yearMatch = raw.match(RE_YEAR_MATCH);
             if (yearMatch) {
                 const intentMatch = summary.mappings.find(m => m.intent === context.lastIntent);
                 if (intentMatch && Array.isArray(intentMatch.details)) {
                     const bestIdx = context.lastMultiMatchIndices.find(idx => {
                         const item = intentMatch.details[idx];
-                        const searchable = (typeof item === 'object') ? JSON.stringify(item).toLowerCase() : String(item).toLowerCase();
-                        return searchable.includes(yearMatch[1]);
+                        return containsString(item, yearMatch[1]);
                     });
 
                     if (bestIdx !== undefined) {
-                        console.log(`[ENGINE] Selection Resolver: Matched ${yearMatch[1]} in last list.`);
+                        if (DEBUG) console.log(`[ENGINE] Selection Resolver: Matched ${yearMatch[1]} in last list.`);
                         trace.path = 'SELECTION_RESOLVER';
                         trace.intent = context.lastIntent;
                         trace.confidence_bucket = 'HIGH';
@@ -417,7 +478,7 @@
         if (context.lastIntent === 'why_hire' && isFollowUp) {
             const match = summary.mappings.find(m => m.intent === 'why_hire');
             if (match) {
-                console.log(`[ENGINE] Strict Pinning Intent: why_hire`);
+                if (DEBUG) console.log(`[ENGINE] Strict Pinning Intent: why_hire`);
                 trace.path = 'DETERMINISTIC_PINNED';
                 trace.intent = 'why_hire';
                 trace.confidence_bucket = 'HIGH';
@@ -433,7 +494,7 @@
             if (context.lastIntent) {
                 const match = summary.mappings.find(m => m.intent === context.lastIntent);
                 if (match) {
-                    console.log(`[ENGINE] Pinning Intent: ${context.lastIntent}`);
+                    if (DEBUG) console.log(`[ENGINE] Pinning Intent: ${context.lastIntent}`);
                     trace.path = 'DETERMINISTIC_PINNED';
                     trace.intent = context.lastIntent;
                     trace.confidence_bucket = 'HIGH';
@@ -451,7 +512,7 @@
         for (const [domain, keywords] of Object.entries(DOMAIN_KEYWORDS)) {
             if (keywords.some(k => lRaw.includes(k))) {
                 lockedDomain = domain;
-                console.log(`[ENGINE] Domain Lock: ${lockedDomain}`);
+                if (DEBUG) console.log(`[ENGINE] Domain Lock: ${lockedDomain}`);
                 break;
             }
         }
@@ -491,7 +552,7 @@
                     // Lock domain to 'identity'/certifications and let resolveResult filter the list
                     const match = summary.mappings.find(m => intents.includes(m.intent));
                     if (match) {
-                        console.log(`[ENGINE] Synergy Resolver: Found ${tech} + Certification. Routing to ${match.intent}`);
+                        if (DEBUG) console.log(`[ENGINE] Synergy Resolver: Found ${tech} + Certification. Routing to ${match.intent}`);
                         trace.path = 'SYNERGY_RESOLVER';
                         trace.intent = match.intent;
                         trace.confidence_bucket = 'HIGH';
@@ -514,33 +575,32 @@
                     const entity = summary.entity_registry[title];
                     const intentMatch = summary.mappings.find(m => m.intent === entity.intent);
                     if (intentMatch) {
-                        console.log(`[ENGINE] Pass 0: Entity Match Found! Title: "${title}"`);
+                        if (DEBUG) console.log(`[ENGINE] Pass 0: Entity Match Found! Title: "${title}"`);
                         trace.path = 'ENTITY_MATCH';
                         trace.intent = entity.intent;
                         trace.deterministic_score = 200000;
                         trace.confidence_bucket = 'HIGH';
 
-                        // Handle Duplicate Indices (Iteration 16.7)
+                        // Deduplicate resolved indices before candidate assembly
                         if (entity.indices && entity.indices.length > 0) {
                             let bestIndex = entity.indices[0]; // Default to latest
                             let foundSpecific = false;
-                            const yearMatch = rawLower.match(/\b(20\d{2})\b/);
+                            const yearMatch = rawLower.match(RE_YEAR_MATCH);
 
                             if (entity.indices.length > 1) {
                                 if (yearMatch) {
                                     for (const idx of entity.indices) {
                                         const item = intentMatch.details[idx];
-                                        const searchable = (typeof item === 'object') ? JSON.stringify(item).toLowerCase() : String(item).toLowerCase();
-                                        if (searchable.includes(yearMatch[1])) {
+                                        if (containsString(item, yearMatch[1])) {
                                             bestIndex = idx;
                                             foundSpecific = true;
                                             break;
                                         }
                                     }
                                 } else {
-                                    // NO year specified: Pass all indices for disambiguation (Iteration 16.7)
+                                    // No year filter — pass all matches for downstream disambiguation
                                     context.multiMatchIndices = entity.indices;
-                                    console.log(`[ENGINE] Multi-Match Detected: No year specified. Showing ${entity.indices.length} items.`);
+                                    if (DEBUG) console.log(`[ENGINE] Multi-Match Detected: No year specified. Showing ${entity.indices.length} items.`);
                                 }
                             }
 
@@ -549,7 +609,7 @@
                             }
                         }
 
-                        // Force specific item highlight if it's a list domain (Iteration 16)
+                        // Pin the matched list item as the primary candidate
                         const listIntents = ['awards', 'certifications', 'projects_summary', 'publications_summary', 'experience_juniper', 'experience_sap'];
                         if (listIntents.includes(entity.intent)) {
                             // indices are handled above
@@ -658,7 +718,7 @@
                 if (CERT_OVERRIDE_KEYWORDS.test(lRaw)) {
                     const certMatch = searchSpace.find(m => m.intent === 'certifications');
                     if (certMatch) {
-                        console.log(`[ENGINE] Cert Override: Tech anchor "${anchorMatch.intent}" overridden by cert keyword`);
+                        if (DEBUG) console.log(`[ENGINE] Cert Override: Tech anchor "${anchorMatch.intent}" overridden by cert keyword`);
                         trace.path = 'CERT_OVER_RIDE';
                         trace.intent = 'certifications';
                         trace.deterministic_score = 95000;
@@ -745,7 +805,7 @@
                 }
             });
 
-            // 🔍 PASS 1.5: FUZZY RECOVERY (Cumulative Scoring for Iteration 8)
+            // PASS 1.5: FUZZY RECOVERY — cumulative score across all phrase anchors
             if (score === 0 && inputWords.length <= 3) {
                 inputWords.forEach(iw => {
                     if (iw.length >= 3 && m.high_entropy_keywords) {
@@ -792,7 +852,7 @@
                 }
             }
 
-            // --- TIE-BREAKER: WORK PROJECTS (Iteration 20) ---
+            // TIE-BREAKER: prefer work/project entries when score is tied
             if (m.intent === 'projects_summary' && inputWords.includes('work') && inputWords.includes('project')) {
                 finalScore += 2000;
             }
@@ -822,12 +882,12 @@
         const queryIsNuanced = (lRaw.split(/\s+/).length > 6 || /\b(how|why|compare|vs|opinion|fit|think|describe|explain)\b/.test(lRaw));
 
         if (best && best.matchScore >= STRICT_THRESHOLD && !queryIsNuanced) {
-            console.log(`[ENGINE] High Confidence Deterministic Match: ${best.intent} (${best.matchScore})`);
+            if (DEBUG) console.log(`[ENGINE] High Confidence Deterministic Match: ${best.intent} (${best.matchScore})`);
             finalMatch = best;
             trace.path = 'DETERMINISTIC_STRONG';
             trace.confidence_bucket = 'HIGH';
         } else if (ML_ENABLED && raw.length >= 3) {
-            console.log(`[ENGINE] Low/Mid Confidence (${best?.matchScore || 0}). Triggering ML Fallback...`);
+            if (DEBUG) console.log(`[ENGINE] Low/Mid Confidence (${best?.matchScore || 0}). Triggering ML Fallback...`);
 
             const mlRegistry = summary.mappings.map(m => ({
                 intent: m.intent,
@@ -860,7 +920,7 @@
                     };
                 }
 
-                console.log(`[ENGINE] ML Match Found: ${mlResult.intent} (Score: ${mlResult.score.toFixed(2)})`);
+                if (DEBUG) console.log(`[ENGINE] ML Match Found: ${mlResult.intent} (Score: ${mlResult.score.toFixed(2)})`);
                 finalMatch = summary.mappings.find(m => m.intent === mlResult.intent);
 
                 if (finalMatch) {
@@ -884,7 +944,7 @@
             trace.intent = 'unknown';
             trace.confidence_bucket = 'NONE';
             _lastTrace = trace;
-            console.log(`[ENGINE] No Match Found. Returning Fallback.`);
+            if (DEBUG) console.log(`[ENGINE] No Match Found. Returning Fallback.`);
             logUnknownQuery(lRaw, best?.intent);
             return {
                 answer: "I'm not quite sure I understand that yet. You can ask about Akhilesh's project history, skills, or even for a joke!",
@@ -903,7 +963,7 @@
 
         // Resolve all candidates to their final answers/details
         const resolvedCandidates = candidates.map(c => {
-            // For professional domains, use Depth 2 (Detail View) to give LLM full grounding facts (Iteration 22.1: Anti-Hallucination)
+            // Professional domains receive depth-2 facts to reduce AI hallucination
             const listDomains = ['experience', 'skills', 'projects', 'certifications', 'awards', 'publications', 'recommendations', 'education', 'identity', 'capabilities'];
             const groundingDepth = listDomains.includes(c.domain) ? 2 : 0;
 
@@ -964,7 +1024,7 @@
 
     function enforceThirdPerson(text, intent, domain) {
         if (!text) return '';
-        const skipDomains = ['small_talk', 'entertainment', 'jokes', 'thanks', 'bye', 'facts', 'riddles'];
+        const skipDomains = ['small_talk', 'entertainment', 'jokes', 'thanks', 'bye', 'facts', 'riddles', 'bot_identity', 'bot_help', 'capabilities'];
         if (skipDomains.includes(domain) || skipDomains.includes(intent)) return text;
 
         let processed = text;
@@ -1004,8 +1064,16 @@
             processed = processed.replace(regex, replacement);
         });
 
-        // Final cleanup: Fix double words or possessive artifacts
-        processed = processed.replace(/\b(\w+)\s+\1\b/gi, "$1")
+        // Final cleanup: Fix double words — O(n) scan instead of ReDoS-vulnerable backreference regex
+        const _dedupWords = processed.split(/\s+/);
+        for (let i = _dedupWords.length - 1; i > 0; i--) {
+            if (_dedupWords[i].toLowerCase() === _dedupWords[i - 1].toLowerCase()) {
+                _dedupWords.splice(i, 1);
+            }
+        }
+        processed = _dedupWords.join(' ');
+        // Fix possessive artifacts and verb conjugation
+        processed = processed
             .replace(/\bis His\b/gi, "is his")
             .replace(/\bHis his\b/gi, "His")
             .replace(/\bHe thrive\b/gi, "He thrives")
@@ -1033,7 +1101,7 @@
     function formatObject(item, domain = "") {
         if (!item || typeof item !== 'object') return String(item || "");
 
-        // --- SUMMARY OBJECT FORMATTER (Iteration 16.7) ---
+        // SUMMARY OBJECT FORMATTER
         // Checks for common list/summary keys to format human-friendly
         const summaryKeys = ['total_years_experience', 'companies_worked', 'career_progression', 'core_growth_areas',
             'primary_strengths', 'secondary_strengths', 'core_domains', 'recent_focus_areas', 'core_strengths_recognized'];
@@ -1083,19 +1151,19 @@
         const shouldSynthesize = match && (!PROTECTED_INTENTS.has(match.intent) || isNuanced || queryLength > 5);
 
         if (!context.silent && shouldSynthesize) {
-            console.log(`[ENGINE] 🧠 Intelligence Triggered: Delegating ${match.intent} to AI Synthesis.`);
+            if (DEBUG) console.log(`[ENGINE] 🧠 Intelligence Triggered: Delegating ${match.intent} to AI Synthesis.`);
             context.useLLM = true;
         }
 
         let depth = context.depth || 0;
         const lQuery = query.toLowerCase().trim();
 
-        // --- DOMAIN RESET (Iteration 15) ---
+        // DOMAIN RESET — clear context lock when intent switches domain
         // If we are deep in a domain but found a high-confidence match in A DIFFERENT domain, reset depth.
         if (depth > 0 && match.domain && context.lastDomain && match.domain !== context.lastDomain) {
             const trace = context.trace || {};
             if (trace.deterministic_score >= 800 || trace.path === 'ENTITY_MATCH' || trace.path === 'TECHNICAL_ANCHOR') {
-                console.log(`[ENGINE] Domain Escape Triggered: ${context.lastDomain} -> ${match.domain}. Resetting depth.`);
+                if (DEBUG) console.log(`[ENGINE] Domain Escape Triggered: ${context.lastDomain} -> ${match.domain}. Resetting depth.`);
                 depth = 0;
             }
         }
@@ -1106,7 +1174,7 @@
             if (depth > 1) depth = 1;
         }
 
-        // --- VARIATION SEED (Iteration 18: Response Variety) ---
+        // VARIATION SEED — deterministic rotation to avoid identical replies
         if (match.intent === context.lastIntent) {
             context.variationSeed = (context.variationSeed || 0) + 1;
         } else {
@@ -1116,7 +1184,7 @@
         let finalAnswer = "";
         const variations = Array.isArray(match.answer) ? match.answer : [match.answer];
         
-        // --- RANDOM VARIETY (User Feedback Iteration 26) ---
+        // RANDOM VARIETY — weighted shuffle to surface less-seen responses
         // For Personality/Humor intents, use true randomization instead of sequential cycling
         const RANDOM_VARIETY_INTENTS = new Set(['jokes', 'riddles', 'facts', 'small_talk']);
         let variationIndex;
@@ -1128,7 +1196,7 @@
         
         const baseAnswer = variations[variationIndex];
 
-        // --- SUB-RESOLUTION (Iteration 16: Role/Item Specific Search) ---
+        // SUB-RESOLUTION — narrow to a specific role or item within a domain
         if (match.domain === 'experience' && Array.isArray(match.details)) {
             const roleKeywords = [
                 { key: 'intern', label: 'Intern' },
@@ -1148,7 +1216,7 @@
                         return searchTarget.includes(r.label.toLowerCase());
                     });
                     if (idx !== -1) {
-                        console.log(`[ENGINE] Sub-Resolution: Matched Role "${r.label}"`);
+                        if (DEBUG) console.log(`[ENGINE] Sub-Resolution: Matched Role "${r.label}"`);
                         context.specificItemIndex = idx;
                         break;
                     }
@@ -1156,7 +1224,7 @@
             }
         }
 
-        // --- MULTI-MATCH DISAMBIGUATION (Iteration 16.7) ---
+        // MULTI-MATCH DISAMBIGUATION — resolve when multiple intents score equally
         if (context.multiMatchIndices && Array.isArray(match.details)) {
             const items = context.multiMatchIndices.map(idx => match.details[idx]).filter(Boolean);
             if (items.length > 0) {
@@ -1173,7 +1241,7 @@
             delete context.multiMatchIndices;
         }
 
-        // --- SPECIFIC ITEM OVERRIDE (Iteration 16) ---
+        // SPECIFIC ITEM OVERRIDE — force a single matched item when entity is exact
         if (context.specificItemIndex !== undefined && Array.isArray(match.details)) {
             const item = match.details[context.specificItemIndex];
             finalAnswer = formatObject(item, match.domain);
@@ -1181,14 +1249,13 @@
             delete context.specificItemIndex; // Consume it
         }
 
-        // --- SYNERGY FILTERING BOOTSTRAP (Iteration 16.8) ---
+        // SYNERGY FILTERING BOOTSTRAP — seed cross-domain relevance scoring
         // If query contains a tech keyword and we are in a list domain, force depth 2 to show filtered list
         const listIntents = ['certifications', 'awards', 'projects_summary', 'experience_summary', 'publications_summary'];
-        const techList = ['docker', 'kubernetes', 'helm', 'terraform', 'jenkins', 'aws', 'azure', 'gcp', 'sap', 'java', 'python'];
-        const foundTech = techList.find(t => lQuery.includes(t));
+        const foundTech = TECH_LIST.find(t => lQuery.includes(t));
 
         if (depth === 0 && foundTech && listIntents.includes(match.intent)) {
-            console.log(`[ENGINE] Synergy Filtering Bootstrap: Forcing depth 2 for "${foundTech}" in ${match.intent}`);
+            if (DEBUG) console.log(`[ENGINE] Synergy Filtering Bootstrap: Forcing depth 2 for "${foundTech}" in ${match.intent}`);
             depth = 2;
         }
 
@@ -1220,19 +1287,15 @@
                 finalAnswer = match.deeper_answer || baseAnswer;
             } else if (depth === 2 && match.details) {
                 if (Array.isArray(match.details)) {
-                    // --- SYNERGY FILTERING (Iteration 16.8) ---
+                    // SYNERGY FILTERING — boost candidates that reinforce the active domain
                     // If depth is 2/Detail view, filter the list by query keywords (e.g. "docker")
                     let filteredList = match.details;
-                    const techList = ['docker', 'kubernetes', 'helm', 'terraform', 'jenkins', 'aws', 'azure', 'gcp', 'sap', 'java', 'python'];
-                    const foundTech = techList.find(t => lQuery.includes(t));
+                    const foundTech = TECH_LIST.find(t => lQuery.includes(t));
 
                     if (foundTech) {
-                        const keywordResults = match.details.filter(d => {
-                            const searchable = JSON.stringify(d).toLowerCase();
-                            return searchable.includes(foundTech);
-                        });
+                        const keywordResults = match.details.filter(d => containsString(d, foundTech));
                         if (keywordResults.length > 0) {
-                            console.log(`[ENGINE] Synergy Filtering: Found ${keywordResults.length} items for "${foundTech}"`);
+                            if (DEBUG) console.log(`[ENGINE] Synergy Filtering: Found ${keywordResults.length} items for "${foundTech}"`);
                             filteredList = keywordResults;
                         }
                     }
@@ -1273,7 +1336,7 @@
             variationSeed: (context.variationSeed || 0) + 1
         };
 
-        // --- CANDIDATE EXTRACTION (Iteration 27: Grounding Stabilization) ---
+        // CANDIDATE EXTRACTION — collect grounding facts for AI synthesis
         // Ensure that whenever the AI is triggered, it has the full factual context of the matched intent.
         let candidates = [];
         if (match.details) {
@@ -1316,8 +1379,9 @@
             updatedContext
         };
 
-        // STORE IN CACHE
+        // STORE IN CACHE (evict at 500 entries to prevent unbounded memory growth)
         if (useCache) {
+            if (_responseCache.size >= 500) _responseCache.delete(_responseCache.keys().next().value); // FIFO eviction
             _responseCache.set(cacheKey, {
                 intent: result.intent,
                 domain: result.domain,

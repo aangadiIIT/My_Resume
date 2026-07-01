@@ -1,13 +1,35 @@
-<% 
+<%#
+  Akhilesh Angadi Portfolio — SEO Partial
+
+  Emits all SEO and social-sharing meta tags: canonical URL, Open Graph,
+  Twitter Card, and JSON-LD structured data (Person schema).
+  Included at the top of head.ejs so tags appear before CDN links.
+
+  Data contract (locals expected):
+    - data.profile  — full profile JSON (name, about, photoPath, social_links)
+    - pageTitle     — string used for og:title and twitter:title
+    - pageCanonical — optional path suffix for the canonical URL (default: "")
+
+  Author: Akhilesh Angadi
+%>
+<%
   const profile = (data.profile && data.profile.profile) || {};
-  const seoTitle = (typeof pageTitle !== 'undefined' && pageTitle) ? `${pageTitle} | ${profile.name || 'Akhilesh Angadi'}` : (profile.name || 'Akhilesh Angadi');
+  const baseName = profile.name || 'Akhilesh Angadi';
+  // Only append "| Name" if not already present — prevents "Title | Name | Name" double-branding
+  let seoTitle = (typeof pageTitle !== 'undefined' && pageTitle) ? pageTitle : baseName;
+  if (seoTitle && !seoTitle.includes(baseName)) {
+    seoTitle = `${seoTitle} | ${baseName}`;
+  }
   const seoDesc = profile.about_structured ? profile.about_structured.summary : 'Professional Software Engineer specializing in Cloud, DevOps, and Full Stack Development.';
   const seoKeywords = "Software Engineer, DevOps, Cloud Engineering, Kubernetes, Docker, Node.js, SAP, Portfolio, Akhilesh Angadi";
-  const siteUrl = "https://akhilangadi.com"; 
-  const profileImg = profile.photoPath || "/view-asset/profile/profile.jpg";
+  const siteUrl = "https://akhilangadi.com";
+  const profileImg = `${siteUrl}/view-asset/profile/profile.jpg`;
 %>
 
 <title><%= seoTitle %></title>
+
+<!-- Canonical URL -->
+<link rel="canonical" href="<%= siteUrl + (typeof pageCanonical !== 'undefined' ? pageCanonical : '') %>">
 
 <!-- Standard Meta Tags -->
 <meta name="description" content="<%= seoDesc %>">

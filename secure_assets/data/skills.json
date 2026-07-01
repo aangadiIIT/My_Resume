@@ -207,6 +207,14 @@
         "Prompt Engineering"
       ],
       "total_skills_count": 40
+    },
+    "radar_scores": {
+      "cloud_devops": 92,
+      "backend_development": 76,
+      "system_design_architecture": 85,
+      "frontend_development": 65,
+      "networking": 72,
+      "ai_and_emerging": 60
     }
   }
 }

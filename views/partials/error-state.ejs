@@ -1,0 +1,14 @@
+<%#
+  Standardized error state component.
+  Props: title (string), message (string), retryId (string, optional — JS function name to call on retry)
+%>
+<div class="error-state" role="alert">
+  <div class="error-state__icon"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i></div>
+  <p class="error-state__title"><%= title %></p>
+  <p class="error-state__message"><%= message %></p>
+  <% if (typeof retryId !== 'undefined' && retryId) { %>
+    <button class="btn btn-sm btn-outline-danger mt-2" onclick="<%= retryId %>()" aria-label="Retry">
+      Retry
+    </button>
+  <% } %>
+</div>

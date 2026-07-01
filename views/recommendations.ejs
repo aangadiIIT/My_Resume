@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <style>
+  <style nonce="<%= nonce %>">
     .rec-author-img {
       width: 80px;
       height: 80px;
@@ -29,19 +29,15 @@
 <body>
   <%- include('partials/header') %>
 
-  <div class="container py-5 my-4">
-    <div class="text-center mb-5" data-aos="fade-down">
-      <h1 class="section-title">Professional Recommendations</h1>
-      <p class="lead text-muted max-w-2xl mx-auto">
-        <% if(data.recommendations && data.recommendations.recommendations_summary) { %>
-          Vouched for by <%= data.recommendations.recommendations_summary.total_recommendations %> industry leaders across <%= data.recommendations.recommendations_summary.sources.join(', ') %>.
-        <% } else { %>
-          Testimonials and endorsements from my colleagues and managers.
-        <% } %>
-      </p>
-    </div>
+  <div id="main-content" class="container py-5 my-4">
+    <%- include('partials/page-header', {
+      title: 'Professional Recommendations',
+      subtitle: (data.recommendations && data.recommendations.recommendations_summary)
+        ? 'Vouched for by ' + data.recommendations.recommendations_summary.total_recommendations + ' industry leaders across ' + data.recommendations.recommendations_summary.sources.join(', ') + '.'
+        : 'Testimonials and endorsements from my colleagues and managers.'
+    }) %>
 
-    <% if(data.recommendations && data.recommendations.recommendations) { %>
+    <% if(data.recommendations && data.recommendations.recommendations && data.recommendations.recommendations.length > 0) { %>
       <div class="row g-5">
         <% data.recommendations.recommendations.forEach((rec, index) => { %>
           <div class="col-12" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
@@ -61,8 +57,8 @@
                     <% if(rec.author.additional_info) { %> | <%= rec.author.additional_info %><% } %>
                   </p>
                   <div class="mt-2 text-muted small">
-                    <span class="badge bg-light text-dark border me-2"><i class="fas fa-link me-1"></i> <%= rec.author.relationship %></span>
-                    <span class="badge bg-light text-dark border"><i class="far fa-calendar-alt me-1"></i> <%= rec.date %></span>
+                    <span class="badge border me-2" style="background:var(--shape-1);color:var(--text-secondary);"><i class="fas fa-link me-1"></i> <%= rec.author.relationship %></span>
+                    <span class="badge border" style="background:var(--shape-1);color:var(--text-secondary);"><i class="far fa-calendar-alt me-1"></i> <%= rec.date %></span>
                   </div>
                 </div>
               </div>
@@ -70,8 +66,8 @@
               <div class="mb-4">
                 <div class="position-relative border-start border-4 border-primary-soft ps-4">
                   <i class="fas fa-quote-left text-primary opacity-25 fs-4 mb-3 d-block"></i>
-                  <div class="fst-italic text-muted" style="line-height: 1.8; font-size: 1.1rem; text-align: justify;">
-                    <%- rec.recommendation_raw.replace(/\n\n/g, '</div><div class="mt-3 fst-italic text-muted" style="line-height: 1.8; font-size: 1.1rem; text-align: justify;">') %>
+                  <div class="fst-italic text-muted" style="line-height: 1.8; font-size: 1.1rem; text-align: left;">
+                    <%- rec.recommendation_raw.replace(/\n\n/g, '</div><div class="mt-3 fst-italic text-muted" style="line-height: 1.8; font-size: 1.1rem; text-align: left;">') %>
                   </div>
                 </div>
               </div>
@@ -101,16 +97,11 @@
           </div>
         <% }) %>
       </div>
+    <% } else { %>
+      <%- include('partials/empty-state', { icon: 'fa-quote-left', title: 'No recommendations yet', message: 'Check back soon.' }) %>
     <% } %>
 
-    <!-- Funnel Navigation CTA -->
-    <div class="mt-5 pt-5 border-top text-center" style="border-color: var(--glass-border) !important;" data-aos="fade-up">
-      <p class="text-muted fw-bold text-uppercase tracking-widest mb-2">Next Chapter</p>
-      <h3 class="h2 fw-bolder mb-4">Academic & Research Value</h3>
-      <a href="/publications" class="btn-primary-custom px-5 py-3 fs-5 shadow-sm">
-        View Publications <i class="fas fa-book-open ms-2"></i>
-      </a>
-    </div>
+    <%- include('partials/funnel-cta', { href: '/publications', label: 'View Publications', heading: 'Academic & Research Value' }) %>
 
   </div>
 

@@ -1,0 +1,357 @@
+<%#
+  Akhilesh Angadi Portfolio — JD Match Tool
+
+  Recruiter-facing job description analyser. Accepts a pasted JD, sends it to
+  POST /api/jd-match, and renders a full skills match report with category
+  breakdown, confidence indicator, and actionable insights.
+%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('partials/head') %>
+  <style nonce="<%= nonce %>">
+    /* ── Score Ring ──────────────────────────────────────────────── */
+    .score-ring { position: relative; width: 150px; height: 150px; margin: 0 auto; }
+    .score-ring svg { transform: rotate(-90deg); }
+    .score-ring .ring-bg   { fill: none; stroke: var(--glass-border); stroke-width: 10; }
+    .score-ring .ring-fill { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1); }
+    .score-ring .score-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .score-ring .score-num   { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+    .score-ring .score-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-top: 2px; }
+
+    /* ── Chips ───────────────────────────────────────────────────── */
+    .skill-match-chip { display: inline-block; padding: 4px 11px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; margin: 3px 2px; }
+    .chip-expert      { background: rgba(96,165,250,0.14); border: 1px solid rgba(96,165,250,0.4); color: #60a5fa; }
+    .chip-advanced    { background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.35); color: #34d399; }
+    .chip-intermediate{ background: var(--shape-1); border: 1px solid var(--glass-border); color: var(--text-secondary); }
+    .chip-missing     { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.35); color: #fbbf24; }
+
+    /* ── Category bars ───────────────────────────────────────────── */
+    .cat-bar-track { height: 7px; border-radius: 4px; background: var(--glass-border); overflow: hidden; flex: 1; }
+    .cat-bar-fill  { height: 100%; border-radius: 4px; transition: width 1s ease; }
+
+    /* ── Misc ────────────────────────────────────────────────────── */
+    #jdResults    { display: none; }
+    #analyzeBtn:disabled { opacity: 0.65; cursor: not-allowed; }
+    .match-bar    { height: 6px; border-radius: 3px; background: var(--glass-border); overflow: hidden; }
+    .match-bar-fill { height: 100%; border-radius: 3px; transition: width 1.2s ease; }
+    .confidence-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+    .insight-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--glass-border); }
+    .insight-item:last-child { border-bottom: none; }
+  </style>
+</head>
+
+<body>
+  <%- include('partials/header') %>
+
+  <div id="main-content" class="container py-5 my-4 min-vh-75">
+
+    <!-- Page Header -->
+    <div class="text-center mb-5" data-aos="fade-down">
+      <h1 class="section-title">JD Match Analyzer</h1>
+      <p class="lead text-muted max-w-2xl mx-auto">
+        Paste any job description and see a detailed skills breakdown — by category, proficiency level,
+        and how well Akhilesh's 55+ skills align to the role.
+      </p>
+    </div>
+
+    <div class="row g-5 justify-content-center">
+      <div class="col-lg-9">
+
+        <!-- Input Card -->
+        <div class="glass-card p-4 p-lg-5 mb-4" data-aos="fade-up">
+          <label class="form-label fw-bold text-muted small text-uppercase mb-2" style="letter-spacing:.06em;">
+            <i class="fas fa-paste me-2 text-accent"></i>Job Description
+          </label>
+          <textarea id="jdInput" class="form-control glass-input" rows="9"
+            placeholder="Paste the full job description here — the more detail, the more accurate the analysis..."
+            aria-label="Paste job description here"
+            style="font-size: 0.9rem; resize: vertical;"></textarea>
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+              <span id="charCount" class="text-muted small">0 words</span>
+              <span id="jdQualityHint" class="text-muted small ms-2"></span>
+            </div>
+            <button id="analyzeBtn" class="btn-primary-custom px-5" aria-label="Analyze JD match">
+              <i class="fas fa-bolt me-2"></i>Analyze Match
+            </button>
+          </div>
+        </div>
+
+        <!-- Results (hidden until analysis) -->
+        <div id="jdResults" aria-live="polite" aria-label="JD match analysis results">
+
+          <!-- ── SCORE OVERVIEW ─────────────────────────────────── -->
+          <div class="glass-card p-4 p-lg-5 mb-4" data-aos="fade-up">
+            <div class="row align-items-center g-4">
+
+              <!-- Score ring -->
+              <div class="col-md-4 text-center">
+                <div class="score-ring mb-2">
+                  <svg width="150" height="150" viewBox="0 0 150 150">
+                    <circle class="ring-bg" cx="75" cy="75" r="62"></circle>
+                    <circle id="ringFill" class="ring-fill" cx="75" cy="75" r="62"
+                      stroke-dasharray="390" stroke-dashoffset="390"></circle>
+                  </svg>
+                  <div class="score-text">
+                    <span id="scoreNum" class="score-num text-gradient">0%</span>
+                    <span class="score-label">Skill Coverage</span>
+                  </div>
+                </div>
+                <span id="confidenceBadge" class="confidence-badge"></span>
+              </div>
+
+              <!-- Summary -->
+              <div class="col-md-8">
+                <h3 id="scoreHeadline" class="h3 fw-bolder mb-1">Analyzing...</h3>
+                <p id="scoreSummary" class="text-muted mb-3 small"></p>
+
+                <div class="match-bar mb-2">
+                  <div id="matchBarFill" class="match-bar-fill" style="width:0%;background:var(--accent-gradient);"></div>
+                </div>
+                <div class="d-flex justify-content-between mb-4">
+                  <span class="small text-muted" id="matchCountLabel"></span>
+                  <span class="small text-muted" id="missingCountLabel"></span>
+                </div>
+
+                <!-- Quick insight -->
+                <div id="quickInsight" class="p-3 rounded-3" style="background:var(--shape-1);border:1px solid var(--glass-border);"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── CATEGORY BREAKDOWN ─────────────────────────────── -->
+          <div class="glass-card p-4 mb-4" data-aos="fade-up">
+            <h3 class="h5 fw-bold mb-1">
+              <i class="fas fa-layer-group me-2 text-accent"></i>Skills by Category
+            </h3>
+            <p class="text-muted small mb-4">How well each skill domain aligns with the job description.</p>
+            <div id="categoryBreakdown"></div>
+          </div>
+
+          <!-- ── MATCHED SKILLS ─────────────────────────────────── -->
+          <div class="glass-card p-4 mb-4" id="matchedSection" data-aos="fade-up">
+            <h3 class="h5 fw-bold mb-1">
+              <i class="fas fa-check-circle me-2 text-success"></i>Skills Found in JD
+            </h3>
+            <p class="text-muted small mb-3">Akhilesh's skills that are explicitly mentioned in the job description.</p>
+            <div id="matchedChips"></div>
+          </div>
+
+          <!-- ── STRONG SKILLS NOT IN JD ───────────────────────── -->
+          <div class="glass-card p-4 mb-4" id="missingSection" data-aos="fade-up">
+            <h3 class="h5 fw-bold mb-1">
+              <i class="fas fa-star me-2" style="color:#fbbf24;"></i>Strong Skills Not Mentioned
+            </h3>
+            <p class="text-muted small mb-3">
+              Expert &amp; Advanced-level skills Akhilesh has that this JD doesn't explicitly list —
+              but are often assumed or highly relevant to the role.
+            </p>
+            <div id="missingChips"></div>
+          </div>
+
+          <!-- ── CTA ───────────────────────────────────────────── -->
+          <div class="glass-card p-4 p-lg-5 text-center" data-aos="zoom-in">
+            <p class="fw-bold fs-5 mb-2">Looking good? Let's connect.</p>
+            <p class="text-muted small mb-4">Download the resume or reach out directly.</p>
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+              <a href="/for-recruiters" class="btn-primary-custom text-decoration-none">
+                <i class="fas fa-user-tie me-2"></i>Full Recruiter Brief
+              </a>
+              <a href="/view-asset/documents/Resume.pdf" download="Resume.pdf" class="btn-outline-custom text-decoration-none">
+                <i class="fas fa-file-pdf me-2"></i>Download Resume
+              </a>
+              <a href="/contact-me" class="btn btn-link fw-bold text-decoration-none" style="color:var(--accent-hover);">
+                <i class="fas fa-envelope me-1"></i>Contact
+              </a>
+            </div>
+          </div>
+
+        </div><!-- /jdResults -->
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+
+  <script nonce="<%= nonce %>">
+    const jdInput  = document.getElementById('jdInput');
+    const charCount = document.getElementById('charCount');
+
+    // Word count + quality hint
+    jdInput.addEventListener('input', () => {
+      const words = jdInput.value.trim().split(/\s+/).filter(Boolean).length;
+      charCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
+      const hint = document.getElementById('jdQualityHint');
+      if (words < 50)       hint.textContent = '· Add more detail for better accuracy';
+      else if (words < 150) hint.textContent = '· Good — analysis will be reliable';
+      else                  hint.textContent = '· Great — high-confidence analysis';
+      hint.style.color = words < 50 ? 'var(--text-tertiary)' : words < 150 ? '#fbbf24' : '#34d399';
+    });
+
+    document.getElementById('analyzeBtn')?.addEventListener('click', analyzeJD);
+
+    const levelClass = {
+      expert:       'chip-expert',
+      advanced:     'chip-advanced',
+      intermediate: 'chip-intermediate',
+      beginner:     'chip-intermediate',
+    };
+
+    function renderChips(container, skills, isMissing) {
+      container.innerHTML = '';
+      if (!skills || skills.length === 0) {
+        container.innerHTML = '<span class="text-muted small fst-italic">None found.</span>';
+        return;
+      }
+      skills.forEach(({ skill, level }) => {
+        const span = document.createElement('span');
+        span.className = `skill-match-chip ${isMissing ? 'chip-missing' : (levelClass[level] || 'chip-intermediate')}`;
+        span.textContent = skill;
+        container.appendChild(span);
+      });
+    }
+
+    function getScoreColor(score) {
+      if (score >= 40) return '#34d399';
+      if (score >= 22) return '#fbbf24';
+      return '#f87171';
+    }
+
+    function getHeadline(score, wordCount) {
+      if (score >= 40) return '🎯 Strong Match';
+      if (score >= 22) return '👍 Good Alignment';
+      if (score >= 12) return '🔄 Relevant Overlap';
+      return '🔍 Low Direct Match';
+    }
+
+    function getInsight(data) {
+      const { score, matched_count, total_skills, confidence, word_count, category_breakdown } = data;
+      const topCat  = category_breakdown.find(c => c.matched > 0);
+      const topName = topCat ? topCat.label : 'core skills';
+      if (score >= 40) {
+        return `<strong style="color:#34d399">Excellent alignment.</strong> <span class="text-muted">${matched_count} of his skills map directly to this JD. Strongest coverage in <em>${topName}</em>.</span>`;
+      }
+      if (score >= 22) {
+        return `<strong style="color:#fbbf24">Solid fit.</strong> <span class="text-muted">${matched_count} skills matched. Note: many senior JDs omit assumed competencies — Akhilesh's unmentioned skills are often prerequisites.</span>`;
+      }
+      if (word_count < 80) {
+        return `<strong style="color:var(--text-secondary)">Short JD detected.</strong> <span class="text-muted">Try pasting the full job description (requirements, responsibilities, tech stack) for a more accurate score.</span>`;
+      }
+      return `<strong style="color:var(--text-secondary)">Niche role.</strong> <span class="text-muted">This JD may use different terminology. Check the "Strong Skills Not Mentioned" section — many may still apply.</span>`;
+    }
+
+    function renderCategoryBreakdown(categories) {
+      const container = document.getElementById('categoryBreakdown');
+      container.innerHTML = '';
+      categories.forEach(cat => {
+        const barColor = cat.score >= 50 ? '#34d399' : cat.score >= 25 ? '#fbbf24' : '#f87171';
+        const row = document.createElement('div');
+        row.className = 'mb-3';
+        row.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="small fw-semibold" style="color:var(--text-primary);min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cat.label}</span>
+            <span class="small fw-bold ms-3 flex-shrink-0" style="color:${barColor};">${cat.matched}/${cat.total}</span>
+          </div>
+          <div class="cat-bar-track">
+            <div class="cat-bar-fill" style="width:0%;background:${barColor};" data-target="${cat.score}"></div>
+          </div>
+          ${cat.matched_skills.length > 0 ? `<div class="mt-1">${cat.matched_skills.map(s => `<span class="skill-match-chip chip-intermediate" style="font-size:0.7rem;padding:2px 7px;">${s}</span>`).join('')}</div>` : ''}
+        `;
+        container.appendChild(row);
+      });
+
+      // Animate bars after DOM paint
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          container.querySelectorAll('.cat-bar-fill').forEach(bar => {
+            bar.style.width = bar.dataset.target + '%';
+          });
+        });
+      });
+    }
+
+    async function analyzeJD() {
+      const jdText = jdInput.value.trim();
+      if (jdText.length < 20) { jdInput.focus(); return; }
+
+      const btn = document.getElementById('analyzeBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+
+      try {
+        const resp = await fetch('/api/jd-match', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jd_text: jdText }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || 'Analysis failed');
+
+        // Show results
+        const resultsEl = document.getElementById('jdResults');
+        resultsEl.style.display = 'block';
+        resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Score ring
+        const circumference = 390;
+        const offset  = circumference - (data.score / 100) * circumference;
+        const color   = getScoreColor(data.score);
+        const ring    = document.getElementById('ringFill');
+        ring.style.stroke = color;
+        setTimeout(() => { ring.style.strokeDashoffset = offset; }, 120);
+
+        // Score text
+        document.getElementById('scoreNum').textContent = `${data.score}%`;
+        document.getElementById('scoreNum').style.color = color;
+        document.getElementById('scoreHeadline').textContent = getHeadline(data.score, data.word_count);
+
+        // Summary
+        document.getElementById('scoreSummary').textContent =
+          `${data.matched_count} of ${data.total_skills} skills explicitly found in JD · ${data.word_count} words analysed`;
+
+        // Match bar
+        document.getElementById('matchBarFill').style.width  = `${data.score}%`;
+        document.getElementById('matchBarFill').style.background = color;
+        document.getElementById('matchCountLabel').textContent   = `✓ ${data.matched_count} matched`;
+        document.getElementById('missingCountLabel').textContent = `${data.all_missing_count} not mentioned`;
+
+        // Confidence badge
+        const confEl = document.getElementById('confidenceBadge');
+        const confMap = {
+          high:   { label: 'High confidence', bg: 'rgba(52,211,153,0.15)', border: 'rgba(52,211,153,0.4)', color: '#34d399' },
+          medium: { label: 'Medium confidence', bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.4)', color: '#fbbf24' },
+          low:    { label: 'Low confidence — add more detail', bg: 'rgba(248,113,113,0.1)', border: 'rgba(248,113,113,0.35)', color: '#f87171' },
+        };
+        const conf = confMap[data.confidence] || confMap.medium;
+        confEl.style.cssText = `background:${conf.bg};border:1px solid ${conf.border};color:${conf.color};`;
+        confEl.innerHTML = `<i class="fas fa-circle-info me-1" style="font-size:0.65rem;"></i>${conf.label}`;
+
+        // Quick insight
+        document.getElementById('quickInsight').innerHTML = getInsight(data);
+
+        // Category breakdown
+        if (data.category_breakdown) renderCategoryBreakdown(data.category_breakdown);
+
+        // Chips
+        renderChips(document.getElementById('matchedChips'), data.matched, false);
+        renderChips(document.getElementById('missingChips'), data.notable_missing, true);
+
+        // Hide missing section if empty
+        document.getElementById('missingSection').style.display =
+          (data.notable_missing && data.notable_missing.length > 0) ? '' : 'none';
+
+      } catch (err) {
+        if (typeof Toast !== 'undefined') {
+          Toast.show({ message: 'Analysis failed: ' + err.message, type: 'error' });
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-bolt me-2"></i>Analyze Match';
+      }
+    }
+  </script>
+</body>
+
+</html>

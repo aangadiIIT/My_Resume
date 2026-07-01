@@ -1,3 +1,25 @@
+/**
+ * Akhilesh Angadi Portfolio — Master QA Orchestrator
+ *
+ * Chains the Sanity Sweep and Playwright UI tests, aggregates their JSON reports,
+ * and prints a single executive summary with intelligence fidelity metrics.
+ *
+ * Responsibilities:
+ *   1. Run test:unit (pure function unit tests — chatbot-engine, online-ai-service)
+ *   2. Run test:sanity (routes + intents + API contracts)
+ *   3. Run test:ui:headless (Playwright real-browser checks)
+ *   4. Read sanity_report.json and detailed_audit_report.json
+ *   5. Emit pass/fail verdict with engine mix breakdown
+ *
+ * Dependencies:
+ *   - tests/sanity.js        — sanity sweep (spawned as child process)
+ *   - playwright.config.js   — Playwright configuration
+ *
+ * Usage:
+ *   npm test
+ *
+ * Author: Akhilesh Angadi
+ */
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -8,6 +30,7 @@ async function runMasterTest() {
     console.log("---------------------------------------------------------");
 
     const suites = [
+        { name: "Unit Tests", cmd: "npm run test:unit" },
         { name: "Sanity Sweep", cmd: "npm run test:sanity" },
         { name: "Playwright UI Health", cmd: "npm run test:ui:headless" }
     ];

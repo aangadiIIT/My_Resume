@@ -44,10 +44,20 @@ jobs:
           npm run build --if-present
 
       - name: Create .env for Deployment
-        run: echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
+        run: |
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}"                         >> .env
+          echo "NODE_ENV=production"                                                  >> .env
+          echo "GOOGLE_FORM_URL=${{ secrets.GOOGLE_FORM_URL }}"                       >> .env
+          echo "GOOGLE_FORM_ENTRY_NAME=${{ secrets.GOOGLE_FORM_ENTRY_NAME }}"         >> .env
+          echo "GOOGLE_FORM_ENTRY_EMAIL=${{ secrets.GOOGLE_FORM_ENTRY_EMAIL }}"       >> .env
+          echo "GOOGLE_FORM_ENTRY_SUBJECT=${{ secrets.GOOGLE_FORM_ENTRY_SUBJECT }}"   >> .env
+          echo "GOOGLE_FORM_ENTRY_RATING=${{ secrets.GOOGLE_FORM_ENTRY_RATING }}"     >> .env
+          echo "GOOGLE_FORM_ENTRY_MESSAGE=${{ secrets.GOOGLE_FORM_ENTRY_MESSAGE }}"   >> .env
+          # ADMIN_API_KEY intentionally omitted — setting it blocks the metrics widget
+          # (browsers don't send custom auth headers on plain fetch requests)
 
       - name: Zip artifact for deployment
-        run: zip -r release.zip . -x "models/*" "test-results/*" ".git/*" "playwright-report/*" ".gemini/*"
+        run: zip -r release.zip . -x "models/*" "test-results/*" ".git/*" "playwright-report/*" ".gemini/*" ".env.example"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4

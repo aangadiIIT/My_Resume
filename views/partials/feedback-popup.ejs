@@ -1,16 +1,18 @@
-<div class="feedback-popup glass-card" id="feedbackPopup">
-  <button class="close-btn" id="closeFeedbackBtn">&times;</button>
+<div class="feedback-popup glass-card" id="feedbackPopup" role="dialog" aria-modal="true" aria-labelledby="feedbackPopupTitle">
+  <button class="close-btn" id="closeFeedbackBtn" aria-label="Close feedback popup">&times;</button>
   <div class="feedback-content" id="feedbackFormStep">
     <div class="feedback-icon">🚀</div>
-    <h5 class="text-adaptive-feedback">How am I doing?</h5>
+    <h5 class="text-adaptive-feedback" id="feedbackPopupTitle">How am I doing?</h5>
     <p class="small text-muted-adaptive-feedback mb-3">Your feedback helps me improve!</p>
-    
+
     <form id="inlineFeedbackForm">
       <div class="mb-2">
-        <input type="text" name="name" class="form-control form-control-sm glass-input" placeholder="Your Name" required>
+        <label for="feedbackName" class="visually-hidden">Your Name</label>
+        <input type="text" id="feedbackName" name="name" class="form-control form-control-sm glass-input" placeholder="Your Name" aria-label="Your name" required>
       </div>
       <div class="mb-2">
-        <input type="email" name="email" class="form-control form-control-sm glass-input" placeholder="Your Email" required>
+        <label for="feedbackEmail" class="visually-hidden">Your Email</label>
+        <input type="email" id="feedbackEmail" name="email" class="form-control form-control-sm glass-input" placeholder="Your Email" aria-label="Your email address" required>
       </div>
       <div class="mb-2">
         <label class="form-label x-small text-muted-adaptive-feedback mb-1">Rating</label>
@@ -44,7 +46,7 @@
   </div>
 </div>
 
-<style>
+<style nonce="<%= nonce %>">
 .feedback-popup { position: fixed; bottom: 25px; left: -400px; width: 330px; z-index: 3000; padding: 1.5rem; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: var(--glass-bg) !important; border: 1px solid var(--glass-border) !important; box-shadow: var(--glass-shadow); }
 .feedback-popup.active { left: 25px; }
 .rating-btn { border-width: 2px; font-weight: bold; background: transparent; transition: all 0.2s; }
@@ -54,7 +56,7 @@
 .feedback-popup .close-btn { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5rem; color: var(--text-tertiary); cursor: pointer; }
 </style>
 
-<script>
+<script nonce="<%= nonce %>">
   function closeFeedbackPopup() { document.getElementById('feedbackPopup').classList.remove('active'); }
 
   const maybeLaterBtn = document.getElementById('maybeLaterBtn');
@@ -78,24 +80,50 @@
     finalCloseBtn.addEventListener('click', closeFeedbackPopup);
   }
 
+  let feedbackPopupIsSubmitting = false;
   const feedbackFormItem = document.getElementById('inlineFeedbackForm');
   if (feedbackFormItem) {
     feedbackFormItem.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (feedbackPopupIsSubmitting) return;
+      feedbackPopupIsSubmitting = true;
+      const submitBtn = feedbackFormItem.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Sending...';
+
       const formData = new FormData(feedbackFormItem);
       const data = {};
       formData.forEach((value, key) => data[key] = value);
 
       try {
-        await fetch('/contact-me', {
+        const response = await fetch('/contact-me', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
-        document.getElementById('feedbackFormStep').classList.add('d-none');
-        document.getElementById('feedbackSuccessStep').classList.remove('d-none');
-        localStorage.setItem('feedbackSubmitted', 'true');
-      } catch (err) { console.error("Feedback failed", err); }
+        const result = await response.json();
+        if (response.ok && result.success) {
+          document.getElementById('feedbackFormStep').classList.add('d-none');
+          document.getElementById('feedbackSuccessStep').classList.remove('d-none');
+          localStorage.setItem('feedbackSubmitted', 'true');
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+          if (typeof Toast !== 'undefined') {
+            Toast.show({ message: 'Submission failed. Please try again.', type: 'error' });
+          }
+        }
+      } catch (err) {
+        console.error('Feedback failed', err);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        if (typeof Toast !== 'undefined') {
+          Toast.show({ message: 'Network error. Please check your connection.', type: 'error' });
+        }
+      } finally {
+        feedbackPopupIsSubmitting = false;
+      }
     });
   }
 

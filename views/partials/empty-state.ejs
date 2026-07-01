@@ -1,0 +1,15 @@
+<%#
+  Standardized empty state component.
+  Props: icon (fa class, optional), title (string), message (string),
+         action { href, label } (optional)
+%>
+<div class="empty-state" role="status" aria-label="<%= title %>">
+  <% if (typeof icon !== 'undefined' && icon) { %>
+    <div class="empty-state__icon"><i class="fas <%= icon %>" aria-hidden="true"></i></div>
+  <% } %>
+  <p class="empty-state__title"><%= title %></p>
+  <p class="empty-state__message"><%= message %></p>
+  <% if (typeof action !== 'undefined' && action) { %>
+    <a href="<%= action.href %>" class="btn btn-sm btn-outline-primary mt-2"><%= action.label %></a>
+  <% } %>
+</div>

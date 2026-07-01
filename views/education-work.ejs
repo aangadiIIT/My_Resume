@@ -6,19 +6,15 @@
 <body>
   <%- include('partials/header') %>
 
-  <div class="container py-5 my-4">
-    <div class="text-center mb-5" data-aos="fade-down">
-      <h1 class="section-title">Work Experience</h1>
-      <p class="lead text-muted max-w-2xl mx-auto">
-        <% if(data.experience && data.experience.experience_summary) { %>
-          Tracing my journey across <%= data.experience.experience_summary.companies_worked.join(', ') %>, leading to over <%= data.experience.experience_summary.total_years_experience %> of building robust systems.
-        <% } else { %>
-          Tracing my professional journey.
-        <% } %>
-      </p>
-    </div>
+  <div id="main-content" class="container py-5 my-4">
+    <%- include('partials/page-header', {
+      title: 'Work Experience',
+      subtitle: (data.experience && data.experience.experience_summary)
+        ? 'Tracing my journey across ' + data.experience.experience_summary.companies_worked.join(', ') + ', leading to over ' + data.experience.experience_summary.total_years_experience + ' of building robust systems.'
+        : 'Tracing my professional journey.'
+    }) %>
 
-    <% if(data.experience && data.experience.experience) { %>
+    <% if(data.experience && data.experience.experience && data.experience.experience.length > 0) { %>
       <div class="vertical-timeline" data-aos="fade-up">
         <% data.experience.experience.forEach((job, index) => { %>
           <div class="timeline-item" data-aos="fade-up" data-aos-delay="<%= Math.min(index * 100, 500) %>">
@@ -79,19 +75,38 @@
           </div>
         <% }) %>
       </div>
+    <% } else { %>
+      <%- include('partials/empty-state', { icon: 'fa-briefcase', title: 'No experience data available', message: 'Check back soon.' }) %>
     <% } %>
 
-    <!-- Funnel Navigation CTA -->
-    <div class="mt-5 pt-5 border-top text-center" style="border-color: var(--glass-border) !important;" data-aos="fade-up">
-      <p class="text-muted fw-bold text-uppercase tracking-widest mb-2">Next Chapter</p>
-      <h3 class="h2 fw-bolder mb-4">See What I've Built</h3>
-      <a href="/my-works" class="btn-primary-custom px-5 py-3 fs-5 shadow-sm">
-        View My Projects <i class="fas fa-arrow-right ms-2"></i>
-      </a>
-    </div>
+    <%- include('partials/funnel-cta', { href: '/my-works', label: 'View My Projects', heading: 'Next Chapter' }) %>
 
   </div>
 
   <%- include('partials/footer') %>
+
+  <script nonce="<%= nonce %>">
+        const items = Array.from(list.children);
+        if (items.length <= 3) return;
+
+        items.slice(3).forEach(item => item.classList.add('timeline-hidden'));
+
+        const btn = document.createElement('button');
+        btn.className = 'btn-timeline-expand';
+        btn.textContent = `Show ${items.length - 3} more`;
+        btn.addEventListener('click', () => {
+          const hidden = list.querySelectorAll('.timeline-hidden');
+          if (hidden.length > 0) {
+            hidden.forEach(el => el.classList.remove('timeline-hidden'));
+            btn.textContent = 'Show less';
+          } else {
+            items.slice(3).forEach(item => item.classList.add('timeline-hidden'));
+            btn.textContent = `Show ${items.length - 3} more`;
+          }
+        });
+        list.parentElement.appendChild(btn);
+      });
+    });
+  </script>
 </body>
 </html>

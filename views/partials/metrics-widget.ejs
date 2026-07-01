@@ -1,3 +1,15 @@
+<%#
+  Akhilesh Angadi Portfolio — System Metrics Widget
+
+  Real-time health dashboard overlay showing CPU load, RAM usage, server uptime,
+  live visitor count, and anonymised visitor log. Auto-refreshes every 10 seconds
+  via polling /api/site-metrics. Rendered in the bottom-right corner on all pages.
+
+  Data contract (locals expected):
+    - nonce  — CSP nonce for the inline <script> block
+
+  Author: Akhilesh Angadi
+%>
 <div class="metrics-widget" id="metricsWidget">
   <div class="metrics-toggle" id="metricsToggle" title="Live Site Health">
     <div class="metrics-pulse"></div>
@@ -19,13 +31,13 @@
 
       <div class="gauge-container mb-3">
         <div class="gauge-item">
-          <canvas id="cpuGauge" style="height: 60px;"></canvas>
+          <canvas id="cpuGauge" style="width:100%;height:60px;"></canvas>
           <div class="gauge-label text-adaptive">
             CPU <span id="cpuTrend"></span>
           </div>
         </div>
         <div class="gauge-item">
-          <canvas id="ramGauge" style="height: 60px;"></canvas>
+          <canvas id="ramGauge" style="width:100%;height:60px;"></canvas>
           <div class="gauge-label text-adaptive">RAM</div>
         </div>
       </div>
@@ -61,7 +73,7 @@
   </div>
 </div>
 
-<style>
+<style nonce="<%= nonce %>">
   .metrics-scroller {
     max-height: calc(100vh - 150px);
     overflow-y: auto;
@@ -75,7 +87,7 @@
   #healthStatusDot { transition: background 0.3s, box-shadow 0.3s; }
 </style>
 
-<script>
+<script nonce="<%= nonce %>">
 let cpuChart, ramChart;
 let cpuVal = 0, ramVal = 0;
 let prevCpu = null;
@@ -84,6 +96,10 @@ let interval = null;
 // ---------------- GAUGE INIT ---------------- //
 
 function initGauges() {
+  if (typeof Chart === 'undefined') {
+    console.warn('[Metrics] Chart.js not loaded — gauges unavailable');
+    return;
+  }
   const config = (label, color, getVal) => ({
     type: 'doughnut',
     data: {
@@ -177,25 +193,25 @@ async function fetchMetrics(updateList = false) {
     updateGauge(cpuChart, cpuVal);
     updateGauge(ramChart, ramVal);
 
-    // 🔥 HEALTH
+    // Health status update
     updateHealth(cpuVal, ramVal);
 
-    // 🔥 TREND
+    // CPU trend indicator
     const trend = getTrend(cpuVal, prevCpu);
     prevCpu = cpuVal;
     const trendEl = document.getElementById('cpuTrend');
     if (trendEl) trendEl.innerText = trend;
 
-    // 🔥 LIVE USERS
-    const users = Object.keys(data.visitors || {}).length;
+    // Active user count
+    const users = (data.visitors || []).length;
     const usersEl = document.getElementById('liveUsers');
     if (usersEl) usersEl.innerText = `👁 ${users} active users`;
 
-    // 🔥 TOTAL VISITS
+    // Total visit counter
     const totalEl = document.getElementById('totalVisitsValue');
-    if (totalEl && data.totalVisits) totalEl.innerText = data.totalVisits;
+    if (totalEl && (data.visits || data.totalVisits)) totalEl.innerText = data.visits || data.totalVisits;
 
-    // 🔥 UPTIME
+    // Server uptime
     const u = data.uptime || 0;
     const h = Math.floor(u / 3600);
     const m = Math.floor((u % 3600) / 60);
@@ -203,35 +219,41 @@ async function fetchMetrics(updateList = false) {
     const uptimeEl = document.getElementById('uptimeValue');
     if (uptimeEl) uptimeEl.innerText = `${h}h ${m}m ${s}s`;
 
-    // 🔥 VISITOR LIST
+    // Visitor list
     const vList = document.getElementById('visitorList');
     if (vList && (updateList || !vList.classList.contains('loaded'))) {
       vList.innerHTML = '';
-      const visitors = Object.entries(data.visitors || {})
-        .sort((a, b) => new Date(b[1].lastSeen) - new Date(a[1].lastSeen));
+      const visitors = (data.visitors || [])
+        .sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen));
 
       if (visitors.length === 0) {
         vList.innerHTML = '<p class="text-muted-adaptive text-center py-3 small">No recent visitors</p>';
       } else {
-        visitors.forEach(([ip, info]) => {
-          vList.innerHTML += `
-            <div class="visitor-card mb-2 p-2 rounded" style="background: rgba(128,128,128,0.05); border: 1px solid rgba(128,128,128,0.1);">
-              <div class="visitor-ip x-small text-adaptive d-flex justify-content-between">
-                <span>${ip === '::1' ? 'Local' : ip} ${info.name ? '<span class="badge bg-primary ms-1">' + info.name + '</span>' : ''}</span>
-              </div>
-              <div class="visitor-meta d-flex justify-content-between x-small text-muted-adaptive mt-1">
-                <span>Hits: ${info.hits}</span>
-                <span>${new Date(info.lastSeen).toLocaleTimeString()}</span>
-              </div>
+        const escHtml = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        visitors.forEach((info) => {
+          const card = document.createElement('div');
+          card.className = 'visitor-card mb-2 p-2 rounded';
+          card.style.cssText = 'background:rgba(128,128,128,0.05);border:1px solid rgba(128,128,128,0.1)';
+          card.innerHTML = `
+            <div class="visitor-ip x-small text-adaptive d-flex justify-content-between">
+              <span>${escHtml(info.maskedIp)} ${info.name ? '<span class="badge bg-primary ms-1">' + escHtml(info.name) + '</span>' : ''}</span>
+            </div>
+            <div class="visitor-meta d-flex justify-content-between x-small text-muted-adaptive mt-1">
+              <span>Hits: ${escHtml(info.hits)}</span>
+              <span>${new Date(info.lastSeen).toLocaleTimeString()}</span>
             </div>
           `;
+          vList.appendChild(card);
         });
         vList.classList.add('loaded');
       }
     }
 
   } catch (e) {
-    console.error("Metrics fetch failed:", e);
+    console.error('Metrics fetch failed:', e);
+    if (typeof Toast !== 'undefined') {
+      Toast.show({ message: 'Could not load site metrics.', type: 'warning', duration: 3000 });
+    }
   }
 }
 
@@ -257,13 +279,18 @@ function toggleDashboard() {
 
   if (isOpening) {
     if (typeof UIManager !== 'undefined') UIManager.closeAll('metrics');
+    // Toggle active FIRST so canvas has layout dimensions when Chart.js measures it
+    dashboard.classList.add('active');
     if (!cpuChart) initGauges();
+    // Force a resize after the panel is visible to ensure correct canvas sizing
+    if (cpuChart) cpuChart.resize();
+    if (ramChart) ramChart.resize();
     fetchMetrics();
     startAutoRefresh();
   } else {
     stopAutoRefresh();
+    dashboard.classList.remove('active');
   }
-  dashboard.classList.toggle('active');
 }
 
 // ---------------- EVENTS ---------------- //

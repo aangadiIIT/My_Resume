@@ -6,19 +6,15 @@
 <body>
   <%- include('partials/header') %>
 
-  <div class="container py-5 my-4">
-    <div class="text-center mb-5" data-aos="fade-down">
-      <h1 class="section-title">Certifications</h1>
-      <p class="lead text-muted max-w-2xl mx-auto">
-        <% if(data.certifications && data.certifications.certifications_summary) { %>
-          A continuous learning journey featuring <%= data.certifications.certifications_summary.total_certifications %> certifications, primarily focused on <%= data.certifications.certifications_summary.dominant_category %>.
-        <% } else { %>
-          My professional certifications and continuous learning milestones.
-        <% } %>
-      </p>
-    </div>
+  <div id="main-content" class="container py-5 my-4">
+    <%- include('partials/page-header', {
+      title: 'Certifications',
+      subtitle: (data.certifications && data.certifications.certifications_summary)
+        ? 'A continuous learning journey featuring ' + data.certifications.certifications_summary.total_certifications + ' certifications, primarily focused on ' + data.certifications.certifications_summary.dominant_category + '.'
+        : 'Professional certifications and continuous learning milestones.'
+    }) %>
 
-    <% if(data.certifications && data.certifications.certifications) { %>
+    <% if(data.certifications && data.certifications.certifications && data.certifications.certifications.length > 0) { %>
       <div class="row g-4">
         <% data.certifications.certifications.forEach((cert, index) => { %>
           <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="<%= Math.min(index * 50, 400) %>">
@@ -58,16 +54,11 @@
           </div>
         <% }) %>
       </div>
+    <% } else { %>
+      <%- include('partials/empty-state', { icon: 'fa-certificate', title: 'No certifications yet', message: 'Check back for updates.' }) %>
     <% } %>
 
-    <!-- Funnel Navigation CTA -->
-    <div class="mt-5 pt-5 border-top text-center" style="border-color: var(--glass-border) !important;" data-aos="fade-up">
-      <p class="text-muted fw-bold text-uppercase tracking-widest mb-2">Next Chapter</p>
-      <h3 class="h2 fw-bolder mb-4">Recognitions & Achievements</h3>
-      <a href="/honors-awards" class="btn-primary-custom px-5 py-3 fs-5 shadow-sm">
-        View Honors & Awards <i class="fas fa-trophy ms-2"></i>
-      </a>
-    </div>
+    <%- include('partials/funnel-cta', { href: '/honors-awards', label: 'View Honors & Awards', heading: 'Recognitions & Achievements' }) %>
 
   </div>
 

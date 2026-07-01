@@ -1,135 +1,292 @@
 # Akhilesh Angadi | Cloud & DevOps Portfolio
 
-![Build Status](https://github.com/akhilangadi/My_Resume/actions/workflows/main_akhilesh-resume.yml/badge.svg)
+![Build Status](https://github.com/aangadiIIT/My_Resume/actions/workflows/main_akhilesh-resume.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Azure](https://img.shields.io/badge/deployment-Azure%20F1-0089D6?logo=microsoft-azure)
-![AI Intelligence](https://img.shields.io/badge/intelligence-Llama%203.2%20+%20Gemini-8A2BE2?logo=meta)
-![Fidelity](https://img.shields.io/badge/fidelity-100%25-green?logo=checkmarx)
-
-**Cloud & DevOps Engineer | SAP ECS | Kubernetes, Docker, CI/CD | MS in ITM (IIT Chicago)**
-
----
-
-## 📋 Table of Contents
-1. [🌟 Project Identity](#-project-identity)
-2. [🧠 Architecture: The Hybrid Hub](#-architecture-the-hybrid-hub)
-3. [🖥️ Site Directory](#%EF%B8%8F-site-directory)
-4. [🚀 Core Features](#-core-features)
-5. [🛠️ Technical Stack](#%EF%B8%8F-technical-stack)
-6. [⚙️ Local Development](#%EF%B8%8F-local-development)
-7. [🧪 QA & Quality Seals](#-qa--quality-seals)
-8. [🚢 Deployment & CI/CD](#-deployment--cicd)
-9. [🤝 Connect with Me](#-connect-with-me)
+![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen?logo=node.js)
+![AI Stack](https://img.shields.io/badge/AI-Gemini%207--model%20stack%20%2B%20Llama%203.2%201B-8A2BE2?logo=google)
+![Express](https://img.shields.io/badge/express-5.x-000000?logo=express)
+![Tests](https://img.shields.io/badge/tests-192%20passing-brightgreen)
 
 ---
 
-## 🌟 Project Identity
-This platform is a **Self-Contained Intelligence Hub** engineered for the **Azure Free Tier (F1)**. It is designed to demonstrate high-fidelity system design by bridging deterministic career data with high-performance AI synthesis. The goal is to provide recruiters with an instantaneous, accurate, and interactive window into my professional journey.
+## Overview
+
+A production-grade Node.js/Express portfolio that serves as both a career showcase and a technical demonstration. The application implements a three-tier AI chat pipeline — deterministic matching, a seven-model Gemini cloud stack with per-model circuit breakers, and an offline Llama 3.2 1B ONNX fallback — to answer recruiter questions with zero hallucination on factual data. The app ships a full test suite (192 assertions across four runners), a JD-match scoring tool, a PWA service worker, and a clean modular architecture with thin `app.js` wiring (~55 lines) delegating to `config/`, `middleware/`, `routes/`, and `services/`.
+
+**Live:** [akhilesh-resume.azurewebsites.net](https://akhilesh-resume.azurewebsites.net)
 
 ---
 
-## 🧠 Architecture: The Hybrid Hub
-The system utilizes a sophisticated three-tier intelligence architecture to ensure 100% factual accuracy while maintaining human-like warmth:
+## Architecture — 3-Tier AI Pipeline
 
-### 1️⃣ Tier 1: The Deterministic Guard (The Shield)
-- **Deterministic-First Matching**: Uses character trigrams and weighted anchors to resolve queries with <1ms latency.
-- **Zero-Tolerance Phrase Shield**: Hardcoded exact-path routing for career facts (e.g., "What was your role at SAP?").
-- **Anti-Hallucination Design**: Bypasses LLM reasoning for core factual claims.
-
-### 2️⃣ Tier 2: Offline Intelligence (Private & Fast)
-- **Engine**: **Llama 3.2 1B Instruct (4-bit ONNX)** via `Transformers.js`.
-- **Privacy**: Runs fully in-browser/in-process on the Azure CPU—no external API calls for T2 queries.
-- **Grounding**: Responses are strictly grounded in an automated technical registry generated from raw JSON data.
-
-### 3️⃣ Tier 3: Cloud Synthesis (Hybrid Fallback)
-- **Engine**: **Gemini 2.0 / 3.1 Flash-Lite** (via Secure Secret Injection).
-- **Purpose**: Specialized in complex narrative synthesis, multi-turn disambiguation, and career cross-referencing.
-- **Rotation**: Model-agnostic fallback ensures availability even under free-tier quota constraints.
-
----
-
-## 🖥️ Site Directory
-The portfolio is meticulously organized into specialized data-driven views:
-
-| Section | Route | Purpose | Features |
-| :--- | :--- | :--- | :--- |
-| **Home** | `/` | Entry Hub | Profile headline, quick summary, and global AI Chatbot. |
-| **About** | `/personal-details` | Narrative | Career philosophy, biography, and personal mission statement. |
-| **Experience** | `/education-work` | Professional | Career roadmap (SAP, Juniper) with roles & impact. |
-| **Skills** | `/my-skills` | Technical | Interactive Charts (Radar/Bar) with proficiency tracking. |
-| **Projects** | `/my-works` | Innovation | Deep-dives into IoT, Automation, and CI/CD projects. |
-| **Education** | `/education` | Academic | MS from IIT Chicago and BE from SDMCET Dharwad. |
-| **Certs** | `/certifications` | Credibility | CKA, Cloud, and Professional Certifications. |
-| **Awards** | `/honors-awards` | Recognition | Patents, SAP Appreciations, and Juniper Spot Awards. |
-| **Research** | `/publications` | Thought | Published papers in Networking and Distributed Systems. |
-| **Testimonials**| `/recommendations` | Social | Recommendations from managers at Juniper and Microsoft. |
-| **Contact** | `/contact-me`| Engagement | Direct connectivity with secure inbound proxy relay. |
-
----
-
-## 🚀 Core Features
-- **✨ Intelligent Grounding**: Automated harvester (`update-summary.js`) that converts raw JSON datasets into LLM-ready context snapshots.
-- **📈 Intelligence Dashboard**: Real-time metrics tracking bot accuracy, engine mix (Deterministic vs AI), and persona integrity.
-- **🛡️ Persona Lockdown**: Multi-layered filters enforcing a consistent 3rd-person professional narrative.
-- **⚡ AI Warmup Lifecycle**: Automated build-time weight optimization for the Llama core to prevent production cold-starts.
-- **🎨 Glassmorphic UI**: High-fidelity vanilla CSS design with interactive radar charts and mobile-responsive layouts.
-- **🛎️ Recruiter FAB**: Dynamic interaction triggers for high-value audit queries and recruiter-specific workflows.
+```
+User query
+    │
+    ▼
+┌─────────────────────────────────────────────────────────┐
+│  Tier 1 — Deterministic Guard                           │
+│  Trigram + weighted-anchor matching, <1ms               │
+│  Zero-tolerance exact-path routing for career facts     │
+│  → Returns immediately if match confidence is high      │
+└────────────────────────┬────────────────────────────────┘
+                         │ (no match)
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│  Tier 2 — Gemini Cloud  (services/ai/online.js)         │
+│  7-model registry, tried in priority order:             │
+│    1. gemini-3.5-flash      (v1beta, paid)              │
+│    2. gemini-3.1-flash-lite (v1beta, paid)              │
+│    3. gemini-2.5-flash-lite (v1beta, free)              │
+│    4. gemini-2.5-flash      (v1beta, free)              │
+│    5. gemini-2.5-pro        (v1beta, free)              │
+│    6. gemini-2.0-flash-lite (v1,     free)              │
+│    7. gemini-2.0-flash      (v1,     free)              │
+│  Per-model circuit breakers (429/503/error cooldowns)   │
+│  LRU dedup cache (5 000 entries, 30s TTL)               │
+│  Startup discovery via live /v1beta/models API call     │
+└────────────────────────┬────────────────────────────────┘
+                         │ (all models in cooldown)
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│  Tier 3 — Llama 3.2 1B Offline  (services/ai/offline)  │
+│  4-bit ONNX via @huggingface/transformers               │
+│  No external API call; grounded in JSON resume data     │
+└─────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 🛠️ Technical Stack
-- **Backend & Logic**: Node.js, Express.js, EJS Templating
-- **Intelligence Core**: `Transformers.js` (Llama 3.2 1B) & `Google Generative AI` (Gemini)
-- **Data Engine**: Data-driven JSON architecture for 1-to-1 grounding accuracy.
-- **Frontend Design**: Vanilla CSS (Glassmorphism), Chart.js (Interactive Metrics)
-- **Quality Assurance**: `Playwright` (End-to-End), `Master Audit Suite` (Intelligence)
-- **DevOps**: GitHub Actions (CI/CD), Azure App Service (F1 Hosting)
+## Project Structure
+
+```
+My_Resume/
+├── app.js                          # Thin wiring (~55 lines)
+├── bin/www                         # HTTP server bootstrap
+├── package.json
+│
+├── config/
+│   └── index.js                    # All constants: TTLs, rate limits, form IDs
+│
+├── middleware/
+│   ├── analytics.js                # Visitor tracking, res.locals injection
+│   ├── rate-limits.js              # Per-endpoint express-rate-limit instances
+│   └── security.js                 # Helmet (nonce CSP), compression, static serve
+│
+├── routes/
+│   ├── assets.js                   # /view-asset/:category/:file (path-traversal-safe)
+│   ├── chat.js                     # POST /chat  (SSE streaming)
+│   ├── contact.js                  # POST /contact-me
+│   ├── jd-match.js                 # POST /api/jd-match
+│   ├── metrics.js                  # GET /api/site-metrics, GET /api/model-status
+│   └── pages.js                    # All EJS page renders
+│
+├── services/
+│   ├── ai/
+│   │   ├── gemini-cache.js         # LRU dedup cache (5 000 entries)
+│   │   ├── gemini-model-registry.js # 7-model stack + circuit breakers
+│   │   ├── offline.js              # Llama 3.2 1B ONNX tier
+│   │   ├── online.js               # Gemini cloud tier
+│   │   ├── persona-scrubber.js     # Shared persona-enforcement filter
+│   │   └── pipeline.js             # Orchestrates all three tiers
+│   ├── form-submit.js              # Google Forms proxy
+│   ├── jd-analyzer.js              # JD skill-match scoring
+│   ├── llm-context.js              # Converts JSON data → LLM context snapshot
+│   ├── resume-data.js              # JSON loader with 5-min LRU cache
+│   └── stats-store.js              # In-process stats with 5s batch flush
+│
+├── utils/
+│   └── validators.js               # Input validation helpers
+│
+├── scripts/
+│   ├── update-summary.js           # Runs on `npm start`; writes summary.json
+│   └── warmup-ai.js                # Downloads + optimizes ONNX weights
+│
+├── tests/
+│   ├── unit-engine.js              # 73 unit tests (engine logic)
+│   ├── sanity.js                   # 63 HTTP/supertest assertions
+│   ├── chatbot-response-test.js    # 28 chatbot response tests
+│   ├── ui-sanity.spec.js           # 28 Playwright end-to-end tests
+│   ├── master-test.js              # Integration smoke suite
+│   ├── core-bot-audit.js           # 400-query fidelity audit
+│   └── regression.spec.js          # Playwright regression suite
+│
+├── views/                          # EJS templates
+│   └── partials/                   # Shared components
+│
+├── public/
+│   ├── scripts/                    # Client JS (chatbot-engine, command-palette, etc.)
+│   ├── stylesheets/                # CSS (style, chatbot, components, toast)
+│   ├── sw.js                       # Service worker (PWA offline caching)
+│   ├── robots.txt
+│   └── sitemap.xml
+│
+└── secure_assets/
+    └── data/                       # profile.json, skills.json (authoritative resume data)
+```
 
 ---
 
-## ⚙️ Local Development
+## Site Directory
 
-### 1. Installation
+| Page | Route | Description |
+|---|---|---|
+| Home | `/` | Entry hub with profile headline and AI chatbot |
+| About | `/personal-details` | Biography, career philosophy, mission statement |
+| Experience | `/experience` | Professional timeline (SAP ECS, Juniper) |
+| Skills | `/my-skills` | Interactive radar/bar charts with proficiency tracking |
+| Projects | `/my-works` | IoT, automation, and CI/CD project deep-dives |
+| Education | `/education` | MS IIT Chicago, BE SDMCET Dharwad |
+| Certifications | `/certifications` | CKA, cloud, and professional certs with PDF viewer |
+| Awards | `/honors-awards` | Patents, SAP appreciations, Juniper Spot Awards |
+| Publications | `/publications` | Research papers in networking and distributed systems |
+| Recommendations | `/recommendations` | Manager testimonials (Juniper, Microsoft) |
+| Contact | `/contact-me` | Secure Google Forms inbound proxy relay |
+| For Recruiters | `/for-recruiters` | One-page hiring manager summary with direct CTAs |
+| JD Match | `/jd-match` | Paste a job description, get instant skill match score |
+
+---
+
+## Technical Stack
+
+| Category | Technology | Notes |
+|---|---|---|
+| Runtime | Node.js >= 18 | ESM/CJS mixed |
+| Framework | Express 5 | Thin `app.js`; all logic in modules |
+| Templating | EJS 6 | Full partial system; view cache enabled |
+| AI — Cloud | `@google/generative-ai` | 7-model Gemini stack, circuit breakers, LRU cache |
+| AI — Offline | `@huggingface/transformers`, `onnxruntime-node` | Llama 3.2 1B, 4-bit ONNX |
+| Security | `helmet` 8, `express-rate-limit` 8 | Nonce CSP, HTTPS redirect, rate limits |
+| Compression | `compression` | Gzip on all responses |
+| Logging | `morgan` | Dev format, skips socket.io noise |
+| Frontend | Vanilla CSS, Chart.js | Glassmorphic design, no framework |
+| PWA | Service worker (`public/sw.js`) | Offline caching, install-to-home-screen |
+| Testing | `supertest`, `jsdom`, `@playwright/test` | 192 assertions total |
+| CI/CD | GitHub Actions | Deploy to Azure App Service on push to main |
+
+---
+
+## Local Development
+
+### Prerequisites
+
+- Node.js >= 18
+- A Gemini API key (free tier works; the registry will discover which models are accessible)
+
+### Setup
+
 ```bash
+# 1. Install dependencies
 npm install
-```
 
-### 2. Configure Environment
-Add `GEMINI_API_KEY` to your local `.env` file for Hybrid fallback.
+# 2. Create .env in the project root
+echo "GEMINI_API_KEY=your_key_here" > .env
 
-### 3. Warm up the AI Model
-Triggers the download of the 4-bit ONNX weights to the `models/` directory:
-```bash
+# 3. Download and optimize Llama ONNX weights (~400 MB, written to models/)
 npm run warmup
-```
 
-### 4. Run Development Server
-```bash
+# 4. Start the server (also regenerates summary.json on every start)
 npm start
+# → http://localhost:3000
 ```
 
 ---
 
-## 🧪 QA & Quality Seals
+## Environment Variables
 
-- **Master Test Suite**: `npm test` - Validates route health and master intent mapping.
-- **High-Fidelity Audit**: `npm run test:audit` - Executes a **400-query stress test**.
-  - **Status**: ✅ **100.00% Fidelity** (Verified 2026-04-10).
-- **Sanity Sweep**: `npm run test:sanity` - Browser-level validation for mobile responsiveness and UI state sync.
-
----
-
-## 🚢 Deployment & CI/CD
-1. **Validation**: Test failures on the master branch prevent deployment.
-2. **Secret Injection**: Keys are securely injected during the GitHub Actions build cycle.
-3. **Model Pre-Caching**: Weights are bundled during build to ensure "Zero-Second" cold starts on Azure.
+| Variable | Required | Description |
+|---|---|---|
+| `GEMINI_API_KEY` | Yes (for Tier 2) | Google AI Studio API key; omit to run offline-only |
+| `ADMIN_API_KEY` | Optional | If set, requires `x-admin-key: <value>` on `/api/site-metrics` and `/api/model-status`. **Do not set** if you want the System Health widget to work — browsers can't send custom auth headers on plain `fetch()` calls. |
+| `GOOGLE_FORM_URL` | Optional | Contact form submission URL; defaults to hardcoded fallback |
+| `NODE_ENV` | Optional | Set to `production` to enable HTTPS redirect and view cache |
 
 ---
 
-## 🤝 Connect with Me
-- **LinkedIn**: [linkedin.com/in/akhilesh-angadi](https://linkedin.com/in/akhilesh-angadi)
-- **GitHub**: [github.com/akhileshangadi](https://github.com/akhileshangadi)
-- **Portfolio**: [akhilesh-resume.azurewebsites.net](https://akhilesh-resume.azurewebsites.net)
+## Test Suite
+
+| Command | Runner | Count | Coverage |
+|---|---|---|---|
+| `npm run test:unit` | Node (unit-engine.js) | 73 | Engine logic: trigram matching, intent routing, persona scrubber |
+| `npm run test:sanity` | Node + supertest (sanity.js) | 63 | HTTP routes, response shapes, rate limit headers |
+| `npm run test:chatbot` | Node (chatbot-response-test.js) | 28 | Chatbot response quality and grounding accuracy |
+| `npm run test:ui:headless` | Playwright (ui-sanity.spec.js) | 28 | End-to-end browser: page loads, chatbot UI, command palette |
+| `npm test` | Node (master-test.js) | — | Integration smoke test; gates CI/CD deployment |
+| `npm run test:audit` | Node (core-bot-audit.js) | 400 | Full fidelity stress test against intent map |
 
 ---
-© 2026 Akhilesh Angadi. Engineered with high-fidelity intelligence.
+
+## API Endpoints
+
+| Method | Path | Rate Limit | Description |
+|---|---|---|---|
+| `POST` | `/api/chat/llm` | 20 req/min | SSE streaming chat; runs the 3-tier AI pipeline |
+| `POST` | `/contact-me` | 5 req/min | Google Forms proxy; validates and forwards contact submissions |
+| `POST` | `/api/jd-match` | 10 req/min | Scores a pasted job description against the resume skill set |
+| `GET` | `/api/site-metrics` | 30 req/min | Returns uptime, visit counts, CPU/RAM usage (optional admin key gate) |
+| `GET` | `/api/model-status` | 30 req/min | Returns live Gemini model registry state and circuit breaker status |
+| `GET` | `/view-asset/:category/:file` | — | Secure proxy for PDF/image assets; path traversal protected |
+
+---
+
+## Security
+
+- **CSP with per-request nonces** — `script-src` enforces nonces via Helmet; `style-src` allows `unsafe-inline` for inline styles only
+- **SRI hashes** on all external CDN resources (Chart.js, fonts)
+- **HTTPS redirect** — `x-forwarded-proto` check enforced in production; no plaintext HTTP served
+- **Path traversal protection** — `/view-asset/` route validates and normalizes paths before serving files from `secure_assets/`
+- **Prompt injection mitigation** — user input is passed as `contents`, never injected into `systemInstruction`
+- **Rate limiting** — per-endpoint limits (chat: 20/min, metrics: 30/min, contact: 5/min, jd-match: 10/min); loopback IPs skipped for local dev
+- **IP spoofing resistance** — rate limiter keys on `req.socket.remoteAddress` (actual TCP connection), not `req.ip`
+- **No secrets in source** — `.env` is gitignored; `secure_assets/data/` contains only resume content (no credentials)
+
+---
+
+## AI Pipeline — Detail
+
+### Tier 1: Deterministic Guard
+
+Character trigrams and weighted keyword anchors resolve high-confidence queries in under 1 ms. Exact-path routing is hardcoded for career facts (employer names, dates, project outcomes) so those answers never touch an LLM. This is the anti-hallucination layer.
+
+### Tier 2: Gemini Cloud
+
+`services/ai/gemini-model-registry.js` maintains a seven-model stack, discovered live against the API key at startup via `discoverModels()`. Each model has an independent circuit breaker:
+
+- `429` with `RetryInfo` in the error body → cooldown = `retryDelay` seconds from the proto (min 10s, up to 1h for daily quota violations)
+- `429` without details → 60s cooldown
+- `503` (overload) → 15s cooldown
+- Other errors → 10s cooldown
+
+`getActiveStack()` always returns at least one model; if all are in cooldown it picks the one with the shortest remaining wait. `gemini-cache.js` deduplicates identical queries within a 30-second window (LRU, 5 000 entries) to avoid redundant API calls.
+
+### Tier 3: Llama 3.2 1B Offline
+
+`@huggingface/transformers` runs a 4-bit quantized ONNX model in-process on the server CPU. Activated only when all Gemini models are unavailable. Grounded strictly in the JSON resume data snapshot generated by `scripts/update-summary.js`.
+
+---
+
+## Deployment
+
+### Current: Azure App Service (F1 Free Tier)
+
+GitHub Actions workflow (`.github/workflows/main_akhilesh-resume.yml`) deploys on every push to `main`. ONNX model weights are excluded from the deployment package to stay within the 1 GB artifact limit; a warmup step runs in the Actions build job to pre-cache weights in the Azure VFS.
+
+
+### Recommended Migration: Railway
+
+Railway offers persistent disk, no cold-start penalty, and free-tier Node.js hosting without the Azure VFS complexities that caused the recent 409 deployment conflicts. Migration steps:
+
+1. Add a `railway.toml` with `startCommand = "npm start"`
+2. Set `GEMINI_API_KEY` and `NODE_ENV=production` in the Railway dashboard
+3. Point the custom domain and update the live badge URL in this README
+
+---
+
+## Connect
+
+- **LinkedIn:** [linkedin.com/in/akhilesh-angadi](https://linkedin.com/in/akhilesh-angadi)
+- **GitHub:** [github.com/aangadiIIT](https://github.com/aangadiIIT)
+- **Portfolio:** [akhilesh-resume.azurewebsites.net](https://akhilesh-resume.azurewebsites.net)
+
+---
+
+© 2026 Akhilesh Angadi

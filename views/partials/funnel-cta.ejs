@@ -1,0 +1,12 @@
+<%#
+  Reusable "Next Chapter" funnel CTA.
+  Props: href (string), label (string), heading (string, optional)
+%>
+<div class="funnel-cta" data-aos="fade-up">
+  <% if (typeof heading !== 'undefined' && heading) { %>
+    <p class="funnel-cta__heading"><%= heading %></p>
+  <% } %>
+  <a href="<%= href %>" class="btn-primary-custom px-5 py-3 fs-5 shadow-sm text-decoration-none" aria-label="<%= label %>">
+    <%= label %> <i class="fas fa-arrow-right ms-2" aria-hidden="true"></i>
+  </a>
+</div>

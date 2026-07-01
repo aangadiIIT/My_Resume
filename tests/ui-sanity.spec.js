@@ -25,26 +25,28 @@ test.describe('Premium UI Features Sweep', () => {
     const toggle = page.locator('#theme-toggle');
     const html = page.locator('html');
 
-    // Initial State (Default Light)
-    await expect(html).not.toHaveAttribute('data-theme', 'dark');
-
-    // Toggle to Dark
-    await toggle.click();
+    // Initial State — default is dark (set in head.ejs theme-flash script)
     await expect(html).toHaveAttribute('data-theme', 'dark');
 
-    // Toggle back to Light
+    // Toggle to Light
     await toggle.click();
     await expect(html).not.toHaveAttribute('data-theme', 'dark');
+
+    // Toggle back to Dark
+    await toggle.click();
+    await expect(html).toHaveAttribute('data-theme', 'dark');
   });
 
   test('Command Palette: Global Ctrl+K Trigger', async ({ page }) => {
     // Simulate Ctrl+K (Cmd+K)
     await page.keyboard.press('Control+k');
-    
+
     const palette = page.locator('#cmdPaletteBackdrop');
     const input = page.locator('#cmdInput');
-    
+
     await expect(palette).toHaveClass(/active/);
+    // Input focus uses a 50ms setTimeout internally — wait for it
+    await page.waitForTimeout(200);
     await expect(input).toBeFocused();
 
     // Close with Escape
@@ -62,9 +64,11 @@ test.describe('Premium UI Features Sweep', () => {
     await chatToggle.click({ force: true });
     await expect(chatWindow).toHaveClass(/active/);
 
-    // 2. Open Metrics (Should close Chatbot)
+    // 2. Open Metrics (UIManager closes Chatbot first, then toggles Metrics)
     await metricsToggle.click({ force: true });
-    await expect(metricsDashboard).toHaveClass(/active/);
+    // Allow time for UIManager.closeAll + CSS transition
+    await page.waitForTimeout(500);
+    await expect(metricsDashboard).toHaveClass(/active/, { timeout: 3000 });
     await expect(chatWindow).not.toHaveClass(/active/);
 
     // 3. Close with Escape
@@ -125,22 +129,58 @@ test.describe('Premium UI Features Sweep', () => {
   test('Mobile Responsiveness: Hamburger Navigation', async ({ page }) => {
     // 1. Set viewport to mobile size BEFORE navigation for native rendering
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/', { waitUntil: 'networkidle' }); 
-    
+    await page.goto('/', { waitUntil: 'networkidle' });
+
     const toggler = page.locator('.navbar-toggler');
     const navCollapse = page.locator('#navbarNav');
 
     await expect(toggler).toBeVisible();
-    
+
     // 2. Trigger click via evaluate to ensure event listener is reached directly
     await page.evaluate(() => {
       const btn = document.querySelector('.navbar-toggler');
       if (btn) btn.click();
     });
-    
+
     // 3. Robust wait for Bootstrap transition to 'show'
     await expect(navCollapse).toHaveClass(/show/, { timeout: 10000 });
     await expect(navCollapse).toBeVisible();
+  });
+
+  test('Responsive 320px: no horizontal scroll on homepage', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 2);
+  });
+
+  test('Responsive 2560px: container width is capped below full viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 2560, height: 1440 });
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    const containerWidth = await page.evaluate(() => {
+      const el = document.querySelector('.container');
+      return el ? el.getBoundingClientRect().width : 2560;
+    });
+    expect(containerWidth).toBeLessThan(2000);
+  });
+
+  test('CSP header is present on all routes', async ({ page }) => {
+    const routes = ['/', '/experience', '/my-skills', '/for-recruiters', '/jd-match'];
+    for (const route of routes) {
+      const response = await page.goto(route);
+      const csp = response.headers()['content-security-policy'];
+      expect(csp, `CSP missing on ${route}`).toBeTruthy();
+      expect(csp).toContain('script-src');
+      // script-src must NOT use unsafe-inline — nonce-based for scripts
+      const scriptSrc = csp.split(';').find(d => d.trim().startsWith('script-src')) || '';
+      expect(scriptSrc, `unsafe-inline found in script-src on ${route}`).not.toContain("'unsafe-inline'");
+      // style-src must allow inline styles (needed for style="" attributes throughout the app)
+      const styleSrc = csp.split(';').find(d => d.trim().startsWith('style-src')) || '';
+      expect(styleSrc, `style-src missing on ${route}`).toBeTruthy();
+    }
   });
 
 });

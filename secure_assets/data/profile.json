@@ -89,6 +89,11 @@
       "Automation",
       "High Availability",
       "Infrastructure"
-    ]
+    ],
+    "availability": {
+      "status": "open",
+      "label": "Open to Opportunities",
+      "available_from": "Immediately"
+    }
   }
 }

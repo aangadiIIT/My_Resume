@@ -6,7 +6,7 @@
 <body>
   <%- include('partials/header') %>
 
-  <div class="container py-5 my-4">
+  <div id="main-content" class="container py-5 my-4">
     <div class="text-center mb-5" data-aos="fade-down">
       <h1 class="section-title">Technical Expertise</h1>
       <p class="lead text-muted max-w-2xl mx-auto">
@@ -138,7 +138,7 @@
   
   <!-- Chart.js and Radar Script -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
+  <script nonce="<%= nonce %>">
     document.addEventListener('DOMContentLoaded', () => {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const textColor = isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)';

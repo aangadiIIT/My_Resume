@@ -1,3 +1,23 @@
+/**
+ * Akhilesh Angadi Portfolio — Global Stylesheet
+ *
+ * Core visual design system: CSS custom properties for light/dark theming,
+ * typography, layout, interactive components, and responsive utilities.
+ *
+ * Sections:
+ *   - CSS Custom Properties (light + dark theme tokens)
+ *   - Base reset and typography
+ *   - Navbar and dropdown
+ *   - Glassmorphism cards and buttons
+ *   - Animated background shapes
+ *   - Timeline and experience layout
+ *   - Project cards and accordion
+ *   - Scroll progress bar
+ *   - Timeline expand/collapse controls
+ *   - Print styles
+ *
+ * Author: Akhilesh Angadi
+ */
 :root {
   /* Light Theme - Soft, clean, modern */
   --bg-primary: #f3f6f9;
@@ -72,6 +92,8 @@ body {
   overflow-x: hidden;
   transition: background-color var(--transition-normal), color var(--transition-normal);
   position: relative;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -118,7 +140,7 @@ a:hover {
 }
 
 .section-title {
-  font-size: 2.5rem;
+  font-size: clamp(1.6rem, 5vw, 2.5rem);
   margin-bottom: 2.5rem;
   position: relative;
   display: inline-block;
@@ -184,6 +206,16 @@ a:hover {
   0% { transform: translate(0, 0) scale(1); }
   50% { transform: translate(50px, -50px) scale(1.1); }
   100% { transform: translate(-30px, 40px) scale(0.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-shape { animation: none; }
+}
+
+@media (max-width: 768px) {
+  .shape-1 { width: 250px; height: 250px; }
+  .shape-2 { width: 280px; height: 280px; }
+  .shape-3 { width: 180px; height: 180px; }
 }
 
 /* Navbar */
@@ -908,68 +940,65 @@ a:hover {
   transition: width 0.1s ease-out;
 }
 
-/* === TERMINAL SIMULATOR === */
-.terminal-window {
-  background: #0d1117;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.1);
-  overflow: hidden;
-  font-family: 'Fira Code', 'Roboto Mono', monospace;
-}
-.terminal-header {
-  background: #161b22;
-  padding: 10px 15px;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.terminal-controls {
-  display: flex;
-  gap: 8px;
-  margin-right: 20px;
-}
-.control {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-.control.close { background: #ff5f56; }
-.control.minimize { background: #ffbd2e; }
-.control.maximize { background: #27c93f; }
-.terminal-title {
+/* === TIMELINE EXPAND/COLLAPSE === */
+.timeline-hidden { display: none; }
+
+.btn-timeline-expand {
+  background: none;
+  border: 1px solid var(--accent-primary);
+  color: var(--accent-primary);
+  border-radius: 20px;
+  padding: 3px 14px;
   font-size: 0.8rem;
-  color: #8b949e;
-  flex: 1;
-  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s, color 0.2s;
 }
-.terminal-body {
-  padding: 15px;
-  height: 350px;
-  display: flex;
-  flex-direction: column;
+
+.btn-timeline-expand:hover {
+  background: var(--accent-primary);
+  color: #fff;
 }
-.terminal-results {
-  flex: 1;
-  overflow-y: auto;
-  color: #c9d1d9;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  margin-bottom: 10px;
+
+/* === RESPONSIVE: 320px–480px FIXES === */
+@media (max-width: 480px) {
+  .metrics-dashboard {
+    width: calc(100vw - 30px) !important;
+    max-width: 320px !important;
+  }
+  .metrics-widget {
+    right: 15px !important;
+  }
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  /* Prevent any element from causing horizontal scroll */
+  .flex-shrink-0 { min-width: 0; }
+  .glass-card, .card { max-width: 100%; }
+  /* Only apply max-width to fluid images, not fixed-dimension profile/award images */
+  img:not([width]):not(.recruiter-photo):not(.award-thumb) { max-width: 100%; height: auto; }
+  /* Bootstrap g-4 gutters + col-md-6 overflow at 320px — clip the containers */
+  .container { overflow-x: hidden; }
 }
-.terminal-input-line {
-  display: flex;
-  gap: 10px;
-  align-items: center;
+
+@media (max-width: 360px) {
+  .hero-image,
+  .hero-image-backdrop {
+    max-width: 90%;
+  }
 }
-.prompt .user { color: #58a6ff; font-weight: bold; }
-.prompt .path { color: #d2a8ff; }
-#terminalInput {
-  background: transparent;
-  border: none;
-  color: #c9d1d9;
-  flex: 1;
-  outline: none;
-  font-family: inherit;
-  font-size: 0.9rem;
+
+/* === RESPONSIVE: 4K MAX-WIDTH CAP === */
+@media (min-width: 2560px) {
+  .container {
+    max-width: 1600px;
+  }
+  .projects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  }
+  .metrics-dashboard {
+    width: 380px !important;
+  }
 }
-.response { color: #8b949e; margin-bottom: 5px; white-space: pre-wrap; }

@@ -51,7 +51,7 @@
   </div>
 </div>
 
-<style>
+<style nonce="<%= nonce %>">
 .rating-btn-large {
   padding: 10px;
   font-weight: bold;
@@ -67,11 +67,14 @@
 }
 </style>
 
-<script>
+<script nonce="<%= nonce %>">
+  let pageFeedbackIsSubmitting = false;
   const pageFeedbackForm = document.getElementById('pageFeedbackForm');
   if (pageFeedbackForm) {
     pageFeedbackForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (pageFeedbackIsSubmitting) return;
+      pageFeedbackIsSubmitting = true;
       const formData = new FormData(pageFeedbackForm);
       const data = {};
       formData.forEach((value, key) => data[key] = value);
@@ -81,17 +84,28 @@
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
         btn.disabled = true;
 
-        await fetch('/contact-me', {
+        const response = await fetch('/contact-me', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
-        document.getElementById('pageFeedbackFormStep').classList.add('d-none');
-        document.getElementById('pageFeedbackSuccessStep').classList.remove('d-none');
-        localStorage.setItem('feedbackSubmitted', 'true');
-      } catch (err) { 
+        const result = await response.json();
+        if (response.ok && result.success) {
+          document.getElementById('pageFeedbackFormStep').classList.add('d-none');
+          document.getElementById('pageFeedbackSuccessStep').classList.remove('d-none');
+          localStorage.setItem('feedbackSubmitted', 'true');
+        } else {
+          btn.innerHTML = 'Submit Feedback';
+          btn.disabled = false;
+          alert('Submission failed. Please try again.');
+        }
+      } catch (err) {
         console.error("Feedback failed", err);
-        alert("Submission failed. Please try again.");
+        const btn = e.target.querySelector('button[type="submit"]');
+        if (btn) { btn.innerHTML = 'Submit Feedback'; btn.disabled = false; }
+        alert("Network error. Please check your connection and try again.");
+      } finally {
+        pageFeedbackIsSubmitting = false;
       }
     });
   }

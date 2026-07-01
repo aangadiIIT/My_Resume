@@ -1,6 +1,23 @@
 /**
- * Command Palette (Staff+ v1)
- * Ctrl+K / Cmd+K Global Search & Action System
+ * Akhilesh Angadi Portfolio — Command Palette
+ *
+ * Global Ctrl+K / Cmd+K search and action system for fast keyboard navigation
+ * across pages, chatbot triggers, and site actions.
+ *
+ * Responsibilities:
+ *   1. Register and filter a command list of navigation and action items
+ *   2. Handle keyboard navigation (arrow keys, Enter, Escape) within the palette
+ *   3. Inject the palette HTML into the DOM on first activation
+ *   4. Forward bot-trigger commands to the chatbot stream
+ *
+ * Dependencies:
+ *   - UIManager (global)      — mutual exclusion with other floating panels
+ *   - toggleChat / handleChatSend (globals) — chatbot integration
+ *
+ * Usage:
+ *   Loaded via footer.ejs. Activated with Ctrl+K or Cmd+K.
+ *
+ * Author: Akhilesh Angadi
  */
 const CommandPalette = {
   active: false,

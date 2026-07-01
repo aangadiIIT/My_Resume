@@ -1,0 +1,21 @@
+<%#
+  Loading skeleton placeholder — shows while async content loads.
+  Props: count (number, default 3)
+%>
+<% const _skCount = typeof count !== 'undefined' ? Number(count) : 3; %>
+<% for (let _i = 0; _i < _skCount; _i++) { %>
+<div class="col">
+  <div class="glass-card p-4">
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <div class="skeleton skeleton-avatar"></div>
+      <div class="flex-grow-1">
+        <div class="skeleton skeleton-text skeleton-text--lg mb-1" style="width:60%"></div>
+        <div class="skeleton skeleton-text skeleton-text--sm"    style="width:40%"></div>
+      </div>
+    </div>
+    <div class="skeleton skeleton-text mb-1" style="width:100%"></div>
+    <div class="skeleton skeleton-text mb-1" style="width:85%"></div>
+    <div class="skeleton skeleton-text"      style="width:70%"></div>
+  </div>
+</div>
+<% } %>

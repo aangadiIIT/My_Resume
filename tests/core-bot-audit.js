@@ -1,3 +1,28 @@
+/**
+ * Akhilesh Angadi Portfolio — Comprehensive Bot Accuracy Audit
+ *
+ * High-fidelity stress test that exercises every unique question in the master
+ * test dataset with conservative pacing to avoid quota exhaustion.
+ *
+ * Responsibilities:
+ *   1. Load full question set from tests/data/chatbot-data-master.json
+ *   2. Post each query to /api/chat/llm with 4-second inter-query pacing
+ *   3. Validate intent resolution, detect persona leaks, and track engine mix
+ *   4. Write detailed_audit_report.json for consumption by master-test.js
+ *
+ * Dependencies:
+ *   - supertest  — HTTP assertion against the live Express app
+ *   - ../app     — Express application instance
+ *   - tests/data/chatbot-data-master.json — master question/intent dataset
+ *
+ * Safety:
+ *   - 4-second pacing is intentional; do not reduce without verifying Gemini quota
+ *
+ * Usage:
+ *   npm run test:audit
+ *
+ * Author: Akhilesh Angadi
+ */
 const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
@@ -62,17 +87,30 @@ async function main() {
                 .post('/api/chat/llm')
                 .send({ query, history: [] });
 
-            const data = res.body;
+            // Parse SSE stream — res.body is empty for text/event-stream
+            let data = {};
+            const lines = (res.text || '').split('\n');
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    try {
+                        const parsed = JSON.parse(line.slice(6).trim());
+                        data = { ...data, ...parsed };
+                    } catch (_) {}
+                }
+            }
+
             const answer = (data.answer || "").toLowerCase();
 
-            // 1. Accuracy Check (Hierarchical & Fuzzy Matching - Iteration 28)
+            // 1. Accuracy Check — require non-empty actualIntent so empty parses never slip through
             const actualIntent = data.intent || "";
-            const isMatch = (actualIntent === 'llm_fallback') ||
+            const isMatch = actualIntent !== "" && (
+                (actualIntent === 'llm_fallback') ||
                 Array.from(allowedIntents).some(expected =>
                     actualIntent === expected ||
                     actualIntent.startsWith(expected) ||
                     expected.startsWith(actualIntent)
-                );
+                )
+            );
 
             // 2. Persona Audit (Strict 3rd-Person Verification)
             const skipPersona = ['small_talk', 'jokes', 'facts', 'riddles', 'thanks', 'bye'];
@@ -83,7 +121,7 @@ async function main() {
                 (answer.includes(" i am ") || answer.includes(" i'm ") || answer.includes(" my ") ||
                     answer.startsWith("i am ") || answer.startsWith("i'm ") || answer.startsWith("my "));
 
-            // 3. Engine Breakdown (Precise Segregation - Iteration 29)
+            // Track which inference tier handled each response
             if (data.engine === 'online') {
                 report.aiLed++;
                 report.onlineLed++;

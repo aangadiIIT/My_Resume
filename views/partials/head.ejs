@@ -1,23 +1,30 @@
+<%#
+  Akhilesh Angadi Portfolio — <head> Partial
+
+  Emits all <head> content shared across every page: viewport meta, favicon,
+  SEO partial inclusion, Google Fonts, CDN CSS links, and the theme-flash
+  prevention script (runs synchronously to avoid light-mode flicker on dark-default pages).
+
+  Data contract (locals expected):
+    - nonce      — CSP nonce string (required for inline <script>)
+    - (via seo)  — data.profile, pageTitle, pageCanonical
+
+  Author: Akhilesh Angadi
+%>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <%- include('seo') %>
 
 <!-- Theme Flash Fix -->
-<script>
+<script nonce="<%= nonce %>">
   (function() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedTheme = localStorage.getItem('theme') || 'dark';
     if (savedTheme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
       document.body?.classList.add('dark-mode');
     }
   })();
 </script>
-
-<!-- Open Graph / Social -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="<%= typeof pageTitle !== 'undefined' ? pageTitle : 'Error' %> | <%= data.profile.profile.name %>">
-<meta property="og:description" content="<%= data.profile.profile.about_structured ? data.profile.profile.about_structured.summary : data.profile.profile.about_raw.substring(0, 160) %>">
-<meta property="og:image" content="<%= data.profile.profile.photoPath %>">
 
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,10 +33,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- Bootstrap 5 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 <!-- FontAwesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<!-- AOS Animation CSS -->
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha384-blOohCVdhjmtROpu8+CfTnUWham9nkX7P7OZQMst+RUnhtoY/9qemFAkIKOYxDI3" crossorigin="anonymous">
+<!-- AOS Animation CSS — only loaded on pages that use AOS animations -->
+<% if (typeof pageType !== 'undefined' && (pageType === 'index' || pageType === 'experience')) { %>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" integrity="sha384-/rJKQnzOkEo+daG0jMjU1IwwY9unxt1NBw3Ef2fmOJ3PW/TfAg2KXVoWwMZQZtw9" crossorigin="anonymous">
+<% } else if (typeof pageType === 'undefined') { %>
+<%# Fallback for any page that doesn't set pageType (e.g. error pages) %>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" integrity="sha384-/rJKQnzOkEo+daG0jMjU1IwwY9unxt1NBw3Ef2fmOJ3PW/TfAg2KXVoWwMZQZtw9" crossorigin="anonymous">
+<% } %>
 <!-- Custom Premium CSS -->
 <link rel="stylesheet" href="/stylesheets/style.css">
+<!-- Component design system (skill pills, empty/error/skeleton states, etc.) -->
+<link rel="stylesheet" href="/stylesheets/components.css">
+<!-- Toast notification system -->
+<link rel="stylesheet" href="/stylesheets/toast.css">

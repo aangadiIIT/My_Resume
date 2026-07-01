@@ -6,7 +6,7 @@
     <p class="text-muted">High-impact testimonials from managers and industry peers.</p>
   </div>
 
-  <div id="recommendationCarousel" class="carousel slide" data-bs-ride="carousel" data-aos="zoom-in">
+  <div id="recommendationCarousel" class="carousel slide" data-bs-ride="carousel" data-aos="zoom-in" style="overflow: visible; padding-top: 30px;">
     <!-- Carousel Indicators -->
     <div class="carousel-indicators" style="bottom: -50px;">
       <% data.recommendations.recommendations.forEach((_, index) => { %>
@@ -81,7 +81,7 @@
 </section>
 
 <!-- Custom Styling for the Carousel to handle the indicators and spacing -->
-<style>
+<style nonce="<%= nonce %>">
   #recommendationCarousel .carousel-item {
     padding: 60px 0; /* Add space for the floating quote icon */
   }

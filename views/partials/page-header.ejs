@@ -1,0 +1,13 @@
+<%#
+  Reusable page hero header.
+  Props: title (string), subtitle (string, optional), description (string, optional)
+%>
+<div class="text-center mb-5" data-aos="fade-up">
+  <h1 class="section-title"><%= title %></h1>
+  <% if (typeof subtitle !== 'undefined' && subtitle) { %>
+    <p class="lead text-muted"><%= subtitle %></p>
+  <% } %>
+  <% if (typeof description !== 'undefined' && description) { %>
+    <p class="text-muted" style="max-width:600px;margin:0 auto;"><%= description %></p>
+  <% } %>
+</div>

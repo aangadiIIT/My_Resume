@@ -1,0 +1,285 @@
+<%#
+  Akhilesh Angadi Portfolio — Recruiter Brief Page
+
+  Targeted one-page summary for hiring managers: current role and availability,
+  top skills, career highlights, selected recommendations, and direct CTAs
+  (contact, resume download, JD match tool).
+
+  Data contract (locals expected):
+    - data.profile    — full profile JSON
+    - data.skills     — skills JSON (categorized + proficiency_levels)
+    - data.experience — experience array
+    - pageTitle       — page title string
+    - nonce           — CSP nonce
+
+  Author: Akhilesh Angadi
+%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('partials/head') %>
+  <style nonce="<%= nonce %>">
+    .recruiter-hero { background: var(--accent-gradient); border-radius: 20px; }
+    .metric-card { text-align: center; padding: 1.5rem 1rem; }
+    .metric-card .metric-value { font-size: 2rem; font-weight: 800; color: var(--accent-primary); line-height: 1; }
+    .metric-card .metric-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-top: 4px; }
+    .skill-chip { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; background: var(--shape-1); color: var(--text-primary); border: 1px solid var(--glass-border); margin: 3px 2px; }
+    .rec-quote { border-left: 3px solid var(--accent-primary); padding-left: 1rem; font-style: italic; color: var(--text-secondary); }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .availability-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #34d399; box-shadow: 0 0 8px #34d399; animation: aiPulse 1.8s infinite; }
+    @keyframes aiPulse { 0%,100%{transform:scale(.9);opacity:.6} 50%{transform:scale(1.1);opacity:1} }
+  </style>
+</head>
+
+<body>
+  <%- include('partials/header') %>
+
+  <div id="main-content" class="container py-5 my-4">
+
+    <!-- Hero Banner -->
+    <div class="recruiter-hero p-5 mb-5 text-white" data-aos="fade-down">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <p class="text-white-50 fw-bold text-uppercase mb-1" style="letter-spacing:.1em; font-size:.8rem;">Recruiter Brief</p>
+          <h1 class="display-5 fw-bolder mb-2"><%= data.profile.profile.name %></h1>
+          <p class="lead text-white-75 mb-3"><%= data.profile.profile.headline %></p>
+
+          <% if(data.profile.profile.availability && data.profile.profile.availability.status === 'open') { %>
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-2 mb-4 rounded-pill fw-bold"
+            style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); font-size:.82rem;">
+            <span class="availability-dot"></span>
+            <%= data.profile.profile.availability.label %> &mdash; Available <%= data.profile.profile.availability.available_from %>
+          </div>
+          <% } %>
+
+          <div class="cta-row">
+            <a href="/view-asset/documents/Resume.pdf" download="Resume.pdf"
+              class="btn btn-light rounded-pill px-4 py-2 fw-bold text-primary shadow-sm">
+              <i class="fas fa-file-pdf me-2"></i>Download Resume
+            </a>
+            <a href="<%= data.profile.profile.social_links.linkedin %>" target="_blank" rel="noopener noreferrer"
+              class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold">
+              <i class="fab fa-linkedin-in me-2"></i>LinkedIn
+            </a>
+            <a href="/contact-me"
+              class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold">
+              <i class="fas fa-envelope me-2"></i>Contact
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-4 text-center mt-4 mt-lg-0">
+          <img src="<%= data.profile.profile.photoPath || '/images/profile-photo.jpg' %>"
+            alt="<%= data.profile.profile.name %>"
+            class="recruiter-photo"
+            width="160" height="160"
+            style="border:4px solid rgba(255,255,255,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="row g-4 mb-5" data-aos="fade-up">
+      <% if(data.yrsExperience) { %>
+      <div class="col-6 col-md-3">
+        <div class="glass-card metric-card">
+          <div class="metric-value"><%= data.yrsExperience %>+</div>
+          <div class="metric-label">Years Experience</div>
+        </div>
+      </div>
+      <% } %>
+      <% if(data.skills && data.skills.skill_summary) { %>
+      <div class="col-6 col-md-3">
+        <div class="glass-card metric-card">
+          <div class="metric-value"><%= data.skills.skill_summary.total_skills_count %></div>
+          <div class="metric-label">Skills</div>
+        </div>
+      </div>
+      <% } %>
+      <% if(data.certifications && data.certifications.certifications) { %>
+      <div class="col-6 col-md-3">
+        <div class="glass-card metric-card">
+          <div class="metric-value"><%= data.certifications.certifications.length %></div>
+          <div class="metric-label">Certifications</div>
+        </div>
+      </div>
+      <% } %>
+      <% if(data.experience && data.experience.experience) { %>
+      <div class="col-6 col-md-3">
+        <div class="glass-card metric-card">
+          <div class="metric-value"><%= data.experience.experience.filter(j => j.employment_type && !j.employment_type.toLowerCase().includes('intern')).length %></div>
+          <div class="metric-label">Roles</div>
+        </div>
+      </div>
+      <% } %>
+    </div>
+
+    <div class="row g-5">
+      <!-- Left Column -->
+      <div class="col-lg-7">
+
+        <!-- Current Role -->
+        <% if(data.experience && data.experience.experience && data.experience.experience.length > 0) { %>
+        <% const latestJob = data.experience.experience[0]; %>
+        <div class="glass-card p-4 mb-4" data-aos="fade-right">
+          <h2 class="h5 fw-bold text-muted text-uppercase mb-3" style="letter-spacing:.06em; font-size:.75rem;">
+            <i class="fas fa-briefcase me-2 text-accent"></i>Current Role
+          </h2>
+          <h3 class="h4 fw-bolder mb-1"><%= latestJob.role %></h3>
+          <p class="text-muted mb-2"><i class="fas fa-building me-1"></i><strong><%= latestJob.company %></strong>
+            &nbsp;&bull;&nbsp; <%= latestJob.duration.start %> &ndash; <%= latestJob.duration.end %>
+          </p>
+          <% if(latestJob.technologies && latestJob.technologies.length > 0) { %>
+          <div class="mt-3">
+            <% latestJob.technologies.slice(0, 10).forEach(tech => { %>
+            <span class="skill-chip"><%= tech %></span>
+            <% }) %>
+          </div>
+          <% } %>
+        </div>
+        <% } %>
+
+        <!-- Top Skills -->
+        <% if(data.skills && data.skills.skill_summary) { %>
+        <div class="glass-card p-4 mb-4" data-aos="fade-right" data-aos-delay="100">
+          <h2 class="h5 fw-bold text-muted text-uppercase mb-3" style="letter-spacing:.06em; font-size:.75rem;">
+            <i class="fas fa-layer-group me-2 text-accent"></i>Core Competencies
+          </h2>
+          <div class="mb-3">
+            <p class="small fw-bold text-muted mb-2">Primary Strengths</p>
+            <% data.skills.skill_summary.primary_strengths.forEach(s => { %>
+            <span class="skill-chip" style="background:rgba(96,165,250,0.12);border-color:rgba(96,165,250,0.3);color:var(--accent-hover);"><%= s %></span>
+            <% }) %>
+          </div>
+          <div>
+            <p class="small fw-bold text-muted mb-2">Also Strong In</p>
+            <% data.skills.skill_summary.secondary_strengths.forEach(s => { %>
+            <span class="skill-chip"><%= s %></span>
+            <% }) %>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Recommendations -->
+        <% if(data.recommendations && data.recommendations.recommendations && data.recommendations.recommendations.length > 0) { %>
+        <div class="glass-card p-4" data-aos="fade-right" data-aos-delay="200">
+          <h2 class="h5 fw-bold text-muted text-uppercase mb-4" style="letter-spacing:.06em; font-size:.75rem;">
+            <i class="fas fa-quote-left me-2 text-accent"></i>What Colleagues Say
+          </h2>
+          <% data.recommendations.recommendations.slice(0, 2).forEach((rec, i) => { %>
+          <div class="<%= i > 0 ? 'mt-4 pt-4 border-top' : '' %>" style="border-color: var(--glass-border) !important;">
+            <p class="rec-quote mb-3 small">"<%= (rec.recommendation_raw || '').substring(0, 200) %>..."</p>
+            <p class="mb-0 small fw-bold"><%= rec.author.name %></p>
+            <p class="text-muted" style="font-size:.78rem;"><%= rec.author.role %>, <%= rec.author.company %></p>
+          </div>
+          <% }) %>
+          <div class="mt-3">
+            <a href="/recommendations" class="text-accent fw-bold small text-decoration-none">
+              View all recommendations <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+        <% } %>
+
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-lg-5">
+
+        <!-- Contact Quick Card -->
+        <div class="glass-card p-4 mb-4" data-aos="fade-left">
+          <h2 class="h5 fw-bold text-muted text-uppercase mb-3" style="letter-spacing:.06em; font-size:.75rem;">
+            <i class="fas fa-address-card me-2 text-accent"></i>Quick Contact
+          </h2>
+          <div class="d-flex flex-column gap-3">
+            <a href="mailto:<%= data.profile.profile.contact.email %>" class="d-flex align-items-center gap-3 text-decoration-none">
+              <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+                style="width:38px;height:38px;background:var(--shape-1);color:var(--accent-primary);">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <span class="fw-bold small text-primary"><%= data.profile.profile.contact.email %></span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+              <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0"
+                style="width:38px;height:38px;background:var(--shape-1);color:var(--accent-primary);">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <span class="fw-bold small text-muted"><%= data.profile.profile.contact.location_current %></span>
+            </div>
+          </div>
+          <div class="mt-4">
+            <a href="/contact-me" class="btn-primary-custom w-100 text-center text-decoration-none d-block py-2" style="font-size:.9rem;">
+              <i class="fas fa-paper-plane me-2"></i>Send a Message
+            </a>
+          </div>
+        </div>
+
+        <!-- Career Timeline Summary -->
+        <% if(data.experience && data.experience.experience) { %>
+        <div class="glass-card p-4 mb-4" data-aos="fade-left" data-aos-delay="100">
+          <h2 class="h5 fw-bold text-muted text-uppercase mb-3" style="letter-spacing:.06em; font-size:.75rem;">
+            <i class="fas fa-stream me-2 text-accent"></i>Career Path
+          </h2>
+          <div class="d-flex flex-column gap-3">
+            <% data.experience.experience.filter(j => j.employment_type && !j.employment_type.toLowerCase().includes('intern')).slice(0, 4).forEach((job, i) => { %>
+            <div class="d-flex align-items-start gap-3">
+              <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle"
+                style="width:34px;height:34px;background:var(--shape-1);color:var(--accent-primary);font-size:.75rem;">
+                <%= i + 1 %>
+              </div>
+              <div>
+                <p class="mb-0 fw-bold small"><%= job.role %></p>
+                <p class="text-muted mb-0" style="font-size:.78rem;"><%= job.company %> &bull; <%= job.duration.start.split('-')[0] %>&ndash;<%= job.duration.end === 'Present' ? 'Now' : job.duration.end.split('-')[0] %></p>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+          <div class="mt-3">
+            <a href="/experience" class="text-accent fw-bold small text-decoration-none">
+              Full experience <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Education Snapshot -->
+        <% if(data.education && data.education.education && data.education.education.length > 0) { %>
+        <div class="glass-card p-4" data-aos="fade-left" data-aos-delay="200">
+          <h2 class="h5 fw-bold text-muted text-uppercase mb-3" style="letter-spacing:.06em; font-size:.75rem;">
+            <i class="fas fa-graduation-cap me-2 text-accent"></i>Education
+          </h2>
+          <% data.education.education.slice(0, 2).forEach(edu => { %>
+          <div class="mb-3">
+            <p class="fw-bold mb-0 small"><%= edu.degree ? edu.degree + ' – ' + edu.field_of_study : edu.institution %></p>
+            <p class="text-muted mb-0" style="font-size:.78rem;"><%= edu.institution %><% if(edu.duration && edu.duration.end) { %> &bull; <%= edu.duration.end.split('-')[0] %><% } %></p>
+          </div>
+          <% }) %>
+        </div>
+        <% } %>
+
+      </div>
+    </div>
+
+    <!-- Bottom CTA strip -->
+    <div class="glass-card text-center p-4 mt-5 mx-auto" style="max-width:700px;" data-aos="zoom-in">
+      <h3 class="h4 fw-bolder mb-2">Interested in working together?</h3>
+      <p class="text-muted mb-4">Let's schedule a call or exchange messages. All information here can be shared freely.</p>
+      <div class="d-flex flex-wrap justify-content-center gap-3">
+        <a href="/contact-me" class="btn-primary-custom text-decoration-none">
+          <i class="fas fa-envelope me-2"></i>Get In Touch
+        </a>
+        <a href="/view-asset/documents/Resume.pdf" download="Resume.pdf" class="btn-outline-custom text-decoration-none">
+          <i class="fas fa-file-pdf me-2"></i>Download Resume
+        </a>
+        <a href="<%= data.profile.profile.social_links.linkedin %>" target="_blank" rel="noopener noreferrer" class="btn btn-link fw-bold text-decoration-none" style="color:var(--accent-hover);">
+          <i class="fab fa-linkedin-in me-1"></i>LinkedIn Profile
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+
+</html>

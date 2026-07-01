@@ -1,3 +1,27 @@
+/**
+ * Akhilesh Angadi Portfolio — Knowledge Base Generator
+ *
+ * Build-time script that transforms raw JSON profile data into the runtime
+ * summary.json used by the chatbot engine for deterministic intent resolution.
+ *
+ * Responsibilities:
+ *   1. Read profile, skills, experience, and other JSON from secure_assets/data/
+ *   2. Generate intent→response mappings with keyword weights and ML vectors
+ *   3. Pre-compute trigram vectors for the ML fallback matcher
+ *   4. Output public/data/summary.json and tests/chatbot_test_suite.json
+ *
+ * Dependencies:
+ *   - scripts/intent-registry.js        — master list of intents and templates
+ *   - public/scripts/chatbot-engine.js  — normalisation utilities (shared)
+ *   - public/scripts/ml-intent-matcher.js — trigram vectorisation
+ *   - secure_assets/data/profile.json   — source profile data
+ *   - secure_assets/data/skills.json    — source skills data
+ *
+ * Usage:
+ *   node scripts/update-summary.js   (runs automatically on npm start)
+ *
+ * Author: Akhilesh Angadi
+ */
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -296,7 +320,7 @@ function buildEntityRegistry(allData) {
                             type: domain
                         };
                     } else {
-                        // Multi-Match for duplicates (Iteration 16)
+                        // Deduplicate intents that map to the same canonical response
                         registry[title].indices.push(index);
                     }
                 }
@@ -389,7 +413,7 @@ function generateSummary() {
             }, new Map())).map(([text, weight]) => ({ text, weight })),
             answer: answers, // Stores array of variations
             deeper_answer: result.deeper_answer,
-            details: result.details, // Keep raw array/object for Iteration 16 engine
+            details: result.details, // raw array/object for engine lookup
             details_formatted: result.details_formatted, // Keep for legacy UI if needed
             suggestions: result.suggestions || meta.suggestions || [],
             follow_up: meta.follow_up || [],

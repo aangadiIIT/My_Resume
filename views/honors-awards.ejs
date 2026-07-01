@@ -6,19 +6,15 @@
 <body>
   <%- include('partials/header') %>
 
-  <div class="container py-5 my-4">
-    <div class="text-center mb-5" data-aos="fade-down">
-      <h1 class="section-title">Honors & Awards</h1>
-      <p class="lead text-muted max-w-2xl mx-auto">
-        <% if(data.awards && data.awards.awards_summary) { %>
-          Recognized <%= data.awards.awards_summary.total_awards %> times across my career for excellence in <%= data.awards.awards_summary.core_strengths_recognized.slice(0, 3).join(', ') %> and more.
-        <% } else { %>
-          Professional recognition and awards received throughout my career.
-        <% } %>
-      </p>
-    </div>
+  <div id="main-content" class="container py-5 my-4">
+    <%- include('partials/page-header', {
+      title: 'Honors & Awards',
+      subtitle: (data.awards && data.awards.awards_summary)
+        ? 'Recognized ' + data.awards.awards_summary.total_awards + ' times across my career for excellence in ' + data.awards.awards_summary.core_strengths_recognized.slice(0, 3).join(', ') + ' and more.'
+        : 'Professional recognition and awards received throughout my career.'
+    }) %>
 
-    <% if(data.awards && data.awards.awards) { %>
+    <% if(data.awards && data.awards.awards && data.awards.awards.length > 0) { %>
       <div class="row g-4">
         <% data.awards.awards.forEach((award, index) => { %>
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="<%= Math.min(index * 50, 400) %>">
@@ -87,52 +83,66 @@
           </div>
         <% }) %>
       </div>
+    <% } else { %>
+      <%- include('partials/empty-state', { icon: 'fa-trophy', title: 'No awards data available', message: 'Check back soon.' }) %>
     <% } %>
 
-    <!-- Funnel Navigation CTA -->
-    <div class="mt-5 pt-5 border-top text-center" style="border-color: var(--glass-border) !important;" data-aos="fade-up">
-      <p class="text-muted fw-bold text-uppercase tracking-widest mb-2">Next Chapter</p>
-      <h3 class="h2 fw-bolder mb-4">Professional Credibility</h3>
-      <a href="/recommendations" class="btn-primary-custom px-5 py-3 fs-5 shadow-sm">
-        View Recommendations <i class="fas fa-quote-right ms-2"></i>
-      </a>
-    </div>
+    <%- include('partials/funnel-cta', { href: '/recommendations', label: 'View Recommendations', heading: 'Professional Credibility' }) %>
 
   </div>
 
   <%- include('partials/footer') %>
 
   <!-- Award Lightbox Modal -->
-  <div class="modal fade" id="awardLightbox" tabindex="-1" aria-hidden="true" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);">
+  <div class="modal fade" id="awardLightbox" tabindex="-1" role="dialog" aria-modal="true" aria-label="Award image viewer" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);">
     <div class="modal-dialog modal-dialog-centered modal-xl">
-      <div class="modal-content bg-transparent border-0 shadow-none">
-        <div class="modal-header border-0 p-0 position-absolute top-0 end-0" style="z-index: 1051;">
-          <button type="button" class="btn-close btn-close-white fs-4 p-4 shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center p-0">
-          <img src="" id="lightboxImg" class="img-fluid rounded shadow-lg max-vh-80" alt="Award Full View">
+      <div class="modal-content bg-transparent border-0 shadow-none" style="position:relative;">
+        <button type="button"
+          class="btn-close btn-close-white fs-4 shadow-none"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          style="position:absolute;top:0;right:0;z-index:1060;padding:1.25rem;pointer-events:auto;"></button>
+        <div class="modal-body text-center p-0" style="padding-top:3rem!important;">
+          <img src="" id="lightboxImg" class="img-fluid rounded shadow-lg" style="max-height:80vh;object-fit:contain;" alt="Award Full View">
           <h3 id="lightboxTitle" class="text-white fw-bold mt-4 shadow-text"></h3>
         </div>
       </div>
     </div>
   </div>
 
-  <script>
+  <script nonce="<%= nonce %>">
     document.addEventListener('DOMContentLoaded', () => {
-      const triggers = document.querySelectorAll('.lightbox-trigger');
-      const lightboxModal = new bootstrap.Modal(document.getElementById('awardLightbox'));
+      const lightboxEl = document.getElementById('awardLightbox');
+      const lightboxModal = new bootstrap.Modal(lightboxEl);
       const lightboxImg = document.getElementById('lightboxImg');
       const lightboxTitle = document.getElementById('lightboxTitle');
 
-      triggers.forEach(trigger => {
-        trigger.addEventListener('click', (e) => {
-          const imgPath = trigger.getAttribute('data-img');
-          const title = trigger.getAttribute('data-title');
-          
-          lightboxImg.src = imgPath;
-          lightboxTitle.innerText = title;
+      document.querySelectorAll('.lightbox-trigger').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          lightboxImg.src   = trigger.getAttribute('data-img');
+          lightboxTitle.innerText = trigger.getAttribute('data-title');
           lightboxModal.show();
         });
+      });
+
+      // Explicit close handler — backup for data-bs-dismiss
+      lightboxEl.querySelector('.btn-close').addEventListener('click', () => {
+        lightboxModal.hide();
+      });
+
+      // Also close on backdrop click
+      lightboxEl.addEventListener('click', (e) => {
+        if (e.target === lightboxEl) lightboxModal.hide();
+      });
+
+      // Focus the close button when modal opens (accessibility)
+      lightboxEl.addEventListener('shown.bs.modal', () => {
+        lightboxEl.querySelector('.btn-close').focus();
+      });
+
+      // Clear image when closed to avoid stale src
+      lightboxEl.addEventListener('hidden.bs.modal', () => {
+        lightboxImg.src = '';
       });
     });
   </script>
