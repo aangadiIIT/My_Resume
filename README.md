@@ -2,7 +2,7 @@
 
 ![Build Status](https://github.com/aangadiIIT/My_Resume/actions/workflows/main_akhilesh-resume.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen?logo=node.js)
+![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen?logo=node.js)
 ![AI Stack](https://img.shields.io/badge/AI-Gemini%207--model%20stack%20%2B%20Llama%203.2%201B-8A2BE2?logo=google)
 ![Express](https://img.shields.io/badge/express-5.x-000000?logo=express)
 ![Tests](https://img.shields.io/badge/tests-192%20passing-brightgreen)
@@ -48,7 +48,7 @@ User query
                          │ (all models in cooldown)
                          ▼
 ┌─────────────────────────────────────────────────────────┐
-│  Tier 3 — Llama 3.2 1B Offline  (services/ai/offline)  │
+│  Tier 3 — Llama 3.2 1B Offline  (services/ai/offline)   │
 │  4-bit ONNX via @huggingface/transformers               │
 │  No external API call; grounded in JSON resume data     │
 └─────────────────────────────────────────────────────────┘
@@ -150,7 +150,7 @@ My_Resume/
 
 | Category | Technology | Notes |
 |---|---|---|
-| Runtime | Node.js >= 18 | ESM/CJS mixed |
+| Runtime | Node.js >= 20 | LTS; required by jsdom 29 and undici 7 transitive deps |
 | Framework | Express 5 | Thin `app.js`; all logic in modules |
 | Templating | EJS 6 | Full partial system; view cache enabled |
 | AI — Cloud | `@google/generative-ai` | 7-model Gemini stack, circuit breakers, LRU cache |

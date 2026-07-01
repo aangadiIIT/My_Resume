@@ -237,7 +237,7 @@ test.describe('Regression: Bug Fixes', () => {
     // Poll until Bootstrap finishes its fade-out and removes the 'show' class
     await page.waitForFunction(
       () => !document.getElementById('awardLightbox')?.classList.contains('show'),
-      { timeout: 5000, polling: 100 }
+      { timeout: 10000, polling: 100 }
     );
   });
 

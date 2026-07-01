@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v4
         with:
-          node-version: "18.x"
+          node-version: "20.x"
           cache: "npm"
 
       - name: Cache AI Model Weights
@@ -39,6 +39,7 @@ jobs:
           else
             echo "Model weights found in cache. Skipping download."
           fi
+          node scripts/update-summary.js
           npx playwright install --with-deps
           npm test
           npm run build --if-present
