@@ -462,9 +462,120 @@ function generateSummary() {
     fs.writeFileSync(outputFile, JSON.stringify(summary, null, 2));
     fs.writeFileSync(testSuitePath, JSON.stringify(newTestSuite, null, 2));
 
+    // Generate llm-context.txt — XML-formatted grounding context for AI tiers
+    // This file is gitignored and must be regenerated on every build/deploy
+    const contextLines = [];
+    const source = loadAllData();
+
+    const p = source.profile?.profile || {};
+    const exp = source.experience?.experience || [];
+    const skills = source.skills?.skills || source.skills || {};
+    const certs = source.certifications?.certifications || [];
+    const awards = source.awards?.awards || [];
+    const edu = source.education?.education || [];
+    const pubs = source.publications?.publications || [];
+    const recs = source.recommendations?.recommendations || [];
+    const langs = source.languages?.detailed || [];
+
+    contextLines.push('[STRICT GROUNDING DATA - AKHILESH ANGADI]\n');
+
+    contextLines.push('<IDENTITY>');
+    contextLines.push(`  <FULL_NAME>${p.name || ''}</FULL_NAME>`);
+    contextLines.push(`  <HEADLINE>${p.headline || ''}</HEADLINE>`);
+    contextLines.push(`  <CURRENT_LOCATION>${p.location || ''}</CURRENT_LOCATION>`);
+    contextLines.push(`  <EMAIL>${p.contact?.email || ''}</EMAIL>`);
+    contextLines.push(`  <HOMETOWN>${p.hometown || ''}</HOMETOWN>`);
+    contextLines.push('</IDENTITY>\n');
+
+    if (exp.length > 0) {
+        const current = exp[0];
+        contextLines.push('<CURRENT_EMPLOYMENT>');
+        contextLines.push(`  <COMPANY>${current.company || ''}</COMPANY>`);
+        contextLines.push(`  <ROLE>${current.role || ''}</ROLE>`);
+        contextLines.push(`  <LOCATION>${current.location || ''}</LOCATION>`);
+        contextLines.push(`  <STARTED>${current.duration?.start || ''}</STARTED>`);
+        contextLines.push('</CURRENT_EMPLOYMENT>\n');
+    }
+
+    contextLines.push('<PROFESSIONAL_EXPERIENCE>');
+    exp.forEach((job, i) => {
+        contextLines.push(`  <JOB id="exp${i}">`);
+        contextLines.push(`    <COMPANY>${job.company || ''}</COMPANY>`);
+        contextLines.push(`    <ROLE>${job.role || ''}</ROLE>`);
+        contextLines.push(`    <PERIOD>${job.duration?.start || ''} to ${job.duration?.end || 'Present'}</PERIOD>`);
+        contextLines.push(`    <LOCATION>${job.location || ''}</LOCATION>`);
+        if (job.description_raw) contextLines.push(`    <DESCRIPTION>${job.description_raw}</DESCRIPTION>`);
+        if (job.technologies?.length) contextLines.push(`    <TECH_USED>${job.technologies.join(', ')}</TECH_USED>`);
+        contextLines.push(`  </JOB>`);
+    });
+    contextLines.push('</PROFESSIONAL_EXPERIENCE>\n');
+
+    contextLines.push('<PROJECT_CATALOG>');
+    const projects = source.projects?.projects || [];
+    projects.forEach((proj, i) => {
+        contextLines.push(`  <PROJECT id="proj${i}">`);
+        contextLines.push(`    <TITLE>${proj.title || ''}</TITLE>`);
+        contextLines.push(`    <ORG>${proj.organization || ''}</ORG>`);
+        if (proj.description_raw) contextLines.push(`    <DESCRIPTION>${proj.description_raw}</DESCRIPTION>`);
+        contextLines.push(`  </PROJECT>`);
+    });
+    contextLines.push('</PROJECT_CATALOG>\n');
+
+    contextLines.push('<EDUCATION_HISTORY>');
+    edu.forEach((e, i) => {
+        contextLines.push(`  <DEGREE id="edu${i}">`);
+        contextLines.push(`    <LEVEL>${e.degree || ''}</LEVEL>`);
+        contextLines.push(`    <INSTITUTION>${e.institution || ''}</INSTITUTION>`);
+        contextLines.push(`    <MAJOR>${e.major || ''}</MAJOR>`);
+        contextLines.push(`    <LOCATION>${e.location || ''}</LOCATION>`);
+        contextLines.push(`    <GPA>${e.grade?.value || e.gpa || 'N/A'}</GPA>`);
+        contextLines.push(`    <PERIOD>${e.duration?.start || ''} to ${e.duration?.end || ''}</PERIOD>`);
+        if (e.focus) contextLines.push(`    <FOCUS>${Array.isArray(e.focus) ? e.focus.join(', ') : e.focus}</FOCUS>`);
+        contextLines.push(`  </DEGREE>`);
+    });
+    contextLines.push('</EDUCATION_HISTORY>\n');
+
+    contextLines.push('<CERTIFICATIONS>');
+    certs.forEach((c, i) => {
+        contextLines.push(`  <CERT id="cert${i}">${c.name || ''} (${c.issuer || ''}, ${c.issue_date || ''})</CERT>`);
+    });
+    contextLines.push('</CERTIFICATIONS>\n');
+
+    contextLines.push('<HONORS_AWARDS>');
+    awards.forEach((a, i) => {
+        contextLines.push(`  <AWARD id="award${i}">`);
+        contextLines.push(`    <TITLE>${a.title || ''}</TITLE>`);
+        contextLines.push(`    <ISSUER>${a.issuer || ''}</ISSUER>`);
+        contextLines.push(`    <DATE>${a.date || ''}</DATE>`);
+        if (a.description_raw) contextLines.push(`    <DESCRIPTION>${a.description_raw}</DESCRIPTION>`);
+        contextLines.push(`  </AWARD>`);
+    });
+    contextLines.push('</HONORS_AWARDS>\n');
+
+    contextLines.push('<RECOMMENDATIONS_SUMMARY>');
+    contextLines.push(`  <TOTAL>${recs.length}</TOTAL>`);
+    if (source.recommendations?.recommendations_summary?.strengths_recognized) {
+        contextLines.push(`  <STRENGTHS>${source.recommendations.recommendations_summary.strengths_recognized.join(', ')}</STRENGTHS>`);
+    }
+    contextLines.push('</RECOMMENDATIONS_SUMMARY>\n');
+
+    contextLines.push('<PUBLICATIONS>');
+    pubs.forEach((pub, i) => {
+        contextLines.push(`  <PUB id="pub${i}">`);
+        contextLines.push(`    <TITLE>${pub.title || ''}</TITLE>`);
+        contextLines.push(`    <JOURNAL>${pub.journal || pub.venue || ''}</JOURNAL>`);
+        contextLines.push(`    <DATE>${pub.date || pub.year || ''}</DATE>`);
+        contextLines.push(`  </PUB>`);
+    });
+    contextLines.push('</PUBLICATIONS>');
+
+    const contextPath = path.join(outputDir, 'llm-context.txt');
+    fs.writeFileSync(contextPath, contextLines.join('\n'));
+
     console.log(`\n🔥 Knowledge Base & Test Suite Generated.`);
     console.log(`📊 Total Mappings: ${summary.mappings.length}`);
-    console.log(`📊 Test Suite Size: ${newTestSuite.length}\n`);
+    console.log(`📊 Test Suite Size: ${newTestSuite.length}`);
+    console.log(`📄 LLM Context: ${contextLines.length} lines written to ${contextPath}\n`);
 }
 
 generateSummary();
