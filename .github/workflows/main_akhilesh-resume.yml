@@ -31,6 +31,17 @@ jobs:
           restore-keys: |
             v1-llama-3.2-1b-
 
+      - name: Create .env for Tests and Deployment
+        run: |
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}"                         >> .env
+          echo "GOOGLE_FORM_URL=${{ secrets.GOOGLE_FORM_URL }}"                       >> .env
+          echo "GOOGLE_FORM_ENTRY_NAME=${{ secrets.GOOGLE_FORM_ENTRY_NAME }}"         >> .env
+          echo "GOOGLE_FORM_ENTRY_EMAIL=${{ secrets.GOOGLE_FORM_ENTRY_EMAIL }}"       >> .env
+          echo "GOOGLE_FORM_ENTRY_SUBJECT=${{ secrets.GOOGLE_FORM_ENTRY_SUBJECT }}"   >> .env
+          echo "GOOGLE_FORM_ENTRY_RATING=${{ secrets.GOOGLE_FORM_ENTRY_RATING }}"     >> .env
+          echo "GOOGLE_FORM_ENTRY_MESSAGE=${{ secrets.GOOGLE_FORM_ENTRY_MESSAGE }}"   >> .env
+          # ADMIN_API_KEY intentionally omitted — setting it blocks the metrics widget
+
       - name: Install dependencies, Warmup AI & Run Tests
         env:
           # Give Llama 5 minutes on slow CI CPU runners (production stays at 2 min).
@@ -47,18 +58,9 @@ jobs:
           npm test
           npm run build --if-present
 
-      - name: Create .env for Deployment
+      - name: Finalise .env for Deployment
         run: |
-          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}"                         >> .env
-          echo "NODE_ENV=production"                                                  >> .env
-          echo "GOOGLE_FORM_URL=${{ secrets.GOOGLE_FORM_URL }}"                       >> .env
-          echo "GOOGLE_FORM_ENTRY_NAME=${{ secrets.GOOGLE_FORM_ENTRY_NAME }}"         >> .env
-          echo "GOOGLE_FORM_ENTRY_EMAIL=${{ secrets.GOOGLE_FORM_ENTRY_EMAIL }}"       >> .env
-          echo "GOOGLE_FORM_ENTRY_SUBJECT=${{ secrets.GOOGLE_FORM_ENTRY_SUBJECT }}"   >> .env
-          echo "GOOGLE_FORM_ENTRY_RATING=${{ secrets.GOOGLE_FORM_ENTRY_RATING }}"     >> .env
-          echo "GOOGLE_FORM_ENTRY_MESSAGE=${{ secrets.GOOGLE_FORM_ENTRY_MESSAGE }}"   >> .env
-          # ADMIN_API_KEY intentionally omitted — setting it blocks the metrics widget
-          # (browsers don't send custom auth headers on plain fetch requests)
+          echo "NODE_ENV=production"                                                   >> .env
 
       - name: Zip artifact for deployment
         run: zip -r release.zip . -x "models/*" "test-results/*" ".git/*" "playwright-report/*" ".gemini/*" ".env.example"
