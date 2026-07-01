@@ -5,7 +5,11 @@ module.exports = {
   RESUME_CACHE_TTL_MS:  5 * 60 * 1000,  // 5 min
   CONTEXT_TTL_MS:       5 * 60 * 1000,  // 5 min
   GEMINI_DEDUP_TTL_MS:  30 * 1000,      // 30 s  — dedup identical Gemini queries
-  SSE_STREAM_TIMEOUT_MS: 120 * 1000,    // 2 min — max SSE connection duration
+  // Allow TEST_SSE_TIMEOUT_MS env override so CI runners (slow CPU) don't hit the
+  // 2-minute wall mid-Llama inference. Production stays at 120s.
+  SSE_STREAM_TIMEOUT_MS: process.env.TEST_SSE_TIMEOUT_MS
+    ? parseInt(process.env.TEST_SSE_TIMEOUT_MS, 10)
+    : 120 * 1000,    // 2 min — max SSE connection duration
 
   // ── Form submission ────────────────────────────────────────────────────────
   FORM_TIMEOUT_MS: 10_000,

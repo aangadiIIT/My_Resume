@@ -33,14 +33,14 @@ User query
                          ▼
 ┌─────────────────────────────────────────────────────────┐
 │  Tier 2 — Gemini Cloud  (services/ai/online.js)         │
-│  7-model registry, tried in priority order:             │
-│    1. gemini-3.5-flash      (v1beta, paid)              │
-│    2. gemini-3.1-flash-lite (v1beta, paid)              │
-│    3. gemini-2.5-flash-lite (v1beta, free)              │
-│    4. gemini-2.5-flash      (v1beta, free)              │
-│    5. gemini-2.5-pro        (v1beta, free)              │
-│    6. gemini-2.0-flash-lite (v1,     free)              │
-│    7. gemini-2.0-flash      (v1,     free)              │
+│  7-model free-tier stack, tried in priority order:      │
+│    1. gemini-2.5-flash-lite (v1beta) ← best quota avail │
+│    2. gemini-3.1-flash-lite (v1beta) ← second priority  │
+│    3. gemini-2.5-flash      (v1beta)                    │
+│    4. gemini-2.0-flash-lite (v1)                        │
+│    5. gemini-3.5-flash      (v1beta)                    │
+│    6. gemini-2.5-pro        (v1beta)                    │
+│    7. gemini-2.0-flash      (v1)                        │
 │  Per-model circuit breakers (429/503/error cooldowns)   │
 │  LRU dedup cache (5 000 entries, 30s TTL)               │
 │  Startup discovery via live /v1beta/models API call     │
@@ -169,7 +169,7 @@ My_Resume/
 
 ### Prerequisites
 
-- Node.js >= 18
+- Node.js >= 20
 - A Gemini API key (free tier works; the registry will discover which models are accessible)
 
 ### Setup
@@ -249,14 +249,14 @@ Character trigrams and weighted keyword anchors resolve high-confidence queries 
 
 ### Tier 2: Gemini Cloud
 
-`services/ai/gemini-model-registry.js` maintains a seven-model stack, discovered live against the API key at startup via `discoverModels()`. Each model has an independent circuit breaker:
+`services/ai/gemini-model-registry.js` maintains a seven-model free-tier stack, discovered live against the API key at startup via `discoverModels()`. Models are ordered so the "lite" variants (which exhaust their 20 req/day free quota more slowly) are tried first. Each model has an independent circuit breaker:
 
-- `429` with `RetryInfo` in the error body → cooldown = `retryDelay` seconds from the proto (min 10s, up to 1h for daily quota violations)
+- `429` with `RetryInfo` in the error body → cooldown = `retryDelay` from the proto (up to 1h for daily quota violations)
 - `429` without details → 60s cooldown
 - `503` (overload) → 15s cooldown
 - Other errors → 10s cooldown
 
-`getActiveStack()` always returns at least one model; if all are in cooldown it picks the one with the shortest remaining wait. `gemini-cache.js` deduplicates identical queries within a 30-second window (LRU, 5 000 entries) to avoid redundant API calls.
+`getActiveStack()` always returns at least one model; if all are cooling down it picks the one with the shortest remaining wait. The pipeline correctly falls through to Llama only when zero tokens have been sent — if a model fails mid-stream after sending tokens, it terminates with an interruption notice rather than producing a duplicate response from Llama. `gemini-cache.js` deduplicates identical queries within a 30-second window (LRU, 5 000 entries).
 
 ### Tier 3: Llama 3.2 1B Offline
 
@@ -268,7 +268,7 @@ Character trigrams and weighted keyword anchors resolve high-confidence queries 
 
 ### Current: Azure App Service (F1 Free Tier)
 
-GitHub Actions workflow (`.github/workflows/main_akhilesh-resume.yml`) deploys on every push to `main`. ONNX model weights are excluded from the deployment package to stay within the 1 GB artifact limit; a warmup step runs in the Actions build job to pre-cache weights in the Azure VFS.
+GitHub Actions workflow (`.github/workflows/main_akhilesh-resume.yml`) deploys on every push to `main`. ONNX model weights are excluded from the deployment package to stay within the 1 GB artifact limit; a warmup step runs in the Actions build job to pre-cache weights in the Azure VFS. CI sets `TEST_SSE_TIMEOUT_MS=300000` (5 min) to give Llama inference enough headroom on shared CPU runners without affecting the production 2-minute SSE timeout. The sanity suite pre-warms the Llama model before the chatbot sweep so the 20s cold-start penalty does not count against query timeouts.
 
 
 ### Recommended Migration: Railway

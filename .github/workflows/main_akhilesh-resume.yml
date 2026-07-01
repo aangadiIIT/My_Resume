@@ -32,6 +32,9 @@ jobs:
             v1-llama-3.2-1b-
 
       - name: Install dependencies, Warmup AI & Run Tests
+        env:
+          # Give Llama 5 minutes on slow CI CPU runners (production stays at 2 min).
+          TEST_SSE_TIMEOUT_MS: 300000
         run: |
           npm install
           if [ "${{ steps.cache-models.outputs.cache-hit }}" != "true" ]; then

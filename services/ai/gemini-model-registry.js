@@ -3,31 +3,34 @@
 /**
  * Gemini Model Registry — Runtime-adaptive model stack with circuit breakers.
  *
- * Discovered via live API call on 2026-07-02 against the project's API key.
- * Models are ordered: fastest/most-available first, degrading gracefully.
+ * Stack order: free-tier models with the best quota availability first.
+ * All models use the free tier on this key (20 req/day each).
+ * The two "lite" variants (flash-lite series) have the most available quota
+ * in practice because they are used less by other projects on the same key.
  *
  * Circuit breaker per model:
- *   - 429 QUOTA  → cooldown = retryDelay from error body (or 300s default)
- *   - 429 OTHER  → cooldown = 60s
- *   - 503        → cooldown = 15s (temporary overload, retry sooner)
- *   - Other err  → cooldown = 10s
+ *   - 429 QUOTA (daily) → cooldown = 1h (retryDelay from RetryInfo proto)
+ *   - 429 OTHER         → cooldown = 60s
+ *   - 503               → cooldown = 15s (temporary overload, retry sooner)
+ *   - Other err         → cooldown = 10s
  *
- * The stack is refreshed on startup via discoverModels() which calls
- * the real Gemini API and re-ranks by actual availability.
+ * Stack is re-validated on startup via discoverModels() against the live API.
  */
 
 const https = require('https');
 
-// ── Static baseline stack (confirmed working 2026-07-02 with project key) ──
-// Order: best balance of speed + availability first
+// ── Baseline stack — free-tier models ordered by quota availability ──────────
+// Confirmed against project API key 2026-07-02.
+// Lite variants first: they share the 20 req/day free limit but are tried
+// by fewer automated processes, so they tend to have quota remaining longer.
 const BASELINE_STACK = [
-  { name: 'gemini-3.5-flash',      version: 'v1beta', tier: 'paid',  inputLimit: 1048576, outputLimit: 65536 },
-  { name: 'gemini-3.1-flash-lite', version: 'v1beta', tier: 'paid',  inputLimit: 1048576, outputLimit: 65536 },
-  { name: 'gemini-2.5-flash-lite', version: 'v1beta', tier: 'free',  inputLimit: 1048576, outputLimit: 65536 },
-  { name: 'gemini-2.5-flash',      version: 'v1beta', tier: 'free',  inputLimit: 1048576, outputLimit: 65536 },
-  { name: 'gemini-2.5-pro',        version: 'v1beta', tier: 'free',  inputLimit: 1048576, outputLimit: 65536 },
-  { name: 'gemini-2.0-flash-lite', version: 'v1',     tier: 'free',  inputLimit: 1048576, outputLimit: 8192  },
-  { name: 'gemini-2.0-flash',      version: 'v1',     tier: 'free',  inputLimit: 1048576, outputLimit: 8192  },
+  { name: 'gemini-2.5-flash-lite', version: 'v1beta', tier: 'free', inputLimit: 1048576, outputLimit: 65536 },
+  { name: 'gemini-3.1-flash-lite', version: 'v1beta', tier: 'free', inputLimit: 1048576, outputLimit: 65536 },
+  { name: 'gemini-2.5-flash',      version: 'v1beta', tier: 'free', inputLimit: 1048576, outputLimit: 65536 },
+  { name: 'gemini-2.0-flash-lite', version: 'v1',     tier: 'free', inputLimit: 1048576, outputLimit: 8192  },
+  { name: 'gemini-3.5-flash',      version: 'v1beta', tier: 'free', inputLimit: 1048576, outputLimit: 65536 },
+  { name: 'gemini-2.5-pro',        version: 'v1beta', tier: 'free', inputLimit: 1048576, outputLimit: 65536 },
+  { name: 'gemini-2.0-flash',      version: 'v1',     tier: 'free', inputLimit: 1048576, outputLimit: 8192  },
 ];
 
 // ── Per-model circuit breaker state ────────────────────────────────────────
